@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Roda os testes do site.
+# Uso: ./bin/testar.sh [php|markup|visual|interacao] [pagina[,pagina…]]
+#   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
+# Pré-requisitos: site no ar em http://localhost:8080 (./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
+# Node 20+ e Docker. O protótipo é servido sozinho em http://localhost:8090 durante os testes.
+# Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
+set -uo pipefail
+cd "$(dirname "$0")/.."
+export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /tests
+
+parte="${1:-tudo}"
+[ $# -ge 2 ] && export IEADC_PAGINAS="$2"
+case "$parte" in tudo|php|markup|visual|interacao) ;; *) echo "Uso: $0 [php|markup|visual|interacao] [pagina]"; exit 2 ;; esac
+
+falhou=0
+passo() { echo; echo "=== $1 ==="; }
+roda() { "$@" || falhou=1; }
+
+# Data congelada: a agenda do site tem de sair igual à do protótipo (06/10/2026).
+if [ -f .env ] && ! grep -q '^IEADC_HOJE=2026-10-06' .env && [ "$parte" != "php" ]; then
+  echo "AVISO: .env sem IEADC_HOJE=2026-10-06; a agenda não vai bater com o protótipo (rode ./bin/setup.sh depois de ajustar)." >&2
+fi
+
+testes_php() {
+  passo "php -l (sintaxe de todos os arquivos PHP)"
+  local erros=0 arq
+  if command -v php >/dev/null 2>&1; then
+    while IFS= read -r arq; do
+      php -l "$arq" >/dev/null 2>/tmp/ieadc-php-l.txt || { cat /tmp/ieadc-php-l.txt; erros=1; }
+    done < <(find wp-content scripts tests -name '*.php' -not -path '*/node_modules/*')
+  else
+    docker compose run --rm -T --no-deps -v "$PWD:/repo:ro" --entrypoint sh wpcli -c \
+      'find /repo/wp-content /repo/scripts /repo/tests -name "*.php" | while read f; do php -l "$f" >/dev/null || exit 1; done' || erros=1
+  fi
+  [ $erros -eq 0 ] && echo "ok" || return 1
+
+  if [ -f tests/php/agenda/teste-agenda.php ]; then
+    passo "testes PHP: agenda (sem WordPress)"
+    if command -v php >/dev/null 2>&1; then
+      php tests/php/agenda/teste-agenda.php || return 1
+    else
+      docker compose run --rm -T --no-deps -v "$PWD:/repo:ro" --entrypoint php wpcli /repo/tests/php/agenda/teste-agenda.php || return 1
+    fi
+  fi
+
+  passo "testes PHP: funções comuns (dentro do WordPress)"
+  local t
+  for t in tests/php/*/teste-helpers.php; do
+    [ -f "$t" ] || continue
+    docker compose run --rm -T --no-deps -v "$PWD/tests:/tests:ro" --entrypoint php wpcli "/tests/${t#tests/}" || return 1
+  done
+}
+
+testes_playwright() {
+  [ -d node_modules/@playwright/test ] || { passo "npm ci"; npm ci --no-audit --no-fund || return 1; }
+  passo "playwright: $1"
+  # Limite de envios dos formulários (5 por hora): zera antes de testar a interação.
+  [ "$1" = "interacao" ] && docker compose run --rm -T wpcli wp transient delete --all >/dev/null 2>&1
+  npx playwright test -c tests/visual "$1" --reporter=list
+}
+
+case "$parte" in
+  php) roda testes_php ;;
+  markup|visual|interacao) roda testes_playwright "$parte" ;;
+  tudo)
+    roda testes_php
+    roda testes_playwright markup
+    roda testes_playwright visual
+    roda testes_playwright interacao
+    ;;
+esac
+
+echo
+[ $falhou -eq 0 ] && echo "TUDO CERTO." || echo "HOUVE FALHAS (veja acima)."
+exit $falhou
