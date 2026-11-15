@@ -1,0 +1,37 @@
+/* Editor genérico dos blocos ieadc/* (spec M1): painel lateral e prévia. */
+
+/* Prévia: igual ao site, mas sem navegar ao clicar nos links e botões. */
+.ieadc-bloco .ieadc-pagina a,
+.ieadc-bloco .ieadc-pagina button,
+.ieadc-bloco .ieadc-pagina form { pointer-events: none; }
+.ieadc-bloco { margin-top: 0 !important; margin-bottom: 0 !important; max-width: none !important; }
+.ieadc-bloco .components-placeholder { min-height: 120px; }
+
+/* Imagem e galeria */
+.ieadc-imagem { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ieadc-mini { display: inline-flex; width: 64px; height: 64px; border-radius: 4px; overflow: hidden; background: #f0f0f0; align-items: center; justify-content: center; }
+.ieadc-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ieadc-galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.ieadc-galeria-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ieadc-galeria-item .ieadc-mini { width: 100%; height: 64px; }
+.ieadc-galeria-botoes { display: flex; }
+.ieadc-galeria-botoes .components-button { min-width: 24px; padding: 0; }
+
+/* Ícones */
+.ieadc-icones { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; max-height: 220px; overflow-y: auto; padding: 2px; }
+.ieadc-icones .ieadc-icone { justify-content: center; height: 36px; padding: 0; border: 1px solid #ddd; }
+.ieadc-icones .ieadc-icone svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.ieadc-icones .ieadc-icone.is-on { border-color: var(--wp-admin-theme-color, #007cba); box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color, #007cba); }
+
+/* Listas */
+.ieadc-lista { margin: 0 0 16px; }
+.ieadc-lista-rotulo { font-size: 11px; font-weight: 500; text-transform: uppercase; margin: 0 0 8px; }
+.ieadc-ajuda { font-size: 12px; color: #757575; margin: -4px 0 8px; }
+.ieadc-lista .ieadc-item { border: 1px solid #e0e0e0; border-radius: 2px; margin-bottom: 4px; }
+.ieadc-lista .ieadc-item > .components-panel__body-title { margin: 0 !important; }
+.ieadc-item-botoes { display: flex; gap: 4px; margin-top: 8px; }
+.ieadc-adicionar { margin-top: 4px; }
+.ieadc-lista .ieadc-lista { margin-left: 4px; }
+
+/* O link do painel do WordPress não pode tingir os botões da prévia. */
+.ieadc-bloco .ieadc-ui .btn { color: #fff; }

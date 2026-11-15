@@ -1,0 +1,16 @@
+{
+  "name": "ieadcvilaipiranga-site",
+  "private": true,
+  "description": "Testes de fidelidade do site IEADC Vila Ipiranga (o site em si é WordPress; aqui só há dependências de teste).",
+  "scripts": {
+    "test:markup": "playwright test -c tests/visual markup",
+    "test:visual": "playwright test -c tests/visual visual",
+    "test:interacao": "playwright test -c tests/visual interacao"
+  },
+  "engines": { "node": ">=20" },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "pixelmatch": "5.3.0",
+    "pngjs": "7.0.0"
+  }
+}

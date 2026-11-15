@@ -1,0 +1,189 @@
+<?php
+/**
+ * Funções comuns de renderização dos blocos ieadc/* (spec M1).
+ * Geram o mesmo HTML do gerador do protótipo (prototipo/fonte/gen.py).
+ */
+defined('ABSPATH') || exit;
+
+/** O traço amarelo→vermelho sob os títulos (SWOOSH do gen.py). */
+function ieadc_swoosh(string $classe = 'swoosh'): string {
+	return '<svg class="' . esc_attr($classe) . '" viewBox="0 0 260 16" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 3 170 2 257 8"/></svg>';
+}
+
+/** Troca cada [trecho] (já escapado) por <mark class="pend">[trecho]</mark>. Uso interno. */
+function ieadc_marca_pend(string $html): string {
+	return (string) preg_replace('/\[([^\]]+)\]/u', '<mark class="pend">[$1]</mark>', $html);
+}
+
+/** Escapa o texto e marca os trechos [a confirmar]. */
+function ieadc_pend(string $texto): string {
+	return ieadc_marca_pend(esc_html($texto));
+}
+
+/**
+ * Texto "rico": só b, strong, i, em, br, small, a[href], span.azul e mark.pend.
+ * Os [trechos] fora de <mark> viram <mark class="pend">.
+ */
+function ieadc_kses_rico(string $html): string {
+	$permitidas = [
+		'b' => [], 'strong' => [], 'i' => [], 'em' => [], 'br' => [], 'small' => [],
+		'a' => ['href' => true],
+		'span' => ['class' => true],
+		'mark' => ['class' => true],
+	];
+	$html = wp_kses($html, $permitidas);
+	// span e mark só com a classe permitida (span.azul, mark.pend); outra classe some.
+	$html = (string) preg_replace_callback('/<(span|mark)\b([^>]*)>/i', function ($m) {
+		$tag = strtolower($m[1]);
+		$ok = $tag === 'span' ? 'azul' : 'pend';
+		$tem = preg_match('/\bclass\s*=\s*(["\'])\s*' . $ok . '\s*\1/i', $m[2]);
+		return $tem ? "<{$tag} class=\"{$ok}\">" : "<{$tag}>";
+	}, $html);
+	// [trechos] no texto (fora das tags e fora de <mark> já existente)
+	$partes = preg_split('/(<[^>]*>)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$dentro_mark = 0;
+	foreach ($partes as $k => $p) {
+		if ($p === '' ) {
+			continue;
+		}
+		if ($p[0] === '<') {
+			if (preg_match('/^<mark\b/i', $p)) {
+				$dentro_mark++;
+			} elseif (preg_match('/^<\/mark/i', $p)) {
+				$dentro_mark = max(0, $dentro_mark - 1);
+			}
+			continue;
+		}
+		if (!$dentro_mark) {
+			$partes[$k] = ieadc_marca_pend($p);
+		}
+	}
+	return implode('', $partes);
+}
+
+/** Separa o texto em <p> por linha em branco; cada parágrafo aceita o texto rico. */
+function ieadc_paragrafos(string $texto, string $classe = ''): string {
+	$texto = trim(str_replace("\r\n", "\n", $texto));
+	if ($texto === '') {
+		return '';
+	}
+	$abre = $classe !== '' ? '<p class="' . esc_attr($classe) . '">' : '<p>';
+	$saida = '';
+	foreach (preg_split('/\n\s*\n/', $texto) as $par) {
+		$par = trim($par);
+		if ($par !== '') {
+			$saida .= $abre . ieadc_kses_rico($par) . '</p>';
+		}
+	}
+	return $saida;
+}
+
+/** URL da mídia (vazio se o ID não for uma imagem existente). */
+function ieadc_img($id, string $tamanho = 'full'): string {
+	$id = (int) $id;
+	if ($id <= 0) {
+		return '';
+	}
+	$url = wp_get_attachment_image_url($id, $tamanho);
+	return $url ? (string) $url : '';
+}
+
+/**
+ * Atributo style completo de uma foto de fundo, igual ao protótipo:
+ * style="background-image:url(…);background-position:<foco>;<extra>". Vazio se não houver nada.
+ */
+function ieadc_fundo($id, string $foco = '', string $extra = ''): string {
+	$partes = [];
+	$url = ieadc_img($id);
+	if ($url !== '') {
+		$partes[] = 'background-image:url(' . esc_url($url) . ')';
+		if (trim($foco) !== '') {
+			$partes[] = 'background-position:' . trim($foco);
+		}
+	}
+	if (trim($extra) !== '') {
+		$partes[] = trim(trim($extra), ';');
+	}
+	return $partes ? 'style="' . esc_attr(implode(';', $partes)) . '"' : '';
+}
+
+/** Botão igual ao btn() do gerador: <a class="btn <classe>" href="…">texto<svg class="ico">…</svg></a>. */
+function ieadc_btn(string $texto, string $link, string $classe = '', string $icone = 'seta'): string {
+	if (trim($texto) === '') {
+		return '';
+	}
+	$ico = ($icone !== '' && function_exists('ieadc_icone')) ? ieadc_icone($icone) : '';
+	return '<a class="btn ' . esc_attr($classe) . '" href="' . esc_url(ieadc_url($link)) . '">' . ieadc_kses_rico($texto) . $ico . '</a>';
+}
+
+/**
+ * Link de um campo "link": URL completa, âncora e mailto/tel ficam como estão;
+ * caminho do site ("contato", "/ministerios/familia/") vira o endereço da página.
+ */
+function ieadc_url(string $link): string {
+	$link = trim($link);
+	if ($link === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//|\#|\?)#i', $link)) {
+		return $link;
+	}
+	$caminho = trim(preg_replace('/\.html$/', '', $link), '/');
+	$ancora = '';
+	if (str_contains($caminho, '#')) {
+		[$caminho, $ancora] = explode('#', $caminho, 2);
+		$caminho = trim($caminho, '/');
+		$ancora = '#' . $ancora;
+	}
+	if ($caminho === '' || $caminho === 'inicio') {
+		return home_url('/') . $ancora;
+	}
+	return (function_exists('ieadc_link') ? ieadc_link($caminho) : home_url('/' . $caminho . '/')) . $ancora;
+}
+
+/**
+ * Cabeçalho de seção (cab() do gerador):
+ * <div class="cab"><div><span class="eyebrow">…</span><h2 class="h2">…</h2>SWOOSH<p class="txt">…</p></div>botão</div>
+ * Chaves: eyebrow, titulo, texto, botaoTexto, botaoLink, botaoClasse, botaoIcone; lead=true usa <p class="lead">.
+ */
+function ieadc_cab(array $a): string {
+	$eyebrow = (string) ($a['eyebrow'] ?? '');
+	$titulo = (string) ($a['titulo'] ?? '');
+	$texto = (string) ($a['texto'] ?? '');
+	$h = '<div class="cab"><div>';
+	if ($eyebrow !== '') {
+		$h .= '<span class="eyebrow">' . ieadc_kses_rico($eyebrow) . '</span>';
+	}
+	if ($titulo !== '') {
+		$h .= '<h2 class="h2">' . ieadc_kses_rico($titulo) . '</h2>';
+	}
+	$h .= ieadc_swoosh();
+	if (trim($texto) !== '') {
+		$h .= '<p class="' . (!empty($a['lead']) ? 'lead' : 'txt') . '">' . ieadc_kses_rico($texto) . '</p>';
+	}
+	$h .= '</div>';
+	if (trim((string) ($a['botaoTexto'] ?? '')) !== '') {
+		$h .= ieadc_btn((string) $a['botaoTexto'], (string) ($a['botaoLink'] ?? ''), (string) ($a['botaoClasse'] ?? ''), (string) ($a['botaoIcone'] ?? 'seta'));
+	}
+	return $h . '</div>';
+}
+
+/** <section class id style> com os atributos comuns secao, ancora e secaoEstilo. */
+function ieadc_secao_abre(array $a, string $padrao = 'sec'): string {
+	$classe = trim((string) ($a['secao'] ?? ''));
+	$classe = $classe !== '' ? $classe : $padrao;
+	$h = '<section';
+	if ($classe !== '') {
+		$h .= ' class="' . esc_attr($classe) . '"';
+	}
+	$ancora = trim((string) ($a['ancora'] ?? ''));
+	if ($ancora !== '') {
+		$h .= ' id="' . esc_attr($ancora) . '"';
+	}
+	$estilo = trim((string) ($a['secaoEstilo'] ?? ''));
+	if ($estilo !== '') {
+		$h .= ' style="' . esc_attr($estilo) . '"';
+	}
+	return $h . '>';
+}
+
+function ieadc_secao_fecha(): string {
+	return '</section>';
+}

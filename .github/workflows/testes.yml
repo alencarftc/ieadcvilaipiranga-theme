@@ -1,0 +1,54 @@
+name: Testes
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Dependências de teste
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Configurar o ambiente (data congelada em 06/10/2026)
+        run: |
+          cp .env.example .env
+          sed -i 's/^IEADC_HOJE=.*/IEADC_HOJE=2026-10-06/' .env
+          sed -i 's/^SITE_INTERFACE=.*/SITE_INTERFACE=127.0.0.1/' .env
+
+      - name: Subir o WordPress e rodar o setup
+        run: ./bin/setup.sh
+
+      - name: Testes (php, markup, visual e interação)
+        run: ./bin/testar.sh
+
+      - name: Imagens de diferença do teste visual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testes-visuais
+          path: |
+            tests/visual/saida/
+            tests/visual/relatorio/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Logs do WordPress (se falhou)
+        if: failure()
+        run: docker compose logs --tail=200 wordpress db
