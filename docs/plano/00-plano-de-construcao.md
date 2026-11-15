@@ -1,6 +1,6 @@
 # Plano de construção do site IEADC Vila Ipiranga
 
-Versão 1 · 15/11/2026 · em revisão pelo Felipe. Depois de aprovado, gera as specs em `docs/specs/`.
+Versão 1.1 · 15/11/2026 · aprovado (merge do PR #2). Specs em [`docs/specs/`](../specs/README.md).
 
 Lançamento: **30/11/2026** em **ieadcvilaipiranga.com.br** (Hostinger).
 
@@ -133,45 +133,17 @@ Cada linha é um agente. "Toca" é a lista fechada de arquivos que ele pode alte
 | **M1** | Infra de blocos + testes de fidelidade | M0 | `inc/blocos.php`, `blocos/_editor/`, `inc/helpers.php`, `tests/visual/`, `.github/workflows/` |
 | **M2** | Agenda | M0 | `mu-plugins/ieadc-core/agenda.php`, `tests/php/agenda/` |
 | **M3** | Tipos de conteúdo e campos | M0 | `mu-plugins/ieadc-core/tipos.php`, `departamentos.php`, `scripts/seed/40..80-*.php` |
-| **B1** | Blocos de topo e navegação | M1 | `blocos/{hero,hero-home,cab,trilha,vizinhos,trocador}/` |
-| **B2** | Blocos de horários e local | M1, M2 | `blocos/{semana,tabela-horarios,temas-domingo,local,faixa}/` |
-| **B3** | Blocos de listas e cartões | M1, M2, M3 | `blocos/{eventos-grade,calendario,artigos-grade,ministerios-grade,cultos-grade,chamadas,trilho,galeria-faixa,departamentos}/` |
-| **B4** | Blocos de conteúdo longo | M1 | `blocos/{corpo-indice,fatos,passos,leitura,linha-tempo,mvv,carrossel,aceitar-passos,contato-lista,capa,fotos,boas-vindas,artigo}/` |
+| **B1** | Blocos de topo e navegação (4) | M1 | `blocos/{hero-home,hero,trocador,vizinhos}/` |
+| **B2** | Blocos de horários, local e agenda (7) | M1, M2 | `blocos/{semana,tabela-horarios,faixa,local,cultos-grade,eventos-grade,calendario}/` |
+| **B3** | Blocos de listas e cartões (11) | M1, M3 | `blocos/{boas-vindas,chamadas,ministerios-trilho,ministerios-grade,artigos-grade,artigos-categorias,galeria-faixa,fotos,fotos-pendentes,pastores,departamentos}/` |
+| **B4** | Blocos de conteúdo longo (15) | M1 | `blocos/{pedido-oracao,contato-lista,capa,fatos,corpo-indice,passos,carrossel,leitura,linha-tempo,mvv,credo,historia,aceitar-passos,artigo-topo,artigo-corpo}/` |
 | **P1** | Páginas prioritárias | B1–B4 | `scripts/seed/20-paginas-p1.php` (Início, Horários e localização, Fale conosco, Pedidos de oração) |
 | **P2** | Páginas da Igreja | B1–B4 | `scripts/seed/20-paginas-p2.php` (Sobre nós, Liderança, Ministérios + 7) |
 | **P3** | Demais páginas | B1–B4 | `scripts/seed/20-paginas-p3.php` (6 cultos, Eventos, Artigos + 3, Galeria, Aceitar Jesus, Política) |
 | **M6** | SEO, desempenho, acessibilidade, segurança | P1 | `inc/seo.php`, `assets/css/ajustes.css` (seção M6), configuração dos plugins no seed |
 | **M7** | Migração e lançamento | todos | `bin/migrar.sh`, `docs/operacao/` |
 
-Mapa seção do protótipo → bloco (inventário feito nas 28 páginas):
-
-| Seção no protótipo (`class`) | Bloco | Páginas |
-|---|---|---|
-| `hero` (home) | `hero-home` | Início |
-| `hero pagina`, `hero sem-foto` | `hero` | 24 páginas |
-| `trilha` | `trilha` | cultos e ministérios |
-| `vizinhos`, `trocar` | `vizinhos`, `trocador` | cultos e ministérios |
-| `sec … cab` | `cab` (cabeçalho de seção, usado dentro de outros blocos via função `ieadc_cab()`) | todas |
-| `horarios … dias` | `semana` | Início, Horários |
-| `tabela` | `tabela-horarios` | Horários |
-| `faixa` | `temas-domingo` / `faixa` | Início, Horários |
-| `local`, `endereco` | `local` | Início, Horários, Fale conosco |
-| `fatos` | `fatos` | cultos e ministérios |
-| `min-corpo / indice / lateral` | `corpo-indice` | cultos e ministérios |
-| `passo-unico` | `passos` | ministérios |
-| `car-ctrl` (carrossel) | `carrossel` | cultos, ministérios, artigos |
-| `grade g3` de eventos / `legenda` | `eventos-grade` / `calendario` | Início, Eventos |
-| `grade g3` de artigos / `g2` relacionados | `artigos-grade` | Início, Artigos, artigo |
-| `min-grade` | `ministerios-grade` / `cultos-grade` | Ministérios, Horários |
-| `duplas / chamada` | `chamadas` | Início, Aceitar Jesus |
-| `trilho` | `trilho` (ministérios na home) | Início |
-| `galeria-faixa`, `fotos` | `galeria-faixa`, `fotos` | Início, Galeria |
-| `boas / moldura` | `boas-vindas` | Início |
-| `linha-tempo`, `mvv`, `leitura`, `capa` | blocos de mesmo nome | Sobre nós, Política, Fale conosco |
-| `aj-intro` | `aceitar-passos` | Aceitar Jesus |
-| `contato-lista` | `contato-lista` | Fale conosco |
-| `grade g2` de líderes | `departamentos` | Liderança |
-| `artigo / migalha` | `artigo` (modelo de post) | 3 artigos |
+O mapa completo seção → bloco (37 blocos, 28 páginas) está em [`docs/specs/mapa-secoes.json`](../specs/mapa-secoes.json), e o HTML esperado de cada bloco em [`docs/specs/referencias/`](../specs/referencias/). Os dois são gerados por `scripts/referencias_specs.py` a partir do protótipo.
 
 ## 7. Ondas e calendário
 
@@ -222,7 +194,7 @@ O protótipo é renderizado pelo próprio teste a partir de `prototipo/` (sem a 
 
 ## 10. Specs (próximo passo, depois da aprovação)
 
-Uma spec por módulo da seção 6 (13 specs), em `docs/specs/`, todas no mesmo modelo:
+Uma spec por módulo da seção 6 (13 specs), em [`docs/specs/`](../specs/README.md), mais as [convenções](../specs/00-convencoes.md) comuns. Modelo:
 
 1. Objetivo e páginas afetadas
 2. Arquivos que o agente toca (e os que não toca)
