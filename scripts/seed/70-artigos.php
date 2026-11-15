@@ -17,6 +17,14 @@ $artigos = [
 	'ate-que-ele-venha'     => ['estudo', 'f_biblia.webp', 'O que lembramos, celebramos e esperamos na Ceia do Senhor.'],
 ];
 
+// Datas de publicação do protótipo (anteriores a IEADC_HOJE), para o bloco artigos-grade
+// listar do mais novo ao mais antigo na mesma ordem do protótipo.
+$datas = [
+	'alcancar-curitiba'     => '2026-10-05 10:00:00',
+	'orai-uns-pelos-outros' => '2026-10-04 10:00:00',
+	'ate-que-ele-venha'     => '2026-10-03 10:00:00',
+];
+
 $forcar = getenv('IEADC_ATUALIZAR') === '1';
 $padrao = (int) get_option('default_category');
 foreach ($artigos as $slug => [$cat, $foto, $resumo]) {
@@ -35,6 +43,12 @@ foreach ($artigos as $slug => [$cat, $foto, $resumo]) {
 	ieadc_seed_capa($p->ID, $foto);
 	if ($forcar || trim($p->post_excerpt) === '') {
 		wp_update_post(['ID' => $p->ID, 'post_excerpt' => wp_slash($resumo)]);
+	}
+	// Data: grava uma vez (marcador em meta) para não sobrescrever edição feita no painel.
+	if ($forcar || !get_post_meta($p->ID, 'ieadc_data_seed', true)) {
+		$local = $datas[$slug];
+		wp_update_post(['ID' => $p->ID, 'post_date' => $local, 'post_date_gmt' => get_gmt_from_date($local), 'edit_date' => true]);
+		update_post_meta($p->ID, 'ieadc_data_seed', 1);
 	}
 	WP_CLI::log("Artigo: {$slug}");
 }
