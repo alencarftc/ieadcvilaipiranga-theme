@@ -56,7 +56,7 @@ class IEADC_Walker_Nav extends Walker_Nav_Menu {
 		if ($depth === 0 && $tem_filhos) {
 			$a[] = 'grp';
 		}
-		if ($atual || ($depth === 0 && $ancestral)) {
+		if ($atual || $ancestral) {
 			$a[] = 'on';
 		}
 

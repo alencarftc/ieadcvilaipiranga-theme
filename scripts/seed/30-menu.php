@@ -1,7 +1,6 @@
 <?php
 // Menu principal (estrutura aprovada em 06/10 e 09/10/2026).
 
-// Menu principal (estrutura aprovada em 06/10 e 09/10/2026).
 $minis  = ieadc_seed_minis();
 $cultos = ieadc_seed_cultos();
 $id = fn(string $caminho): int => (int) (get_page_by_path($caminho)?->ID ?? 0);
