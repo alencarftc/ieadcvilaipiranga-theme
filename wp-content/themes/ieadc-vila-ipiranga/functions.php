@@ -11,6 +11,8 @@ define('IEADC_TEMA_VERSAO', wp_get_theme()->get('Version'));
 
 require __DIR__ . '/inc/icones.php';
 require __DIR__ . '/inc/menu.php';
+// M1: helpers antes de blocos (carregados só quando existirem).
+foreach (['helpers', 'blocos'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
 
 add_action('after_setup_theme', function () {
 	register_nav_menus([
