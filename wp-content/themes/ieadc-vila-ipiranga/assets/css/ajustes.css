@@ -25,3 +25,13 @@ body{background:var(--branco)}
 .ieadc-ui legend{display:block;padding:0;font:700 14px/21px var(--f-txt);color:var(--marinho);margin-bottom:6px}
 /* Textarea: o Blocksy aumenta a altura natural; o protótipo mostra 144px. */
 .ieadc-ui .campo textarea{height:144px}
+
+/* === M1/M0: defeitos do Blocksy medidos no teste visual (blockquote, tabelas, fieldset, textarea) === */
+.ieadc-ui blockquote{border-left:0}
+.ieadc-ui textarea{height:auto}
+:where(.ieadc-ui) :is(table,th,td){border:0}
+:where(.ieadc-ui) fieldset{border:0;margin:0;padding:0;min-width:0}
+:where(.ieadc-ui) legend{padding:0;float:none;width:auto}
+.ieadc-ui legend{margin-left:0}
+/* O botão do Blocksy (button[type=submit]) sobrepunha fonte e espaçamento do .btn do protótipo. */
+.ieadc-ui .btn{font:700 16px/1 var(--f-tit);letter-spacing:.06em}

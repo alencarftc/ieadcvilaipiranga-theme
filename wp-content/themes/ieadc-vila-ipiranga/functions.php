@@ -58,3 +58,4 @@ function ieadc_link(string $slug): string {
 function ieadc_dado(string $chave): string {
 	return function_exists('ieadc_info') ? (string) ieadc_info($chave) : '';
 }
+add_filter('run_wptexturize', '__return_false'); // aspas e travessões iguais ao protótipo (sem texturização)
