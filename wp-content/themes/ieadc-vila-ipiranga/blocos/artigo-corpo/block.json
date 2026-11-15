@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/artigo-corpo",
+	"title": "Corpo do artigo",
+	"category": "ieadc",
+	"icon": "media-text",
+	"description": "Versículo de abertura e o texto do artigo (parágrafos e títulos do post).",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-top:var(--s6)",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"versiculo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Versículo de abertura",
+				"ajuda": "Vazio = campo \"ieadc_versiculo\" do post, se houver."
+			}
+		},
+		"referencia": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Referência",
+				"ajuda": "Ex.: Tiago 5.16 (ARA)"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

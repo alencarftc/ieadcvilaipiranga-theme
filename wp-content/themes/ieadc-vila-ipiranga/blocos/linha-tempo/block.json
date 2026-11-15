@@ -1,0 +1,115 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/linha-tempo",
+	"title": "Linha do tempo",
+	"category": "ieadc",
+	"icon": "backup",
+	"description": "Marcos da história da igreja em linha do tempo.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Linha do tempo",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Como a igreja começou e cresceu",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto"
+			}
+		},
+		"marcos": {
+			"type": "array",
+			"default": [
+				{
+					"quando": "1975",
+					"titulo": "Ponto de pregação",
+					"texto": "Distrito 135, sob o pastor Paulino Ramalho."
+				},
+				{
+					"quando": "14/08/1975",
+					"titulo": "A igrejinha",
+					"texto": "Os cultos começam na casinha de madeira."
+				},
+				{
+					"quando": "1986",
+					"titulo": "Pedra fundamental",
+					"texto": "Começa a obra do templo atual."
+				},
+				{
+					"quando": "[ano a confirmar]",
+					"titulo": "Inauguração",
+					"texto": "Culto com o pastor-presidente José Pimentel de Carvalho."
+				},
+				{
+					"quando": "2025",
+					"titulo": "50 anos",
+					"texto": "Meio século no Capão Raso."
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Marcos",
+				"itens": {
+					"quando": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Quando"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto",
+							"campo": "rico"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

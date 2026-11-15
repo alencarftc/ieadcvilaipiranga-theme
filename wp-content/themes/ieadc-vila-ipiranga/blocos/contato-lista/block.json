@@ -1,0 +1,103 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/contato-lista",
+	"title": "Fale conosco (formulário e contatos)",
+	"category": "ieadc",
+	"icon": "email",
+	"description": "Formulário de contato com a lista de contatos da igreja ao lado.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Contatos",
+			"ieadc": {
+				"rotulo": "Sobretítulo da lateral"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Fale com a igreja",
+			"ieadc": {
+				"rotulo": "Título da lateral"
+			}
+		},
+		"itens": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "fone",
+					"titulo": "1° dirigente: Ev. Robson Stein",
+					"texto": "+55 (41) 98838-1994<br/>robsondouglass@terra.com.br"
+				},
+				{
+					"icone": "fone",
+					"titulo": "2º dirigente: Pb. Manoel Lima",
+					"texto": "+55 (41) 98444-5001<br/>E-mail [a definir]"
+				},
+				{
+					"icone": "pin",
+					"titulo": "Endereço",
+					"texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR"
+				},
+				{
+					"icone": "instagram",
+					"titulo": "Redes sociais",
+					"texto": "<a href=\"https://www.instagram.com/ieadc.vilaipiranga/\">Instagram</a> · <a href=\"https://www.facebook.com/ieadcvipagina\">Facebook</a> · <a href=\"https://www.youtube.com/channel/UC7la6gW5oIvo83_DQhBp9sQ\">YouTube</a>"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Contatos",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto",
+							"campo": "rico",
+							"ajuda": "Use <br> para quebrar a linha."
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

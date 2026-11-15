@@ -1,0 +1,128 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/mvv",
+	"title": "Missão, visão e valores",
+	"category": "ieadc",
+	"icon": "flag",
+	"description": "Três cartões: missão, visão e valores.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Missão, visão e valores",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "O que nos move",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto"
+			}
+		},
+		"missao": {
+			"type": "string",
+			"default": "Evangelizar, discipular e adorar a Deus, levando pessoas a Cristo, e transformar vidas pela Palavra.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Missão"
+			}
+		},
+		"visao": {
+			"type": "string",
+			"default": "Ser uma igreja unida, relevante e atuante, expandindo o Reino de Deus em todas as regiões geográficas de nosso país.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Visão"
+			}
+		},
+		"valores": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "livro",
+					"texto": "Ensino genuíno da Palavra de Deus"
+				},
+				{
+					"icone": "chama",
+					"texto": "Fé pentecostal"
+				},
+				{
+					"icone": "megafone",
+					"texto": "Evangelização"
+				},
+				{
+					"icone": "degraus",
+					"texto": "Discipulado"
+				},
+				{
+					"icone": "casa",
+					"texto": "Família"
+				},
+				{
+					"icone": "pessoas",
+					"texto": "Comunhão"
+				},
+				{
+					"icone": "maos",
+					"texto": "Amor ao próximo"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Valores",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

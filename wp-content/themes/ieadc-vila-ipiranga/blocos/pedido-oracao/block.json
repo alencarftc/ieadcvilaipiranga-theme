@@ -1,0 +1,75 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/pedido-oracao",
+	"title": "Pedido de oração (formulário)",
+	"category": "ieadc",
+	"icon": "heart",
+	"description": "Formulário de pedido de oração com a lateral do Círculo de Oração.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec glow",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Quem ora por você",
+			"ieadc": {
+				"rotulo": "Sobretítulo da lateral"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Círculo de Oração",
+			"ieadc": {
+				"rotulo": "Título da lateral"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos. Dirige o culto de quinta-feira, às 20h.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto da lateral"
+			}
+		},
+		"versiculo": {
+			"type": "string",
+			"default": "Orai uns pelos outros, para serdes curados.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Versículo"
+			}
+		},
+		"referencia": {
+			"type": "string",
+			"default": "Tiago 5.16 (ARA)",
+			"ieadc": {
+				"rotulo": "Referência",
+				"ajuda": "Ex.: Tiago 5.16 (ARA)"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

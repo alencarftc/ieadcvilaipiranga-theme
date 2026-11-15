@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/capa",
+	"title": "Foto larga",
+	"category": "ieadc",
+	"icon": "format-image",
+	"description": "Uma foto larga com cantos arredondados.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-bottom:clamp(89px,10vw,144px)",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"campo": "imagem",
+				"rotulo": "Foto"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto",
+				"ajuda": "Opcional. Ex.: center 30%"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
