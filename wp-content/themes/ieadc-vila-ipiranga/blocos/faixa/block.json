@@ -1,0 +1,167 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/faixa",
+	"title": "Faixa com foto (temas do domingo)",
+	"category": "ieadc",
+	"icon": "cover-image",
+	"description": "Faixa azul com foto, lista de temas e caixa de destaque.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"rotulo": "Foto",
+				"campo": "imagem"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto (ex.: center 30%)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Culto dominical · 19h",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Temas do culto dominical",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Link",
+							"campo": "link"
+						}
+					}
+				}
+			}
+		},
+		"itens": {
+			"type": "array",
+			"default": [
+				{
+					"rotulo": "1º domingo",
+					"sub": "",
+					"valor": "Família"
+				},
+				{
+					"rotulo": "2º domingo",
+					"sub": "",
+					"valor": "Missões e Evangelismo"
+				},
+				{
+					"rotulo": "3º domingo",
+					"sub": "",
+					"valor": "Jovens e Adolescentes"
+				},
+				{
+					"rotulo": "4º domingo",
+					"sub": "",
+					"valor": "Mulheres"
+				},
+				{
+					"rotulo": "5º domingo",
+					"sub": "quando houver",
+					"valor": "Crianças"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Itens",
+				"itens": {
+					"rotulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Rótulo"
+						}
+					},
+					"sub": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Complemento (letra menor)"
+						}
+					},
+					"valor": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Tema"
+						}
+					}
+				}
+			}
+		},
+		"destaqueIcone": {
+			"type": "string",
+			"default": "calice",
+			"ieadc": {
+				"rotulo": "Ícone do destaque",
+				"campo": "icone"
+			}
+		},
+		"destaqueTitulo": {
+			"type": "string",
+			"default": "Ceia do Senhor",
+			"ieadc": {
+				"rotulo": "Título do destaque"
+			}
+		},
+		"destaqueTexto": {
+			"type": "string",
+			"default": "2º sábado do mês, às 19h30.",
+			"ieadc": {
+				"rotulo": "Texto do destaque",
+				"campo": "rico"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

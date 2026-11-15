@@ -1,0 +1,237 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/semana",
+	"title": "Programação da semana",
+	"category": "ieadc",
+	"icon": "calendar",
+	"description": "Painel com os cultos fixos de cada dia da semana e o cartão largo do domingo.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "horarios",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Toda semana",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Programação fixa semanal",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do botão",
+				"campo": "link"
+			}
+		},
+		"dias": {
+			"type": "array",
+			"default": [
+				{
+					"sigla": "SEG",
+					"icone": "oracao",
+					"titulo": "Culto de Oração",
+					"sub": "",
+					"hora": "20h",
+					"link": "culto-de-oracao"
+				},
+				{
+					"sigla": "QUA",
+					"icone": "livro",
+					"titulo": "Culto de Ensino",
+					"sub": "",
+					"hora": "20h",
+					"link": "culto-de-ensino"
+				},
+				{
+					"sigla": "QUI",
+					"icone": "pessoas",
+					"titulo": "Culto dirigido pelo Círculo de Oração",
+					"sub": "",
+					"hora": "20h",
+					"link": "culto-do-circulo-de-oracao"
+				},
+				{
+					"sigla": "SEX",
+					"icone": "beca",
+					"titulo": "Ensinai",
+					"sub": "(Curso de Teologia Ministerial)",
+					"hora": "19h30",
+					"link": "ministerios/ensinai"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Dias da semana",
+				"itens": {
+					"sigla": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Dia",
+							"campo": "opcao",
+							"opcoes": [
+								"SEG",
+								"TER",
+								"QUA",
+								"QUI",
+								"SEX",
+								"SÁB"
+							]
+						}
+					},
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Culto"
+						}
+					},
+					"sub": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Complemento (letra menor)"
+						}
+					},
+					"hora": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Horário (ex.: 20h, 19h30)"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Link",
+							"campo": "link"
+						}
+					}
+				},
+				"ajuda": "O selo \"Próximo\" é calculado sozinho pelo dia e pelo horário."
+			}
+		},
+		"domingoIcone": {
+			"type": "string",
+			"default": "igreja",
+			"ieadc": {
+				"rotulo": "Ícone do domingo",
+				"campo": "icone"
+			}
+		},
+		"domingo": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "cafe",
+					"titulo": "Café comunitário",
+					"sub": "",
+					"hora": "9h",
+					"link": "culto-dominical"
+				},
+				{
+					"icone": "livro",
+					"titulo": "EBD",
+					"sub": "(Escola Bíblica Dominical)",
+					"hora": "9h30",
+					"link": "ministerios/escola-biblica-dominical"
+				},
+				{
+					"icone": "igreja",
+					"titulo": "Culto dominical",
+					"sub": "",
+					"hora": "19h",
+					"link": "culto-dominical"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Encontros do domingo",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Encontro"
+						}
+					},
+					"sub": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Complemento (letra menor)"
+						}
+					},
+					"hora": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Horário (ex.: 9h, 9h30)"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Link",
+							"campo": "link"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

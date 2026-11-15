@@ -1,0 +1,81 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/cultos-grade",
+	"title": "Cultos (grade colorida)",
+	"category": "ieadc",
+	"icon": "grid-view",
+	"description": "Um cartão colorido por página de culto fixo, com dia e horário.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Conheça cada culto",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Como são os nossos cultos",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Toque em um culto para ver como ele é, o que esperar e as próximas datas.",
+			"ieadc": {
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do botão",
+				"campo": "link"
+			}
+		},
+		"maisTexto": {
+			"type": "string",
+			"default": "Conhecer o culto",
+			"ieadc": {
+				"rotulo": "Texto do link de cada cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

@@ -1,0 +1,88 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/eventos-grade",
+	"title": "Próximos eventos",
+	"category": "ieadc",
+	"icon": "calendar-alt",
+	"description": "Cartões dos próximos destaques da agenda (regras da igreja e eventos avulsos).",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Próximos eventos",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Em destaque",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do botão",
+				"campo": "link"
+			}
+		},
+		"quantidade": {
+			"type": "number",
+			"default": 6,
+			"ieadc": {
+				"rotulo": "Quantidade de eventos"
+			}
+		},
+		"maisTexto": {
+			"type": "string",
+			"default": "Saiba mais",
+			"ieadc": {
+				"rotulo": "Texto do link de cada cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
