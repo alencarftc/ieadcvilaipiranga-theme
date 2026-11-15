@@ -26,9 +26,9 @@
 .ieadc-ui :where(h1,h2,h3,h4,h5,h6,p,ul,ol,li,figure,blockquote,dl,dd){margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--branco);color:var(--marinho);font:400 17px/26px var(--f-txt);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.ieadc-ui img{max-width:100%;display:block}
-.ieadc-ui a{color:inherit;text-decoration:none}
-.ieadc-ui button{font:inherit}
+:where(.ieadc-ui) img{max-width:100%;display:block}
+:where(.ieadc-ui) a{color:inherit;text-decoration:none}
+:where(.ieadc-ui) button{font:inherit}
 :focus-visible{outline:3px solid var(--claro);outline-offset:3px;border-radius:4px}
 .wrap{max-width:var(--max);margin-inline:auto;padding-inline:var(--gut)}
 .pend{background:#FFFF00;color:var(--marinho);padding:0 2px}

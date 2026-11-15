@@ -12,7 +12,10 @@
 	--theme-normal-container-max-width:1312px;
 }
 body{font-family:var(--f-txt)}
-h1,h2,h3,h4,h5,h6,.entry-title,.page-title{font-family:var(--f-tit);color:var(--marinho);line-height:1.146}
+h1,h2,h3,h4,h5,h6,.entry-title,.page-title{font-family:var(--f-tit);line-height:1.146}
+/* Cor dos títulos: marinho só no conteúdo do Blocksy; nos blocos do protótipo o título herda a cor (ex.: branco no .min-tile). */
+:where(h1,h2,h3,h4,h5,h6,.entry-title,.page-title):not(.ieadc-ui *){color:var(--marinho)}
+.ieadc-ui :where(h1,h2,h3,h4,h5,h6){color:inherit}
 .wp-element-button,.wp-block-button__link,.ct-button,button[type=submit]{font-family:var(--f-tit);font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:8px}
 /* Páginas montadas com os blocos do protótipo ocupam a largura toda. */
 .page-template-page-templates-larga #main .ct-container-full,.page-template-page-templates-larga .entry-content{padding:0;max-width:none}
@@ -20,7 +23,7 @@ h1,h2,h3,h4,h5,h6,.entry-title,.page-title{font-family:var(--f-tit);color:var(--
 .header{position:sticky}
 .admin-bar .header{top:32px}
 @media (max-width:782px){.admin-bar .header{top:46px}}
-body{background:var(--branco)}
+html body{background:var(--branco)} /* o Blocksy imprime body{background-color:#FAFBFC} no head, depois deste arquivo */
 .ieadc-ui fieldset{border:0;padding:0;margin:0;min-width:0}
 .ieadc-ui legend{display:block;padding:0;font:700 14px/21px var(--f-txt);color:var(--marinho);margin-bottom:6px}
 /* Textarea: o Blocksy aumenta a altura natural; o protótipo mostra 144px. */
