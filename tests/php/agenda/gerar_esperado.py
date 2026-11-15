@@ -3,6 +3,7 @@
 # Uso (na raiz do repositório): python3 -I tests/php/agenda/gerar_esperado.py prototipo/fonte/gen.py > tests/php/agenda/dados/esperado-2026-2027.json
 # Precisa do Pillow (o gen.py importa PIL). Só roda a parte de definições do gen.py, sem gerar páginas.
 import sys, json
+sys.dont_write_bytecode = True  # não deixa __pycache__ em prototipo/fonte
 from datetime import date, timedelta
 src = open(sys.argv[1], encoding='utf-8').read().split('\n')
 end = next(i for i, l in enumerate(src) if l.startswith('# Ministérios'))
