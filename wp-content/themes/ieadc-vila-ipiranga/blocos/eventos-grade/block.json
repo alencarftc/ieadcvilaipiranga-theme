@@ -51,8 +51,7 @@
 			"type": "string",
 			"default": "",
 			"ieadc": {
-				"rotulo": "Texto",
-				"campo": "texto-longo"
+				"rotulo": "Texto"
 			}
 		},
 		"botaoTexto": {

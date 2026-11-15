@@ -51,8 +51,7 @@
 			"type": "string",
 			"default": "Toque em um culto para ver como ele é, o que esperar e as próximas datas.",
 			"ieadc": {
-				"rotulo": "Texto",
-				"campo": "texto-longo"
+				"rotulo": "Texto"
 			}
 		},
 		"botaoTexto": {

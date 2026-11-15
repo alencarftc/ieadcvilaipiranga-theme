@@ -51,8 +51,7 @@
 			"type": "string",
 			"default": "Agenda montada a partir da programação fixa semanal, dos temas do culto dominical e da programação mensal.",
 			"ieadc": {
-				"rotulo": "Texto",
-				"campo": "texto-longo"
+				"rotulo": "Texto"
 			}
 		},
 		"botaoTexto": {
