@@ -51,7 +51,6 @@
 			"type": "string",
 			"default": "Conheça os ministérios da igreja e descubra onde você pode servir.",
 			"ieadc": {
-				"campo": "texto-longo",
 				"rotulo": "Texto"
 			}
 		},

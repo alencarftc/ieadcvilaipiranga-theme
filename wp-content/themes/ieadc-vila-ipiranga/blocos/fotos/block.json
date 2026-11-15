@@ -51,7 +51,6 @@
 			"type": "string",
 			"default": "As fotos vêm do Instagram da igreja.",
 			"ieadc": {
-				"campo": "texto-longo",
 				"rotulo": "Texto"
 			}
 		},

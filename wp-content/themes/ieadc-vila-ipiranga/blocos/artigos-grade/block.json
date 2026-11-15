@@ -51,7 +51,6 @@
 			"type": "string",
 			"default": "Mensagens e estudos da nossa liderança.",
 			"ieadc": {
-				"campo": "texto-longo",
 				"rotulo": "Texto"
 			}
 		},
