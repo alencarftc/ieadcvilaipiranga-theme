@@ -1,0 +1,123 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/pastores",
+	"title": "Pastores",
+	"category": "ieadc",
+	"icon": "businessperson",
+	"description": "Cartões dos pastores, com foto ou iniciais.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Liderança local",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Pastoreio",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão"
+			}
+		},
+		"pessoas": {
+			"type": "array",
+			"default": [
+				{
+					"foto": 0,
+					"cargo": "Pastor da igreja local",
+					"nome": "Ev. Robson Stein",
+					"nota": "Foto [a confirmar]"
+				},
+				{
+					"foto": 0,
+					"cargo": "2º dirigente",
+					"nome": "Pb. Manoel Lima",
+					"nota": "Foto [a confirmar]"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Pessoas",
+				"itens": {
+					"foto": {
+						"type": "number",
+						"ieadc": {
+							"campo": "imagem",
+							"rotulo": "Foto (vazio = iniciais)"
+						}
+					},
+					"cargo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Cargo"
+						}
+					},
+					"nome": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Nome"
+						}
+					},
+					"nota": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Nota"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

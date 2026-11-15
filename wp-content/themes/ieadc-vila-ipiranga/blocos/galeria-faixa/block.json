@@ -1,0 +1,109 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/galeria-faixa",
+	"title": "Galeria (faixa azul)",
+	"category": "ieadc",
+	"icon": "format-gallery",
+	"description": "Faixa azul com texto, botão e mosaico de 4 fotos.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-bottom:var(--s5)",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Galeria",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Momentos da nossa igreja",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Fotos dos cultos e dos eventos, direto do nosso Instagram.",
+			"ieadc": {
+				"rotulo": "Texto"
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "Ver galeria",
+					"link": "galeria",
+					"estilo": "branco"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"ieadc": {
+							"campo": "opcao",
+							"opcoes": [
+								"",
+								"out",
+								"branco",
+								"sol"
+							],
+							"rotulo": "Estilo (vazio, out, branco, sol)"
+						}
+					}
+				}
+			}
+		},
+		"fotos": {
+			"type": "array",
+			"default": [],
+			"ieadc": {
+				"campo": "imagens",
+				"rotulo": "Fotos do mosaico (4)"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
