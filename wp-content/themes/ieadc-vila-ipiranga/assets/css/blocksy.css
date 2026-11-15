@@ -1,0 +1,22 @@
+/* Ajustes do Blocksy para conversar com o protótipo (tokens em prototipo.css). */
+:root{
+	--theme-palette-color-1:#0567B7; --theme-palette-color-2:#0A6FC2; --theme-palette-color-3:#45536B;
+	--theme-palette-color-4:#071946; --theme-palette-color-5:#DCE5EE; --theme-palette-color-6:#EFF7FD;
+	--theme-palette-color-7:#FFFFFF; --theme-palette-color-8:#FFFFFF;
+	--theme-font-family:'Roboto',Arial,sans-serif;
+	--theme-text-color:#45536B; --theme-headings-color:#071946; --theme-link-initial-color:#0567B7; --theme-link-hover-color:#0A4F98;
+	--theme-button-background-initial-color:#0A6FC2; --theme-button-background-hover-color:#0567B7;
+	--theme-normal-container-max-width:1312px;
+}
+body{font-family:var(--f-txt)}
+h1,h2,h3,h4,h5,h6,.entry-title,.page-title{font-family:var(--f-tit);color:var(--marinho);line-height:1.146}
+.wp-element-button,.wp-block-button__link,.ct-button,button[type=submit]{font-family:var(--f-tit);font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:8px}
+/* Páginas montadas com os blocos do protótipo ocupam a largura toda. */
+.page-template-page-templates-larga #main .ct-container-full,.page-template-page-templates-larga .entry-content{padding:0;max-width:none}
+.skip-link:focus{position:fixed;top:8px;left:8px;z-index:100;background:#fff;padding:8px 13px;border-radius:8px;clip:auto;width:auto;height:auto}
+.header{position:sticky}
+.admin-bar .header{top:32px}
+@media (max-width:782px){.admin-bar .header{top:46px}}
+body{background:var(--branco)}
+.ieadc-ui fieldset{border:0;padding:0;margin:0;min-width:0}
+.ieadc-ui legend{display:block;padding:0;font:700 14px/21px var(--f-txt);color:var(--marinho);margin-bottom:6px}
