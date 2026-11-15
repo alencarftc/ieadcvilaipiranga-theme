@@ -38,3 +38,4 @@ html body{background:var(--branco)} /* o Blocksy imprime body{background-color:#
 .ieadc-ui legend{margin-left:0}
 /* O botão do Blocksy (button[type=submit]) sobrepunha fonte e espaçamento do .btn do protótipo. */
 .ieadc-ui .btn{font:700 16px/1 var(--f-tit);letter-spacing:.06em}
+.ieadc-ui .aceite{margin-bottom:0} /* o Blocksy dá margin-bottom:8px ao label e empurrava o botão Enviar */
