@@ -1,0 +1,161 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/hero-home",
+	"title": "Topo da página inicial",
+	"category": "ieadc",
+	"icon": "cover-image",
+	"description": "Foto grande com o nome da igreja, dois botões de acesso e a frase cursiva.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "hero",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"campo": "imagem",
+				"rotulo": "Foto de fundo"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto",
+				"ajuda": "Posição da foto (background-position), ex.: center 30%. Vazio = centro."
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Bem-vindo à",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"sigla": {
+			"type": "string",
+			"default": "IEADC",
+			"ieadc": {
+				"rotulo": "Sigla (linha de cima do título)"
+			}
+		},
+		"nome": {
+			"type": "string",
+			"default": "Vila Ipiranga",
+			"ieadc": {
+				"rotulo": "Nome (linha de baixo do título)"
+			}
+		},
+		"lead": {
+			"type": "string",
+			"default": "Uma família de fé no Capão Raso, em Curitiba.",
+			"ieadc": {
+				"rotulo": "Frase de apresentação"
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "relogio",
+					"titulo": "Ver horários",
+					"sub": "Cultos da semana",
+					"link": "horarios-e-localizacao",
+					"estilo": "prim"
+				},
+				{
+					"icone": "pin",
+					"titulo": "Como chegar",
+					"sub": "Endereço e mapa",
+					"link": "horarios-e-localizacao#como-chegar",
+					"estilo": "sec"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"default": "seta",
+						"ieadc": {
+							"campo": "icone",
+							"rotulo": "Ícone"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"rotulo": "Título do botão"
+						}
+					},
+					"sub": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"rotulo": "Linha de baixo"
+						}
+					},
+					"link": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"default": "prim",
+						"ieadc": {
+							"campo": "opcao",
+							"opcoes": [
+								{
+									"valor": "prim",
+									"rotulo": "Principal (laranja)"
+								},
+								{
+									"valor": "sec",
+									"rotulo": "Secundário"
+								}
+							],
+							"rotulo": "Estilo"
+						}
+					}
+				}
+			}
+		},
+		"frase": {
+			"type": "string",
+			"default": "Venha nos visitar.",
+			"ieadc": {
+				"rotulo": "Frase cursiva"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
