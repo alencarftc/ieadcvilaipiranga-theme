@@ -1,0 +1,38 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_galeria_hero.webp",
+   "foco": "center 35%",
+   "eyebrow": "Conteúdo · Galeria",
+   "titulo": "Galeria de fotos e vídeos",
+   "lead": "Momentos da nossa igreja: cultos, eventos e comunhão.",
+   "botoes": [
+    {
+     "texto": "Seguir no Instagram",
+     "link": "https://www.instagram.com/ieadc.vilaipiranga/",
+     "estilo": "",
+     "icone": "insta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/fotos",
+  "attrs": {
+   "fotos": [
+    "f_g01.webp",
+    "f_g02.webp",
+    "f_g03.webp",
+    "f_g04.webp",
+    "f_g07.webp",
+    "f_g08.webp",
+    "f_g09.webp",
+    "f_g10.webp",
+    "f_g11.webp",
+    "f_g12.webp"
+   ]
+  }
+ }
+]

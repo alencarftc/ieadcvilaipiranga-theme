@@ -4,7 +4,7 @@
  * - Evento: caixa "Quando e onde" (data, data final, horário, local, categoria, link).
  * - Ministério (página filha de "ministerios"): caixa "Cartão do ministério".
  * - Culto fixo (as páginas de ieadc_paginas_culto()): caixa "Cartão do culto".
- * - Artigo (post): ieadc_exemplo, caixa "Artigo de exemplo".
+ * - Artigo (post): caixa "Artigo" (versículo de abertura, referência e selo "Exemplo").
  * Todos os campos aparecem na REST API.
  */
 defined('ABSPATH') || exit;
@@ -46,11 +46,18 @@ add_action('init', function () {
 	register_post_meta('page', 'ieadc_cor', $texto + ['sanitize_callback' => fn($v) => array_key_exists($v, ieadc_cores_cartao()) ? $v : '']);
 	register_post_meta('page', 'ieadc_regra', $texto + ['sanitize_callback' => 'sanitize_textarea_field']);
 
+	register_post_meta('post', 'ieadc_versiculo', $texto + ['sanitize_callback' => 'ieadc_kses_versiculo']);
+	register_post_meta('post', 'ieadc_referencia', $texto + ['sanitize_callback' => 'sanitize_text_field']);
 	register_post_meta('post', 'ieadc_exemplo', [
 		'type' => 'boolean', 'single' => true, 'default' => false, 'show_in_rest' => true,
 		'sanitize_callback' => 'rest_sanitize_boolean',
 	]);
 });
+
+/** Versículo: texto simples com <b>, <i> e <br> (o bloco artigo-corpo mostra com ieadc_kses_rico). */
+function ieadc_kses_versiculo($v): string {
+	return trim(wp_kses((string) $v, ['b' => [], 'strong' => [], 'i' => [], 'em' => [], 'br' => []]));
+}
 
 /* ---------- Caixas do painel ---------- */
 
@@ -58,7 +65,7 @@ add_action('add_meta_boxes', function ($tipo, $p) {
 	if ($tipo === 'evento') {
 		add_meta_box('ieadc-evento', 'Quando e onde', 'ieadc_caixa_evento', 'evento', 'side', 'high');
 	} elseif ($tipo === 'post') {
-		add_meta_box('ieadc-artigo', 'Artigo de exemplo', 'ieadc_caixa_artigo', 'post', 'side');
+		add_meta_box('ieadc-artigo', 'Artigo', 'ieadc_caixa_artigo', 'post', 'side', 'high');
 	} elseif ($tipo === 'page' && $p instanceof WP_Post) {
 		if (ieadc_eh_ministerio($p)) {
 			add_meta_box('ieadc-cartao', 'Cartão do ministério', 'ieadc_caixa_cartao', 'page', 'side', 'high', ['culto' => false]);
@@ -103,6 +110,9 @@ function ieadc_caixa_evento(WP_Post $p): void {
 
 function ieadc_caixa_artigo(WP_Post $p): void {
 	wp_nonce_field('ieadc_campos_salvar', 'ieadc_campos_nonce');
+	$m = fn($k) => (string) get_post_meta($p->ID, $k, true);
+	ieadc_painel_campo('ieadc_versiculo', 'Versículo de abertura', $m('ieadc_versiculo'), ['linhas' => 4, 'ajuda' => 'Aparece em destaque antes do texto. Vazio = sem versículo.']);
+	ieadc_painel_campo('ieadc_referencia', 'Referência', $m('ieadc_referencia'), ['dica' => 'Tiago 5.16 (ARA)']);
 	echo '<input type="hidden" name="ieadc_exemplo_presente" value="1">';
 	echo '<label><input type="checkbox" name="ieadc_exemplo" value="1"' . checked((bool) get_post_meta($p->ID, 'ieadc_exemplo', true), true, false) . '> Mostrar o selo "Exemplo"</label>';
 }
@@ -141,6 +151,12 @@ add_action('save_post', function ($id, $p) {
 		}
 	} elseif ($p->post_type === 'post' && isset($_POST['ieadc_exemplo_presente'])) {
 		update_post_meta($id, 'ieadc_exemplo', !empty($_POST['ieadc_exemplo']));
+		foreach (['ieadc_versiculo', 'ieadc_referencia'] as $k) {
+			if (isset($_POST[$k])) {
+				$v = trim(wp_unslash($_POST[$k]));
+				$v === '' ? delete_post_meta($id, $k) : update_post_meta($id, $k, $v);
+			}
+		}
 	}
 	foreach ($chaves as $k) {
 		if (!isset($_POST[$k])) {

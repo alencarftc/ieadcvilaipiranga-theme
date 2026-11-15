@@ -1,0 +1,26 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_midia_hero.webp",
+   "foco": "center 35%",
+   "eyebrow": "Conteúdo",
+   "titulo": "Artigos e conteúdo",
+   "lead": "Mensagens, reflexões e estudos escritos e gravados pela liderança da igreja."
+  }
+ },
+ {
+  "bloco": "ieadc/artigos-grade",
+  "attrs": {
+   "secao": "sec",
+   "eyebrow": "Publicações",
+   "texto": "Os três textos abaixo são exemplos para mostrar o modelo da página. Cada publicação é aprovada pelo pastor antes de ir ao ar.",
+   "botaoTexto": ""
+  }
+ },
+ {
+  "bloco": "ieadc/artigos-categorias",
+  "attrs": {}
+ }
+]

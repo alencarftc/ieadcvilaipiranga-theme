@@ -1,0 +1,191 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_cx_240.webp",
+   "foco": "center 35%",
+   "migalha": [
+    {
+     "texto": "Horários",
+     "link": "horarios-e-localizacao"
+    },
+    {
+     "texto": "Culto dominical",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Cultos · Culto dominical",
+   "titulo": "Culto dominical",
+   "lead": "Todo domingo, às 19h. Cada domingo do mês tem um tema.",
+   "botoes": [
+    {
+     "texto": "Próximas datas",
+     "link": "#datas-culto-dominical",
+     "estilo": "",
+     "icone": "cal"
+    },
+    {
+     "texto": "Como participar",
+     "link": "#participar-culto-dominical",
+     "estilo": "out",
+     "icone": "seta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Domingo, às 19h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Aberto a todos"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "cal",
+     "rotulo": "Pela manhã",
+     "valor": "Café comunitário às 9h e EBD às 9h30"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "como-culto-dominical",
+     "titulo": "Como é o culto",
+     "tipo": "texto",
+     "texto": "O culto dominical é o principal encontro da semana. Acontece todo domingo, às 19h, e reúne a igreja inteira para adorar a Deus.\n\nCada domingo do mês tem um tema: no 1º, Família; no 2º, Missões e Evangelismo; no 3º, Jovens e Adolescentes; no 4º, o culto é dirigido pelas mulheres; e no 5º, quando houver, Crianças.\n\nPela manhã, o domingo começa com o café comunitário, às 9h, e a Escola Bíblica Dominical, às 9h30.",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-culto-dominical",
+     "titulo": "Por que nos reunimos",
+     "tipo": "versiculo+texto",
+     "texto": "O domingo é o dia em que a família da fé se encontra. Os temas do mês lembram que todos têm lugar na igreja: as famílias, os jovens, as mulheres, as crianças e quem ainda não conhece a Jesus.",
+     "versiculo": "Alegrei-me quando me disseram: Vamos à Casa do SENHOR.",
+     "referencia": "Salmo 122.1 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "esperar-culto-dominical",
+     "titulo": "O que esperar",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Louvor congregacional",
+      "Participação do ministério do tema do dia",
+      "Pregação da Palavra",
+      "Oração e comunhão"
+     ]
+    },
+    {
+     "ancora": "temas-culto-dominical",
+     "titulo": "Temas do mês",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "1º domingo | <a href=\"ministerios/familia\">Família</a>",
+      "2º domingo | <a href=\"ministerios/missao-e-evangelismo\">Missões e Evangelismo</a>",
+      "3º domingo | <a href=\"ministerios/mocidade\">Jovens e Adolescentes</a>",
+      "4º domingo | Mulheres",
+      "5º domingo (quando houver) | <a href=\"ministerios/criancas\">Crianças</a>"
+     ],
+     "foraDoIndice": true
+    },
+    {
+     "ancora": "datas-culto-dominical",
+     "titulo": "Próximas datas",
+     "tipo": "datas",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-culto-dominical",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-culto-dominical",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Endereço",
+   "lateralTexto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-culto-dominical",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos",
+   "fotos": [
+    "f_cx_148.webp",
+    "f_cx_138.webp",
+    "f_cx_140.webp",
+    "f_cx_149.webp",
+    "f_cx_19.webp"
+   ],
+   "legenda": "Culto dominical"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-culto-dominical",
+   "eyebrow": "Como participar",
+   "titulo": "Venha cultuar conosco",
+   "passos": [
+    "Chegue às 19h de domingo. Não precisa avisar antes.",
+    "Veja o tema do domingo na agenda e convide alguém.",
+    "Volte de manhã para o café comunitário e a EBD."
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ }
+]

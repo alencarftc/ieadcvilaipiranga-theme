@@ -1,0 +1,173 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_cx_16.webp",
+   "foco": "center 18%",
+   "migalha": [
+    {
+     "texto": "Horários",
+     "link": "horarios-e-localizacao"
+    },
+    {
+     "texto": "Culto de Oração",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Cultos · Culto de Oração",
+   "titulo": "Culto de Oração",
+   "lead": "Toda segunda-feira, às 20h, a igreja começa a semana em oração.",
+   "botoes": [
+    {
+     "texto": "Próximas datas",
+     "link": "#datas-culto-de-oracao",
+     "estilo": "",
+     "icone": "cal"
+    },
+    {
+     "texto": "Como participar",
+     "link": "#participar-culto-de-oracao",
+     "estilo": "out",
+     "icone": "seta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Segunda-feira, às 20h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Aberto a todos"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem dirige",
+     "valor": "[a confirmar]"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "como-culto-de-oracao",
+     "titulo": "Como é o culto",
+     "tipo": "texto",
+     "texto": "A semana da igreja começa em oração. Toda segunda-feira, às 20h, os irmãos se reúnem no templo para buscar a Deus juntos.\n\nÉ um culto aberto a todos: membros, visitantes e quem está passando por um momento difícil e precisa de oração.\n\n[Ordem do culto e dirigente a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-culto-de-oracao",
+     "titulo": "Por que nos reunimos",
+     "tipo": "versiculo+texto",
+     "texto": "Orar juntos fortalece a fé e une a igreja. Antes de qualquer atividade da semana, a igreja coloca diante de Deus as suas necessidades, as famílias e a cidade.",
+     "versiculo": "Não andeis ansiosos de coisa alguma; em tudo, porém, sejam conhecidas, diante de Deus, as vossas petições, pela oração e pela súplica, com ações de graças.",
+     "referencia": "Filipenses 4.6 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "esperar-culto-de-oracao",
+     "titulo": "O que esperar",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Momentos de oração em conjunto",
+      "Louvor congregacional",
+      "Leitura e meditação na Palavra",
+      "Oração pelos pedidos da igreja"
+     ]
+    },
+    {
+     "ancora": "datas-culto-de-oracao",
+     "titulo": "Próximas datas",
+     "tipo": "datas",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-culto-de-oracao",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-culto-de-oracao",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Endereço",
+   "lateralTexto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-culto-de-oracao",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos",
+   "fotos": [
+    "f_cx_1.webp",
+    "f_cx_249.webp",
+    "f_cx_135.webp"
+   ],
+   "legenda": "Culto de Oração"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-culto-de-oracao",
+   "eyebrow": "Como participar",
+   "titulo": "Venha cultuar conosco",
+   "passos": [
+    "Chegue às 20h de segunda-feira. Não precisa avisar antes.",
+    "Traga os seus pedidos e os da sua família.",
+    "Não pode vir? Envie o seu pedido de oração pelo site."
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ }
+]
