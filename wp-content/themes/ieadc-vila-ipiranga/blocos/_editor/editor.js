@@ -270,7 +270,7 @@
 	/* ---------- edit/save ---------- */
 
 	function criarEdit(nome, defs) {
-		var visiveis = Object.keys(defs).filter(function (k) { return AVANCADO.indexOf(k) < 0 && !cfg(defs[k]).oculto && k !== 'lock' && k !== 'metadata' && k !== 'className'; });
+		var visiveis = Object.keys(defs).filter(function (k) { return AVANCADO.indexOf(k) < 0 && !cfg(defs[k]).oculto && ['lock', 'metadata', 'className', 'style'].indexOf(k) < 0; });
 		var avancados = Object.keys(defs).filter(function (k) { return AVANCADO.indexOf(k) >= 0; });
 
 		return function Edit(props) {

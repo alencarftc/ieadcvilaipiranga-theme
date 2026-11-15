@@ -35,3 +35,7 @@
 
 /* O link do painel do WordPress não pode tingir os botões da prévia. */
 .ieadc-bloco .ieadc-ui .btn { color: #fff; }
+
+/* Campo de link: não pode passar da largura do painel lateral. */
+.block-editor-block-inspector .block-editor-url-input,
+.block-editor-block-inspector .block-editor-url-input input { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
