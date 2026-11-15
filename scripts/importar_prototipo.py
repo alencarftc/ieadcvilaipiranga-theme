@@ -61,10 +61,11 @@ def converter(arq: pathlib.Path) -> str:
     if 'data-ok="ok-pedido"' in main:
         main = re.sub(r'<form class="form" data-ok="ok-pedido">.*?</form>', '[ieadc_pedido_oracao]', main, flags=re.S)
     main = marcar_cultos(main)
-    partes = re.findall(r'<section\b.*?</section>', main, re.S)
-    resto = re.sub(r'<section\b.*?</section>', '', main, flags=re.S).strip()
+    # Elementos de primeiro nível na ordem do protótipo (<section> e <nav class="trocar">).
+    partes = [m.group(0) for m in re.finditer(r'<(section|nav)\b.*?</\1>', main, re.S)]
+    resto = re.sub(r'<(section|nav)\b.*?</\1>', '', main, flags=re.S).strip()
     if resto:
-        partes.append(resto)
+        raise SystemExit(f'{arq.name}: conteúdo fora de <section>/<nav>: {resto[:80]}')
     return '\n\n'.join(f'<!-- wp:html -->\n{p.strip()}\n<!-- /wp:html -->' for p in partes) + '\n'
 
 if __name__ == '__main__':

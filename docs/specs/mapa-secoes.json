@@ -26,12 +26,12 @@
  ],
  "ceia-do-senhor": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "contato": [
   "hero",
@@ -40,39 +40,39 @@
  ],
  "culto-de-ensino": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "culto-de-oracao": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "culto-do-circulo-de-oracao": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "culto-dominical": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "eventos": [
   "hero",
@@ -110,71 +110,71 @@
  ],
  "ministerios-circulo-de-oracao": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-criancas": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "fotos-pendentes",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-ensinai": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "fotos-pendentes",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-escola-biblica-dominical": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-familia": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-missao-e-evangelismo": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios-mocidade": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ],
  "ministerios": [
   "hero",
-  "ministerios-grade",
-  "trocador"
+  "trocador",
+  "ministerios-grade"
  ],
  "pedidos-de-oracao": [
   "hero",
@@ -193,11 +193,11 @@
  ],
  "vigilia-e-consagracao": [
   "hero",
+  "trocador",
   "fatos",
   "corpo-indice",
   "carrossel",
   "passos",
-  "vizinhos",
-  "trocador"
+  "vizinhos"
  ]
 }
