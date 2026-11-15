@@ -1,0 +1,97 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/vizinhos",
+	"title": "Anterior e próximo",
+	"category": "ieadc",
+	"icon": "leftright",
+	"description": "Links para o culto ou ministério anterior e o próximo (em círculo), com o link para todos no meio.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-bottom:var(--secao)",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"grupo": {
+			"type": "string",
+			"default": "cultos",
+			"ieadc": {
+				"campo": "opcao",
+				"opcoes": [
+					{
+						"valor": "cultos",
+						"rotulo": "Cultos"
+					},
+					{
+						"valor": "ministerios",
+						"rotulo": "Ministérios"
+					}
+				],
+				"rotulo": "Grupo"
+			}
+		},
+		"rotuloAnterior": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Rótulo do anterior",
+				"ajuda": "Vazio = Culto anterior / Ministério anterior."
+			}
+		},
+		"rotuloProximo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Rótulo do próximo",
+				"ajuda": "Vazio = Próximo culto / Próximo ministério."
+			}
+		},
+		"todosTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do link do meio",
+				"ajuda": "Vazio = Todos os horários / Todos os ministérios."
+			}
+		},
+		"todosLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do meio",
+				"campo": "link",
+				"ajuda": "Vazio = Horários e localização / Ministérios."
+			}
+		},
+		"todosIcone": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Ícone do link do meio",
+				"campo": "icone",
+				"ajuda": "Vazio = relógio (cultos) ou pessoas (ministérios)."
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

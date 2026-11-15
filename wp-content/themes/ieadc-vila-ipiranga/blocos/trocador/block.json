@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/trocador",
+	"title": "Trocar de culto ou ministério",
+	"category": "ieadc",
+	"icon": "menu",
+	"description": "Barra com as páginas do grupo (cultos ou ministérios); a página atual fica destacada. Lista e ícones vêm das páginas.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"grupo": {
+			"type": "string",
+			"default": "cultos",
+			"ieadc": {
+				"campo": "opcao",
+				"opcoes": [
+					{
+						"valor": "cultos",
+						"rotulo": "Cultos"
+					},
+					{
+						"valor": "ministerios",
+						"rotulo": "Ministérios"
+					}
+				],
+				"rotulo": "Grupo"
+			}
+		},
+		"rotulo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Rótulo",
+				"ajuda": "Vazio = Cultos ou Ministérios, conforme o grupo."
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

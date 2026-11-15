@@ -1,0 +1,197 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/hero",
+	"title": "Topo da página",
+	"category": "ieadc",
+	"icon": "cover-image",
+	"description": "Topo das páginas internas: foto (ou fundo liso), caminho, título, texto, botões e frase cursiva.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Classes da seção",
+				"ajuda": "Vazio = hero + variante."
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"variante": {
+			"type": "string",
+			"default": "pagina",
+			"ieadc": {
+				"campo": "opcao",
+				"opcoes": [
+					{
+						"valor": "pagina",
+						"rotulo": "Com foto"
+					},
+					{
+						"valor": "sem-foto",
+						"rotulo": "Sem foto"
+					}
+				],
+				"rotulo": "Variante"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"campo": "imagem",
+				"rotulo": "Foto de fundo"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto",
+				"ajuda": "Posição da foto (background-position), ex.: center 18%. Vazio = centro."
+			}
+		},
+		"migalha": {
+			"type": "array",
+			"default": [],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Caminho (migalha)",
+				"ajuda": "Opcional. O último item fica sem link.",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link (vazio = sem link)"
+						}
+					}
+				}
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico",
+				"ajuda": "Aceita <br> e <span class=\"azul\">."
+			}
+		},
+		"lead": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto de apresentação",
+				"campo": "texto-longo"
+			}
+		},
+		"extra": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Conteúdo extra abaixo do texto",
+				"campo": "rico",
+				"ajuda": "Raro: use só se a página pedir."
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"rotulo": "Texto do botão"
+						}
+					},
+					"link": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"default": "",
+						"ieadc": {
+							"campo": "opcao",
+							"opcoes": [
+								{
+									"valor": "",
+									"rotulo": "Laranja (padrão)"
+								},
+								{
+									"valor": "out",
+									"rotulo": "Contorno"
+								},
+								{
+									"valor": "branco",
+									"rotulo": "Branco"
+								},
+								{
+									"valor": "sol",
+									"rotulo": "Amarelo"
+								}
+							],
+							"rotulo": "Estilo"
+						}
+					},
+					"icone": {
+						"type": "string",
+						"default": "seta",
+						"ieadc": {
+							"campo": "icone",
+							"rotulo": "Ícone"
+						}
+					}
+				}
+			}
+		},
+		"frase": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Frase cursiva"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
