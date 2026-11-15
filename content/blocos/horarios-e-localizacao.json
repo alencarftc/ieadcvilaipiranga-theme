@@ -1,0 +1,44 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_hor_hero.webp",
+   "foco": "center 18%",
+   "eyebrow": "Horários e localização",
+   "titulo": "Horários e localização",
+   "lead": "Você é bem-vindo em qualquer culto. Não precisa avisar antes: é só chegar.",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "#como-chegar",
+     "estilo": "",
+     "icone": "pin"
+    }
+   ],
+   "frase": "É só chegar."
+  }
+ },
+ {
+  "bloco": "ieadc/semana",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/cultos-grade",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/tabela-horarios",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/faixa",
+  "attrs": {
+   "foto": "p_ensino.webp"
+  }
+ },
+ {
+  "bloco": "ieadc/local",
+  "attrs": {}
+ }
+]

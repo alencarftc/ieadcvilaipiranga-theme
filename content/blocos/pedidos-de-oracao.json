@@ -1,0 +1,24 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_pedidos_hero.webp",
+   "foco": "center 18%",
+   "eyebrow": "Pedidos de oração",
+   "titulo": "Podemos orar por você.",
+   "lead": "Escreva o seu pedido abaixo. Ele chega apenas ao Círculo de Oração e nunca é publicado.",
+   "frase": "Orai uns pelos outros."
+  }
+ },
+ {
+  "bloco": "ieadc/pedido-oracao",
+  "attrs": {
+   "eyebrow": "Quem ora por você",
+   "titulo": "Círculo de Oração",
+   "texto": "Reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos. Dirige o culto de quinta-feira, às 20h.",
+   "versiculo": "Orai uns pelos outros, para serdes curados.",
+   "referencia": "Tiago 5.16 (ARA)"
+  }
+ }
+]

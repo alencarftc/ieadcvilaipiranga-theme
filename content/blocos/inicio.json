@@ -1,0 +1,138 @@
+[
+ {
+  "bloco": "ieadc/hero-home",
+  "attrs": {
+   "foto": "f_hero.webp",
+   "foco": "",
+   "eyebrow": "Bem-vindo à",
+   "sigla": "IEADC",
+   "nome": "Vila Ipiranga",
+   "lead": "Uma família de fé no Capão Raso, em Curitiba.",
+   "botoes": [
+    {
+     "icone": "relogio",
+     "titulo": "Ver horários",
+     "sub": "Cultos da semana",
+     "link": "horarios-e-localizacao",
+     "estilo": "prim"
+    },
+    {
+     "icone": "pin",
+     "titulo": "Como chegar",
+     "sub": "Endereço e mapa",
+     "link": "horarios-e-localizacao#como-chegar",
+     "estilo": "sec"
+    }
+   ],
+   "frase": "Venha nos visitar."
+  }
+ },
+ {
+  "bloco": "ieadc/semana",
+  "attrs": {
+   "eyebrow": "Horários",
+   "titulo": "Venha cultuar <span class=\"azul\">conosco</span>",
+   "texto": "Veja os dias e horários dos cultos e como chegar.",
+   "botaoTexto": "Ver horários",
+   "botaoLink": "horarios-e-localizacao"
+  }
+ },
+ {
+  "bloco": "ieadc/faixa",
+  "attrs": {
+   "secao": "sec",
+   "secaoEstilo": "padding-bottom:0",
+   "foto": "f_band.webp",
+   "botoes": [
+    {
+     "texto": "Ver agenda",
+     "link": "eventos"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/boas-vindas",
+  "attrs": {
+   "foto": "p_fachada.webp"
+  }
+ },
+ {
+  "bloco": "ieadc/eventos-grade",
+  "attrs": {
+   "secao": "sec gelo curva-top",
+   "eyebrow": "Eventos",
+   "titulo": "Próximos eventos",
+   "texto": "Cultos especiais, confraternizações e tudo o que vem por aí.",
+   "botaoTexto": "Ver agenda",
+   "botaoLink": "eventos",
+   "quantidade": 3
+  }
+ },
+ {
+  "bloco": "ieadc/chamadas",
+  "attrs": {
+   "chamadas": [
+    {
+     "foto": "p_oracao.webp",
+     "eyebrow": "Aceitar Jesus",
+     "titulo": "Quer seguir Jesus?",
+     "texto": "Dê o primeiro passo. Estamos aqui para caminhar com você.",
+     "estilo": "",
+     "botaoTexto": "Saiba como",
+     "botaoLink": "aceitar-jesus"
+    },
+    {
+     "foto": "f_oracao_home.webp",
+     "eyebrow": "Pedidos de oração",
+     "titulo": "Podemos orar por você?",
+     "texto": "Envie o seu pedido. Ele chega só a quem vai orar por você.",
+     "estilo": "azul",
+     "botaoTexto": "Enviar pedido",
+     "botaoLink": "pedidos-de-oracao"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/artigos-grade",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/ministerios-trilho",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/galeria-faixa",
+  "attrs": {
+   "fotos": [
+    "f_gal1.webp",
+    "f_gal2.webp",
+    "f_gal3.webp",
+    "f_gal4.webp"
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/local",
+  "attrs": {
+   "secao": "sec gelo glow",
+   "ancora": "",
+   "eyebrow": "Localização",
+   "linhasEndereco": [
+    {
+     "icone": "pin",
+     "texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR<br>Junto à Praça Nova República."
+    }
+   ],
+   "onibus": [],
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin"
+    }
+   ]
+  }
+ }
+]
