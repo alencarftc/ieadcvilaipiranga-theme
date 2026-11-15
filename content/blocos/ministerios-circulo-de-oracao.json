@@ -1,0 +1,181 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mp_circulo.webp",
+   "foco": "center 55%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Círculo de Oração",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Círculo de Oração",
+   "titulo": "Círculo de Oração",
+   "lead": "Reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos. Dirige o culto de quinta-feira, às 20h.",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-circulo-de-oracao",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-circulo-de-oracao",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Quinta-feira, às 20h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Irmãs da igreja"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Abigail Tostes Monteiro e Luciana Santos de Jesus Stein"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-circulo-de-oracao",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "O Círculo de Oração reúne as irmãs da igreja em torno de um propósito simples: orar. Elas oram pela congregação, pelas famílias e por cada pedido que chega à igreja, inclusive os enviados pelo site, que vão apenas para o Círculo e nunca são publicados.\n\nToda quinta-feira, às 20h, o Círculo dirige o culto na igreja. É uma noite de oração, louvor e Palavra, aberta a todos os membros e visitantes.\n\nNo 4º domingo de cada mês, o culto dominical, às 19h, é dirigido pelas mulheres da igreja.\n\nO ministério também tem um coral, regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), que louva a Deus nos cultos. [Dias e horários dos ensaios do coral a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-circulo-de-oracao",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "A Bíblia ensina que a oração não é um recurso para emergências, mas parte da vida de quem segue a Jesus. Uma igreja que ora unida permanece de pé nos dias bons e nos dias difíceis.",
+     "versiculo": "Orai sem cessar.",
+     "referencia": "1 Tessalonicenses 5.17 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-circulo-de-oracao",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Interceder pela igreja, pelas famílias e pelos pedidos recebidos",
+      "Manter viva a vida de oração da congregação",
+      "Acolher quem passa por momentos difíceis",
+      "Louvar a Deus por meio do coral"
+     ]
+    },
+    {
+     "ancora": "quando-circulo-de-oracao",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Quinta-feira · 20h | Culto dirigido pelo Círculo de Oração",
+      "4º domingo · 19h | Culto dominical dirigido pelas mulheres",
+      "[a confirmar] | Ensaios do coral",
+      "[a confirmar] | Outros encontros de oração"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-circulo-de-oracao",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-circulo-de-oracao",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Abigail Tostes Monteiro\nLuciana Santos de Jesus Stein",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-circulo-de-oracao",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos do ministério",
+   "fotos": [
+    "f_mx_133.webp",
+    "f_mx_117.webp",
+    "f_mx_241.webp",
+    "f_mx_132.webp"
+   ],
+   "legenda": "Círculo de Oração"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-circulo-de-oracao",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure as líderes do Círculo de Oração: Abigail Tostes Monteiro ou Luciana Santos de Jesus Stein. Elas vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]

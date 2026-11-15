@@ -1,0 +1,19 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "sem-foto",
+   "eyebrow": "A Igreja · Liderança",
+   "titulo": "Liderança",
+   "lead": "Conheça quem serve à frente da IEADC Vila Ipiranga."
+  }
+ },
+ {
+  "bloco": "ieadc/pastores",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/departamentos",
+  "attrs": {}
+ }
+]

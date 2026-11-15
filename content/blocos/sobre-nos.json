@@ -1,0 +1,159 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "p_templo.webp",
+   "foco": "center 35%",
+   "eyebrow": "A Igreja · Sobre nós",
+   "titulo": "Sobre nós",
+   "lead": "A IEADC Vila Ipiranga é uma das congregações da Igreja Evangélica Assembleia de Deus em Curitiba (IEADC), no bairro Capão Raso.",
+   "botoes": [
+    {
+     "texto": "Nossa história",
+     "link": "#historia",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Declaração de fé",
+     "link": "#cremos",
+     "estilo": "out",
+     "icone": "livro"
+    }
+   ],
+   "frase": "Desde 1975."
+  }
+ },
+ {
+  "bloco": "ieadc/linha-tempo",
+  "attrs": {
+   "eyebrow": "Linha do tempo",
+   "titulo": "Como a igreja começou e cresceu",
+   "marcos": [
+    {
+     "quando": "1975",
+     "titulo": "Ponto de pregação",
+     "texto": "Distrito 135, sob o pastor Paulino Ramalho."
+    },
+    {
+     "quando": "14/08/1975",
+     "titulo": "A igrejinha",
+     "texto": "Os cultos começam na casinha de madeira."
+    },
+    {
+     "quando": "1986",
+     "titulo": "Pedra fundamental",
+     "texto": "Começa a obra do templo atual."
+    },
+    {
+     "quando": "[ano a confirmar]",
+     "titulo": "Inauguração",
+     "texto": "Culto com o pastor-presidente José Pimentel de Carvalho."
+    },
+    {
+     "quando": "2025",
+     "titulo": "50 anos",
+     "texto": "Meio século no Capão Raso."
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/historia",
+  "attrs": {
+   "ancora": "historia",
+   "eyebrow": "Apresentação e história",
+   "titulo": "Nossa história",
+   "texto": "A IEADC Vila Ipiranga é uma das congregações da Igreja Evangélica Assembleia de Deus em Curitiba (IEADC), no bairro Capão Raso. A Assembleia de Deus chegou a Curitiba em 1929, com o pastor Bruno Skolimowski, e hoje reúne mais de 160 igrejas na cidade. Desde 2011, a IEADC é presidida pelo pastor Wagner Tadeu dos Santos Gaby.\n\nA história da Vila Ipiranga começou em 1975. Naquele ano, a Assembleia de Deus já tinha várias congregações no Campo de Curitiba, organizadas em distritos. A Vila Ipiranga ainda era um ponto de pregação e fazia parte do distrito 135, com as congregações do Capão Raso (hoje Pinheirinho), do Parque Industrial e da Santa Amélia (hoje Fazendinha), entre outras. O responsável pelo distrito era o pastor Paulino Ramalho.\n\nAinda em 1975, a igreja comprou o primeiro terreno, onde já havia uma casinha de madeira. Ali começaram os cultos e, em 14 de agosto de 1975, nasceu a \"igrejinha da Vila Ipiranga\", como era conhecida. O primeiro dirigente foi o presbítero José Monteiro (in memoriam).\n\nEm 1986, foi lançada a pedra fundamental do templo atual. A cerimônia reuniu obreiros, membros da diretoria e da congregação, entre eles o pastor Catarino Nunes Pires [a confirmar a grafia] (in memoriam), o pastor Levir Bueno Polidoro e o pastor Paulino Ramalho, agora como dirigente da congregação. Durante a obra, os cultos aconteciam no porão, que hoje é a parte de baixo da igreja, onde ficam a cozinha, os banheiros e as salas da Escola Bíblica Dominical dos jovens e das crianças. O culto de inauguração do templo [ano a confirmar] contou com o pastor-presidente José Pimentel de Carvalho (in memoriam).\n\nEm 2025, a Vila Ipiranga completou 50 anos. Com gratidão, a igreja segue anunciando o evangelho no bairro e acolhendo cada pessoa que chega.",
+   "foto": "f_sobre_hist.webp",
+   "dirigentesTitulo": "Desde o início, cerca de 20 dirigentes conduziram a congregação",
+   "dirigentes": [
+    "Ev. Robson Stein, pastor da igreja local (atual)",
+    "presbítero Moisés Matias Correia",
+    "pastor Victor Marciano",
+    "pastor Geziel Maciel",
+    "pastor Ademir Pereira da Silva",
+    "presbítero [nome a confirmar] Nunes",
+    "presbítero João Messias",
+    "evangelista Esdras Souza",
+    "presbítero Onofre de Oliveira",
+    "presbítero Jorge [sobrenome a confirmar]",
+    "pastor Messias da Costa [sobrenome a confirmar]",
+    "pastor Luís Carlos Alves",
+    "presbítero Ivan Monteiro",
+    "pastor Wilton Oliveira",
+    "pastor Sérgio Luiz [sobrenome a confirmar]",
+    "pastor Carlos Rodrigues da Costa",
+    "presbítero Nilvo Reis",
+    "presbítero José Henrique de Oliveira",
+    "presbítero José Monteiro (in memoriam)",
+    "pastor Paulino Ramalho"
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/mvv",
+  "attrs": {
+   "eyebrow": "Missão, visão e valores",
+   "titulo": "O que nos move",
+   "missao": "Evangelizar, discipular e adorar a Deus, levando pessoas a Cristo, e transformar vidas pela Palavra.",
+   "visao": "Ser uma igreja unida, relevante e atuante, expandindo o Reino de Deus em todas as regiões geográficas de nosso país.",
+   "valores": [
+    {
+     "icone": "livro",
+     "texto": "Ensino genuíno da Palavra de Deus"
+    },
+    {
+     "icone": "chama",
+     "texto": "Fé pentecostal"
+    },
+    {
+     "icone": "megafone",
+     "texto": "Evangelização"
+    },
+    {
+     "icone": "degraus",
+     "texto": "Discipulado"
+    },
+    {
+     "icone": "casa",
+     "texto": "Família"
+    },
+    {
+     "icone": "pessoas",
+     "texto": "Comunhão"
+    },
+    {
+     "icone": "maos",
+     "texto": "Amor ao próximo"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/credo",
+  "attrs": {
+   "ancora": "cremos",
+   "eyebrow": "Declaração de fé",
+   "titulo": "Cremos no que a Bíblia ensina.",
+   "texto": "Esta é a declaração de fé das Assembleias de Deus, que a IEADC Vila Ipiranga professa.",
+   "itens": [
+    "Em um só Deus, eternamente subsistente em três pessoas: o Pai, o Filho e o Espírito Santo (Dt 6.4; Mt 28.19; Mc 12.29).",
+    "Na inspiração verbal da Bíblia Sagrada, única regra infalível de fé normativa para a vida e o caráter cristão (2 Tm 3.14-17).",
+    "Na concepção virginal de Jesus, em sua morte vicária e expiatória, em sua ressurreição corporal dentre os mortos e sua ascensão vitoriosa aos céus (Is 7.14; Rm 8.34 e At 1.9).",
+    "Na pecaminosidade do homem que o destituiu da glória de Deus, e que somente o arrependimento e a fé na obra expiatória e redentora de Jesus Cristo é que pode restaurá-lo a Deus (Rm 3.23 e At 3.19).",
+    "Na necessidade absoluta do novo nascimento pela fé em Cristo e pelo poder atuante do Espírito Santo e da Palavra de Deus, para tornar o homem digno do Reino dos Céus (Jo 3.3-8).",
+    "No perdão dos pecados, na salvação presente e perfeita e na eterna justificação da alma recebidos gratuitamente de Deus pela fé no sacrifício efetuado por Jesus Cristo em nosso favor (At 10.43; Rm 10.13; 3.24-26 e Hb 7.25; 5.9).",
+    "No batismo bíblico efetuado por imersão do corpo inteiro uma só vez em águas, em nome do Pai, do Filho e do Espírito Santo, conforme determinou o Senhor Jesus Cristo (Mt 28.19; Rm 6.1-6 e Cl 2.12).",
+    "Na necessidade e na possibilidade que temos de viver vida santa mediante a obra expiatória e redentora de Jesus no Calvário, através do poder regenerador, inspirador e santificador do Espírito Santo, que nos capacita a viver como fiéis testemunhas do poder de Cristo (Hb 9.14 e 1Pd 1.15).",
+    "No batismo bíblico no Espírito Santo que nos é dado por Deus mediante a intercessão de Cristo, com a evidência inicial de falar em outras línguas, conforme a sua vontade (At 1.5; 2.4; 10.44-46; 19.1-7).",
+    "Na atualidade dos dons espirituais distribuídos pelo Espírito Santo à Igreja para sua edificação, conforme a sua soberana vontade (1 Co 12.1-12).",
+    "Na Segunda Vinda premilenial de Cristo, em duas fases distintas. Primeira – invisível ao mundo, para arrebatar a sua Igreja fiel da terra, antes da Grande Tribulação; segunda – visível e corporal, com sua Igreja glorificada, para reinar sobre o mundo durante mil anos (1Ts 4.16,17; 1Co 15.51-54; Ap 20.4; Zc 14.5 e Jd 14).",
+    "Que todos os cristãos comparecerão ante o Tribunal de Cristo, para receber recompensa dos seus feitos em favor da causa de Cristo na terra (2Co 5.10).",
+    "No juízo vindouro que recompensará os fiéis e condenará os infiéis (Ap 20.11-15).",
+    "E na vida eterna de gozo e felicidade para os fiéis e de tristeza e tormento para os infiéis (Mt 25.46)."
+   ]
+  }
+ }
+]

@@ -1,0 +1,170 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mp_ensinai.webp",
+   "foco": "center 30%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Ensinai",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Ensinai",
+   "titulo": "Ensinai",
+   "lead": "Curso de Teologia Ministerial para quem deseja se aprofundar no estudo da Bíblia e se preparar para servir. As aulas são às sextas-feiras, às 19h30.",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-ensinai",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-ensinai",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Sexta-feira, às 19h30"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Quem deseja estudar a Bíblia e se preparar para servir"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "Na igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "[a confirmar]"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-ensinai",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. As aulas acontecem às sextas-feiras, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\n[Duração do curso, disciplinas, forma de inscrição e certificado a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-ensinai",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "Servir bem exige preparo. O Ensinai existe para que a igreja tenha obreiros que conhecem a Palavra e sabem ensiná-la com fidelidade.",
+     "versiculo": "Procura apresentar-te a Deus aprovado, como obreiro que não tem de que se envergonhar, que maneja bem a palavra da verdade.",
+     "referencia": "2 Timóteo 2.15 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-ensinai",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Aprofundar o conhecimento da Bíblia e da doutrina",
+      "Preparar obreiros e professores",
+      "Formar líderes para os ministérios",
+      "Ensinar a manejar bem a palavra da verdade"
+     ]
+    },
+    {
+     "ancora": "quando-ensinai",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Sexta-feira · 19h30 | Aulas do curso",
+      "[a confirmar] | Início da próxima turma"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-ensinai",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-ensinai",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "[a confirmar]",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/fotos-pendentes",
+  "attrs": {
+   "ancora": "fotos-ensinai"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-ensinai",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure os líderes do Ensinai: [nomes a confirmar]. Eles vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]

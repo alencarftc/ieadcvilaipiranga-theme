@@ -1,0 +1,32 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_min_hero.webp",
+   "foco": "center 35%",
+   "eyebrow": "A Igreja · Ministérios",
+   "titulo": "Ministérios",
+   "lead": "Cada ministério cuida de uma parte da vida da igreja. Conheça e venha participar.",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "estilo": "",
+     "icone": "seta"
+    }
+   ],
+   "frase": "Encontre o seu lugar."
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/ministerios-grade",
+  "attrs": {}
+ }
+]

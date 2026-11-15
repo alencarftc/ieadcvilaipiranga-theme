@@ -1,0 +1,170 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mp_criancas.webp",
+   "foco": "center 12%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Crianças",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Crianças",
+   "titulo": "Crianças",
+   "lead": "Ensina a Palavra de Deus às crianças, de um jeito adequado a cada idade. Quando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado a elas. Aos domingos, às 9h30, há classes da EBD para crianças.",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-criancas",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-criancas",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "5º domingo do mês (quando houver), às 19h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Crianças [faixa etária a confirmar]"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "Nas salas da EBD das crianças"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Míriam Lima, Myrela Lima e equipe"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-criancas",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "O ministério das Crianças ensina a Palavra de Deus aos pequenos, de um jeito adequado a cada idade. As aulas acontecem nas classes da EBD, aos domingos, às 9h30, nas salas da parte de baixo da igreja.\n\nQuando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado às crianças.\n\n[Classes por idade e atividades especiais a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-criancas",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "Jesus recebeu as crianças e mandou que ninguém as impedisse de chegar a Ele. Ensinar a fé desde cedo é cuidar do futuro das famílias e da igreja.",
+     "versiculo": "Deixai vir a mim os pequeninos, não os embaraceis, porque dos tais é o reino de Deus.",
+     "referencia": "Marcos 10.14 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-criancas",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Ensinar a Bíblia às crianças de cada idade",
+      "Apoiar os pais na educação cristã dos filhos",
+      "Oferecer um ambiente seguro e acolhedor",
+      "Ajudar as crianças a amarem a casa de Deus"
+     ]
+    },
+    {
+     "ancora": "quando-criancas",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "5º domingo · 19h | Culto dominical dedicado às crianças, quando o mês tem 5º domingo",
+      "Domingo · 9h30 | Classes da EBD para crianças"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-criancas",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-criancas",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Míriam Lima\nMyrela Lima\ne equipe",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/fotos-pendentes",
+  "attrs": {
+   "ancora": "fotos-criancas"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-criancas",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure as líderes do ministério Crianças: Míriam Lima ou Myrela Lima. Elas vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]
