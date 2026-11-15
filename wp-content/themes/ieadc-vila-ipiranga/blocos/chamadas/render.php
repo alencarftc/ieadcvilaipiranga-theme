@@ -6,7 +6,7 @@
 defined('ABSPATH') || exit;
 $a = $attributes;
 
-echo ieadc_secao_abre($a, 'sec');
+echo ieadc_secao_abre($a, ''); // secao vazia = sem classe (Aceitar Jesus)
 echo '<div class="wrap duplas">';
 foreach ((array) ($a['chamadas'] ?? []) as $c) {
 	$azul = ($c['estilo'] ?? '') === 'azul';

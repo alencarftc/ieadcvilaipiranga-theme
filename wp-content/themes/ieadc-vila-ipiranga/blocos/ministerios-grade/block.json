@@ -51,7 +51,6 @@
 			"type": "string",
 			"default": "Toque em um ministério para ver como ele funciona, quando se reúne e como participar.",
 			"ieadc": {
-				"campo": "texto-longo",
 				"rotulo": "Texto"
 			}
 		},
