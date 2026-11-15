@@ -17,14 +17,14 @@ add_action('after_setup_theme', function () {
 		'primary' => 'Menu principal (cabeçalho e mapa do site)',
 	]);
 	add_theme_support('editor-styles');
-	add_editor_style(['assets/css/fontes.css', 'assets/css/prototipo.css']);
+	add_editor_style(['assets/css/fontes.css', 'assets/css/prototipo.css', 'assets/css/ajustes.css']);
 });
 
 add_action('wp_enqueue_scripts', function () {
 	$base = get_stylesheet_directory_uri() . '/assets';
 	wp_enqueue_style('ieadc-fontes', $base . '/css/fontes.css', [], IEADC_TEMA_VERSAO);
 	wp_enqueue_style('ieadc-prototipo', $base . '/css/prototipo.css', ['ieadc-fontes'], IEADC_TEMA_VERSAO);
-	wp_enqueue_style('ieadc-blocksy', $base . '/css/blocksy.css', ['ieadc-prototipo'], IEADC_TEMA_VERSAO);
+	wp_enqueue_style('ieadc-ajustes', $base . '/css/ajustes.css', ['ieadc-prototipo'], IEADC_TEMA_VERSAO);
 	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], IEADC_TEMA_VERSAO, ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
@@ -35,6 +35,12 @@ add_action('wp_head', function () {
 		echo '<link rel="preload" href="' . esc_url($f . $arq) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 	}
 }, 1);
+
+/* Categoria dos blocos próprios no editor. */
+add_filter('block_categories_all', function (array $cats): array {
+	array_unshift($cats, ['slug' => 'ieadc', 'title' => 'IEADC Vila Ipiranga', 'icon' => null]);
+	return $cats;
+});
 
 /* O Blocksy não precisa montar o cabeçalho e o rodapé dele: usamos os nossos. */
 add_filter('blocksy:header:enabled', '__return_false');

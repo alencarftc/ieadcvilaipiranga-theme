@@ -14,7 +14,7 @@ Deixar o `main` pronto para os agentes trabalharem em paralelo e cuidar do que �
 
 1. **Ícones completos.** Levar para `inc/icones.php` todos os ícones do dicionário `I` de `prototipo/fonte/gen.py` com os mesmos nomes (`relogio`, `pin`, `maos`, `megafone`, `degraus`, `coracao`, `seta`…). Hoje só há 15. Mudar a assinatura para `ieadc_icone(string $nome, string $classe = 'ico'): string` (o protótipo usa outras classes em alguns lugares).
 2. **Categoria de blocos.** Registrar a categoria `ieadc` ("IEADC Vila Ipiranga") com `block_categories_all`.
-3. **Seed modular.** `scripts/seed.php` passa a: (a) desligar kses, (b) rodar em ordem todos os arquivos `scripts/seed/*.php`. Mover o que existe hoje para `scripts/seed/10-midia.php`, `20-paginas.php` e `30-menu.php`, sem mudar o comportamento.
+3. **Seed modular.** `scripts/seed.php` passa a: (a) desligar kses, (b) rodar em ordem todos os arquivos `scripts/seed/*.php`. Mover o que existe hoje para `scripts/seed/10-midia.php`, `15-paginas.php` (transição) e `30-menu.php`, sem mudar o comportamento.
 4. **`IEADC_HOJE`.** Passar a variável do `.env` para o contêiner WordPress (`docker-compose.yml`) e definir a constante em `WORDPRESS_CONFIG_EXTRA` quando existir.
 5. **Windows.** `bin/setup.ps1` equivalente ao `setup.sh` (PowerShell 5+, chama `docker compose`). Testar no Windows com o Felipe é entrega da Onda 1.
 6. **`ajustes.css`.** Criar `assets/css/ajustes.css` vazio (com o cabeçalho de convenção) e carregar depois de `prototipo.css`. Mover para ele o conteúdo de `assets/css/blocksy.css`, em seção `/* === M0 === */`.
@@ -31,6 +31,10 @@ Deixar o `main` pronto para os agentes trabalharem em paralelo e cuidar do que �
 ## Contratos que fornece
 
 `ieadc_info()`, `ieadc_icone()`, `ieadc_link()`, `ieadc_dado()`, menu `primary`, modelo `page-templates/larga.php`, categoria de blocos `ieadc`, ordem do seed.
+
+## Estado (15/11)
+
+Itens 1 a 7 entregues no PR `feat/m0-fundacao`. Falta: testar `bin/setup.ps1` no Windows do Felipe (sem bloquear ninguém).
 
 ## Critérios de aceite (Onda 0)
 

@@ -121,7 +121,7 @@ Estes contratos são definidos na Onda 0 e **não mudam sem PR próprio aprovado
 
 ### 5.4 Seed
 
-`scripts/seed.php` só orquestra. Cada módulo entrega `scripts/seed/NN-<modulo>.php`, que pode rodar várias vezes sem duplicar nada e **não sobrescreve conteúdo editado no painel** (exceto com `IEADC_ATUALIZAR=1`). Ordem: `10-midia`, `20-paginas`, `30-menu`, `40-ministerios`, `50-cultos`, `60-departamentos`, `70-artigos`, `80-eventos`.
+`scripts/seed.php` só orquestra. Cada módulo entrega `scripts/seed/NN-<modulo>.php`, que pode rodar várias vezes sem duplicar nada e **não sobrescreve conteúdo editado no painel** (exceto com `IEADC_ATUALIZAR=1`). Ordem: `10-midia`, `15-paginas` (transição), `20-paginas-p1..p3`, `30-menu`, `40-ministerios`, `50-cultos`, `60-departamentos`, `70-artigos`, `80-eventos`.
 
 ## 6. Módulos e donos
 

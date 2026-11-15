@@ -1,4 +1,7 @@
-/* Ajustes do Blocksy para conversar com o protótipo (tokens em prototipo.css). */
+/* Ajustes sobre o CSS do protótipo (prototipo.css é congelado).
+   Cada módulo tem a sua seção: /* === <ID da spec>: <bloco> === *\/ com o motivo do ajuste. */
+
+/* === M0: Blocksy conversando com o protótipo (cores, fontes, largura, barra de admin) === */
 :root{
 	--theme-palette-color-1:#0567B7; --theme-palette-color-2:#0A6FC2; --theme-palette-color-3:#45536B;
 	--theme-palette-color-4:#071946; --theme-palette-color-5:#DCE5EE; --theme-palette-color-6:#EFF7FD;

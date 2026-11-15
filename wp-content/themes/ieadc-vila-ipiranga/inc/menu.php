@@ -56,13 +56,13 @@ class IEADC_Walker_Nav extends Walker_Nav_Menu {
 		if ($depth === 0 && $tem_filhos) {
 			$a[] = 'grp';
 		}
-		if ($atual || ($depth === 0 && $ancestral)) {
+		if ($atual || $ancestral) {
 			$a[] = 'on';
 		}
 
 		$titulo  = apply_filters('the_title', $item->title, $item->ID);
 		$antes   = $icone ? ieadc_icone($icone) : '';
-		$depois  = $tem_filhos ? ieadc_icone('seta') : '';
+		$depois  = $tem_filhos ? ieadc_icone('baixo') : '';
 		$attrs   = ' href="' . esc_url($item->url ?: '#') . '"';
 		$attrs  .= $a ? ' class="' . esc_attr(implode(' ', $a)) . '"' : '';
 		$attrs  .= $atual ? ' aria-current="page"' : '';
