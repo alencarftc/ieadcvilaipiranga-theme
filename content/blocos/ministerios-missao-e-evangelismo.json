@@ -1,0 +1,177 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mp_missao.webp",
+   "foco": "center 65%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Missão e Evangelismo",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Missão e Evangelismo",
+   "titulo": "Missão e Evangelismo",
+   "lead": "Leva o evangelho para além das portas da igreja, em sintonia com o tema do ano: alcançar Curitiba para Cristo. No 2º domingo do mês, o culto dominical tem o tema Missões e Evangelismo. [Ações e encontros a confirmar]",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-missao-e-evangelismo",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-missao-e-evangelismo",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "2º domingo do mês, às 19h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Todos que desejam anunciar o evangelho"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "Na igreja e no bairro"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Coop. José Luiz Nascimento e Pr. Evandro Oliveira"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-missao-e-evangelismo",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "O ministério de Missão e Evangelismo leva o evangelho para além das portas da igreja. Ele caminha em sintonia com o tema do ano da IEADC: \"Alcançar Curitiba para Cristo. Nossa missão, nossa paixão.\"\n\nNo 2º domingo de cada mês, o culto dominical, às 19h, tem o tema Missões e Evangelismo.\n\n[Ações de evangelismo, visitas e apoio a missionários a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-missao-e-evangelismo",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "Anunciar Jesus é a missão que Ele mesmo deixou à igreja. Ela começa no nosso bairro, o Capão Raso, e vai até onde Deus mandar.",
+     "versiculo": "Ide por todo o mundo e pregai o evangelho a toda criatura.",
+     "referencia": "Marcos 16.15 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-missao-e-evangelismo",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Anunciar o evangelho em Curitiba",
+      "Mobilizar a igreja para evangelizar",
+      "Orar por quem ainda não conhece a Jesus",
+      "Apoiar a obra missionária [a confirmar]"
+     ]
+    },
+    {
+     "ancora": "quando-missao-e-evangelismo",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "2º domingo · 19h | Culto dominical com o tema Missões e Evangelismo",
+      "[a confirmar] | Saídas de evangelismo"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-missao-e-evangelismo",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-missao-e-evangelismo",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Coop. José Luiz Nascimento\nPr. Evandro Oliveira",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-missao-e-evangelismo",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos do ministério",
+   "fotos": [
+    "f_mx_213.webp",
+    "f_mx_228.webp"
+   ],
+   "legenda": "Missão e Evangelismo"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-missao-e-evangelismo",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure os líderes de Missão e Evangelismo: Coop. José Luiz Nascimento ou Pr. Evandro Oliveira. Eles vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]

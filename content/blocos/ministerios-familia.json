@@ -1,0 +1,180 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mp_familia.webp",
+   "foco": "center 40%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Família",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Família",
+   "titulo": "Família",
+   "lead": "Cuida dos casais e das famílias da igreja, para que cada lar viva a fé no dia a dia. No 1º domingo do mês, o culto dominical tem o tema Família. [Outros encontros a confirmar]",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-familia",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-familia",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "1º domingo do mês, às 19h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Casais e famílias"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Coop. Bruno Bernadoque e Tácila Bernadoque, Ev. Robson Stein e Luciana Stein"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-familia",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "O ministério da Família cuida dos casais e das famílias da igreja, para que cada lar viva a fé no dia a dia. A liderança é formada por dois casais: o Coop. Bruno Bernadoque e a Tácila Bernadoque, e o Ev. Robson Stein e a Luciana Stein.\n\nNo 1º domingo de cada mês, o culto dominical, às 19h, tem o tema Família. É uma boa ocasião para vir com a casa toda e convidar outras famílias.\n\n[Encontros de casais, confraternizações e outras ações a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-familia",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "A família é o primeiro lugar onde a fé é vivida e ensinada. Lares firmes em Cristo formam uma igreja firme.",
+     "versiculo": "Eu e a minha casa serviremos ao SENHOR.",
+     "referencia": "Josué 24.15 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-familia",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Fortalecer os casamentos à luz da Bíblia",
+      "Ajudar os pais a ensinarem a fé aos filhos",
+      "Acolher as famílias que chegam à igreja",
+      "Promover a comunhão entre as famílias"
+     ]
+    },
+    {
+     "ancora": "quando-familia",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "1º domingo · 19h | Culto dominical com o tema Família",
+      "[a confirmar] | Encontros de casais e confraternizações"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-familia",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-familia",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Coop. Bruno Bernadoque\nTácila Bernadoque\nEv. Robson Stein\nLuciana Stein",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-familia",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos do ministério",
+   "fotos": [
+    "f_mx_31.webp",
+    "f_mx_41.webp",
+    "f_mx_82.webp",
+    "f_mx_90.webp",
+    "f_mx_52.webp"
+   ],
+   "legenda": "Família"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-familia",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure os líderes do ministério Família: Coop. Bruno Bernadoque e Tácila Bernadoque, ou Ev. Robson Stein e Luciana Stein. Eles vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]

@@ -1,0 +1,180 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mx_237.webp",
+   "foco": "center 35%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Mocidade",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Mocidade",
+   "titulo": "Mocidade",
+   "lead": "Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço. No 3º domingo do mês, o culto dominical é dedicado a eles. [Encontros próprios a confirmar]",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-mocidade",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-mocidade",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "3º domingo do mês, às 19h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Jovens e adolescentes"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Anderson Sena e Evelin Sena, Leonardo Morais da Silva"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-mocidade",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\n[Encontros próprios, retiros e eventos a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-mocidade",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "A juventude é tempo de decisões. A Mocidade existe para que cada jovem tenha um lugar onde é cuidado, discipulado e desafiado a servir.",
+     "versiculo": "Ninguém despreze a tua mocidade; pelo contrário, torna-te padrão dos fiéis, na palavra, no procedimento, no amor, na fé, na pureza.",
+     "referencia": "1 Timóteo 4.12 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-mocidade",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Discipular jovens e adolescentes",
+      "Criar amizades firmadas na fé",
+      "Envolver os jovens no serviço da igreja",
+      "Alcançar outros jovens com o evangelho"
+     ]
+    },
+    {
+     "ancora": "quando-mocidade",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "3º domingo · 19h | Culto dominical dedicado aos jovens e adolescentes",
+      "[a confirmar] | Encontros próprios da Mocidade"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-mocidade",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-mocidade",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Anderson Sena\nEvelin Sena\nLeonardo Morais da Silva",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-mocidade",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos do ministério",
+   "fotos": [
+    "f_mp_mocidade.webp",
+    "f_mx_198.webp",
+    "f_mx_226.webp",
+    "f_mx_257.webp",
+    "f_mx_248.webp"
+   ],
+   "legenda": "Mocidade"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-mocidade",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure os líderes da Mocidade: Anderson Sena, Evelin Sena ou Leonardo Morais da Silva. Eles vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]

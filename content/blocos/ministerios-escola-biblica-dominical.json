@@ -1,0 +1,178 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_mx_21.webp",
+   "foco": "center 18%",
+   "migalha": [
+    {
+     "texto": "Ministérios",
+     "link": "ministerios"
+    },
+    {
+     "texto": "Escola Bíblica Dominical",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Ministérios · Escola Bíblica Dominical",
+   "titulo": "Escola Bíblica Dominical",
+   "lead": "Estuda a Bíblia em classes, todos os domingos às 9h30. O tema muda a cada trimestre. Responsáveis: Pb. Manoel Lima e Dc. Jorge Fernandez.",
+   "botoes": [
+    {
+     "texto": "Como participar",
+     "link": "#participar-escola-biblica-dominical",
+     "estilo": "",
+     "icone": "seta"
+    },
+    {
+     "texto": "Ver fotos",
+     "link": "#fotos-escola-biblica-dominical",
+     "estilo": "out",
+     "icone": "dir"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Domingo, às 9h30"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Todas as idades, em classes"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "Nas salas da EBD da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem lidera",
+     "valor": "Pb. Manoel Lima e Dc. Jorge Fernandez"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "funciona-escola-biblica-dominical",
+     "titulo": "Como funciona",
+     "tipo": "texto",
+     "texto": "A Escola Bíblica Dominical acontece todo domingo, às 9h30. Antes dela, às 9h, o café comunitário recebe quem chega.\n\nOs alunos se dividem em classes e estudam a Bíblia com a ajuda de um professor. [Classes e faixas etárias a confirmar]\n\nO tema de estudo muda a cada trimestre, e cada aula aprofunda um assunto da Palavra de Deus. [Material de estudo usado a confirmar] As salas da EBD dos jovens e das crianças ficam na parte de baixo da igreja.",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-escola-biblica-dominical",
+     "titulo": "Por que existe",
+     "tipo": "versiculo+texto",
+     "texto": "Conhecer a Bíblia é conhecer a Deus e a sua vontade. A EBD existe para que cada membro, do menor ao mais velho, cresça no conhecimento da Palavra de forma contínua e organizada.",
+     "versiculo": "Toda a Escritura é inspirada por Deus e útil para o ensino, para a repreensão, para a correção, para a educação na justiça.",
+     "referencia": "2 Timóteo 3.16 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "paraque-escola-biblica-dominical",
+     "titulo": "Para quê",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Estudar a Bíblia de forma organizada",
+      "Formar discípulos firmes na fé",
+      "Preparar professores e futuros líderes",
+      "Fortalecer a comunhão entre os irmãos de cada classe"
+     ]
+    },
+    {
+     "ancora": "quando-escola-biblica-dominical",
+     "titulo": "Quando nos encontramos",
+     "tipo": "encontros",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Domingo · 9h | Café comunitário",
+      "Domingo · 9h30 | Aulas da EBD",
+      "A cada trimestre | Novo tema de estudo"
+     ]
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-escola-biblica-dominical",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-escola-biblica-dominical",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Quem lidera",
+   "lideres": "Pb. Manoel Lima\nDc. Jorge Fernandez",
+   "botoes": [
+    {
+     "texto": "Fale conosco",
+     "link": "contato",
+     "icone": "seta",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-escola-biblica-dominical",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos do ministério",
+   "fotos": [
+    "f_mp_ebd.webp",
+    "f_mx_0.webp"
+   ],
+   "legenda": "Escola Bíblica Dominical"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-escola-biblica-dominical",
+   "eyebrow": "Como participar",
+   "titulo": "Dê o primeiro passo",
+   "variante": "passo-unico",
+   "passos": [
+    "Procure os líderes da EBD: Pb. Manoel Lima ou Dc. Jorge Fernandez. Eles vão receber você e explicar como participar."
+   ],
+   "icone": "pessoas",
+   "unicoBotaoTexto": "Fale conosco",
+   "unicoBotaoLink": "contato"
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "ministerios"
+  }
+ }
+]
