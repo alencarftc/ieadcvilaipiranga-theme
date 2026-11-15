@@ -1,0 +1,213 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/aceitar-passos",
+	"title": "Aceitar Jesus (passos e carta)",
+	"category": "ieadc",
+	"icon": "heart",
+	"description": "Os 4 passos, o que muda, o botão \"Quero aceitar Jesus\" e a carta do pastor.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec glow",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "O que é aceitar Jesus",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Uma decisão que muda a vida",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Aceitar Jesus não é entrar para uma religião nem seguir uma lista de regras. É começar um relacionamento com Deus, que ama você e quer estar perto. Veja, em quatro passos, o que a Bíblia diz.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto"
+			}
+		},
+		"passos": {
+			"type": "array",
+			"default": [
+				{
+					"titulo": "Deus ama você",
+					"texto": "Antes de qualquer coisa, saiba disto: Deus conhece você pelo nome e ama você como você é. Foi por amor que Ele enviou Jesus.",
+					"versiculo": "Porque Deus amou ao mundo de tal maneira que deu o seu Filho unigênito, para que todo o que nele crê não pereça, mas tenha a vida eterna.",
+					"referencia": "João 3.16 (ARA)"
+				},
+				{
+					"titulo": "Todos precisamos de Deus",
+					"texto": "A Bíblia chama de pecado tudo o que nos afasta de Deus. Ninguém consegue se aproximar dEle por esforço próprio, e é isso que deixa o coração vazio, por mais que a vida pareça cheia.",
+					"versiculo": "Pois todos pecaram e carecem da glória de Deus.",
+					"referencia": "Romanos 3.23 (ARA)"
+				},
+				{
+					"titulo": "Jesus fez o caminho",
+					"texto": "Jesus morreu na cruz em nosso lugar e ressuscitou ao terceiro dia. Ele pagou o preço que nós não podíamos pagar e abriu o caminho de volta para Deus.",
+					"versiculo": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna em Cristo Jesus, nosso Senhor.",
+					"referencia": "Romanos 6.23 (ARA)"
+				},
+				{
+					"titulo": "A salvação é um presente",
+					"texto": "Você não precisa merecer nem mudar sozinho antes de vir. Aceitar Jesus é receber esse presente pela fé: crer nEle de coração e confessá-lo como Senhor da sua vida.",
+					"versiculo": "Se, com a tua boca, confessares Jesus como Senhor e, em teu coração, creres que Deus o ressuscitou dentre os mortos, serás salvo.",
+					"referencia": "Romanos 10.9 (ARA)"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Passos",
+				"itens": {
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto",
+							"campo": "rico"
+						}
+					},
+					"versiculo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Versículo",
+							"campo": "rico"
+						}
+					},
+					"referencia": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Referência"
+						}
+					}
+				}
+			}
+		},
+		"mudaTitulo": {
+			"type": "string",
+			"default": "O que muda quando você aceita Jesus",
+			"ieadc": {
+				"rotulo": "Título de \"o que muda\""
+			}
+		},
+		"muda": {
+			"type": "array",
+			"default": [
+				"Seus pecados são perdoados e você ganha a vida eterna",
+				"Você passa a ter uma relação pessoal com Deus, por meio da oração e da Palavra",
+				"Você começa uma vida nova, com Jesus guiando seus passos",
+				"Você ganha uma família na fé, que vai caminhar ao seu lado"
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "O que muda",
+				"itens": {
+					"type": "string",
+					"ieadc": {
+						"rotulo": "Item"
+					}
+				}
+			}
+		},
+		"mudaVersiculo": {
+			"type": "string",
+			"default": "E, assim, se alguém está em Cristo, é nova criatura; as coisas antigas já passaram; eis que se fizeram novas.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Versículo de \"o que muda\""
+			}
+		},
+		"mudaReferencia": {
+			"type": "string",
+			"default": "2 Coríntios 5.17 (ARA)",
+			"ieadc": {
+				"rotulo": "Referência"
+			}
+		},
+		"decisaoEyebrow": {
+			"type": "string",
+			"default": "Por que hoje",
+			"ieadc": {
+				"rotulo": "Sobretítulo da decisão"
+			}
+		},
+		"decisaoTitulo": {
+			"type": "string",
+			"default": "Você não precisa ter todas as respostas para dar o primeiro passo.",
+			"ieadc": {
+				"rotulo": "Título da decisão"
+			}
+		},
+		"decisaoTexto": {
+			"type": "string",
+			"default": "Se o seu coração deseja seguir Jesus, este é o momento. Ele está de braços abertos para receber você.",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto da decisão"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "Quero aceitar Jesus",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"cartaTitulo": {
+			"type": "string",
+			"default": "Uma palavra do pastor",
+			"ieadc": {
+				"rotulo": "Sobretítulo da carta"
+			}
+		},
+		"carta": {
+			"type": "string",
+			"default": "Quero me alegrar com você por essa decisão tão especial de entregar sua vida a Jesus. Hoje começa uma nova caminhada, e quero que saiba: você não está sozinho.\n\nBusque a Deus em oração, conheça Sua Palavra e permita que Ele conduza seus passos. Nós, da IEADC Vila Ipiranga, estamos de braços abertos para receber você e caminhar ao seu lado.\n\nSeja bem-vindo! Que Deus abençoe sua nova caminhada com Cristo.\n\nUm grande abraço,",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Carta do pastor"
+			}
+		},
+		"assinatura": {
+			"type": "string",
+			"default": "Ev. Robson",
+			"ieadc": {
+				"rotulo": "Assinatura"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

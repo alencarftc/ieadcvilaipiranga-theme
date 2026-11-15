@@ -1,0 +1,118 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/historia",
+	"title": "História e dirigentes",
+	"category": "ieadc",
+	"icon": "book-alt",
+	"description": "Texto da história com foto e lista dos dirigentes.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo curva-top",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "historia",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Apresentação e história",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Nossa história",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "A IEADC Vila Ipiranga é uma das congregações da Igreja Evangélica Assembleia de Deus em Curitiba (IEADC), no bairro Capão Raso. A Assembleia de Deus chegou a Curitiba em 1929, com o pastor Bruno Skolimowski, e hoje reúne mais de 160 igrejas na cidade. Desde 2011, a IEADC é presidida pelo pastor Wagner Tadeu dos Santos Gaby.\n\nA história da Vila Ipiranga começou em 1975. Naquele ano, a Assembleia de Deus já tinha várias congregações no Campo de Curitiba, organizadas em distritos. A Vila Ipiranga ainda era um ponto de pregação e fazia parte do distrito 135, com as congregações do Capão Raso (hoje Pinheirinho), do Parque Industrial e da Santa Amélia (hoje Fazendinha), entre outras. O responsável pelo distrito era o pastor Paulino Ramalho.\n\nAinda em 1975, a igreja comprou o primeiro terreno, onde já havia uma casinha de madeira. Ali começaram os cultos e, em 14 de agosto de 1975, nasceu a \"igrejinha da Vila Ipiranga\", como era conhecida. O primeiro dirigente foi o presbítero José Monteiro (in memoriam).\n\nEm 1986, foi lançada a pedra fundamental do templo atual. A cerimônia reuniu obreiros, membros da diretoria e da congregação, entre eles o pastor Catarino Nunes Pires [a confirmar a grafia] (in memoriam), o pastor Levir Bueno Polidoro e o pastor Paulino Ramalho, agora como dirigente da congregação. Durante a obra, os cultos aconteciam no porão, que hoje é a parte de baixo da igreja, onde ficam a cozinha, os banheiros e as salas da Escola Bíblica Dominical dos jovens e das crianças. O culto de inauguração do templo [ano a confirmar] contou com o pastor-presidente José Pimentel de Carvalho (in memoriam).\n\nEm 2025, a Vila Ipiranga completou 50 anos. Com gratidão, a igreja segue anunciando o evangelho no bairro e acolhendo cada pessoa que chega.",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"campo": "imagem",
+				"rotulo": "Foto"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto",
+				"ajuda": "Opcional. Ex.: center 30%"
+			}
+		},
+		"dirigentesTitulo": {
+			"type": "string",
+			"default": "Desde o início, cerca de 20 dirigentes conduziram a congregação",
+			"ieadc": {
+				"rotulo": "Título da lista de dirigentes"
+			}
+		},
+		"dirigentes": {
+			"type": "array",
+			"default": [
+				"Ev. Robson Stein, pastor da igreja local (atual)",
+				"presbítero Moisés Matias Correia",
+				"pastor Victor Marciano",
+				"pastor Geziel Maciel",
+				"pastor Ademir Pereira da Silva",
+				"presbítero [nome a confirmar] Nunes",
+				"presbítero João Messias",
+				"evangelista Esdras Souza",
+				"presbítero Onofre de Oliveira",
+				"presbítero Jorge [sobrenome a confirmar]",
+				"pastor Messias da Costa [sobrenome a confirmar]",
+				"pastor Luís Carlos Alves",
+				"presbítero Ivan Monteiro",
+				"pastor Wilton Oliveira",
+				"pastor Sérgio Luiz [sobrenome a confirmar]",
+				"pastor Carlos Rodrigues da Costa",
+				"presbítero Nilvo Reis",
+				"presbítero José Henrique de Oliveira",
+				"presbítero José Monteiro (in memoriam)",
+				"pastor Paulino Ramalho"
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Dirigentes (do atual ao mais antigo)",
+				"itens": {
+					"type": "string",
+					"ieadc": {
+						"rotulo": "Nome"
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

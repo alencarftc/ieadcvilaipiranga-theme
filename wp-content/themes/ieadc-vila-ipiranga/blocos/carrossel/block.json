@@ -1,0 +1,79 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/carrossel",
+	"title": "Carrossel de fotos",
+	"category": "ieadc",
+	"icon": "images-alt2",
+	"description": "Fotos passando uma a uma, com setas e pontos.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo curva-top",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Galeria",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Fotos",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto"
+			}
+		},
+		"fotos": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "number"
+			},
+			"ieadc": {
+				"campo": "imagens",
+				"rotulo": "Fotos"
+			}
+		},
+		"legenda": {
+			"type": "string",
+			"default": "Fotos",
+			"ieadc": {
+				"rotulo": "Legenda",
+				"ajuda": "Nome mostrado em cada foto: \"<legenda> · foto 1 de 4\"."
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

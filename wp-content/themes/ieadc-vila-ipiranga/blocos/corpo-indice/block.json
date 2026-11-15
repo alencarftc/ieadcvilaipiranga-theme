@@ -1,0 +1,311 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/corpo-indice",
+	"title": "Texto com índice",
+	"category": "ieadc",
+	"icon": "text-page",
+	"description": "Texto da página (culto ou ministério) com índice e quadro lateral.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-top:0",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"aviso": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Aviso no topo",
+				"ajuda": "Opcional. Ex.: Texto-base para o pastor revisar."
+			}
+		},
+		"secoes": {
+			"type": "array",
+			"default": [
+				{
+					"ancora": "como-ceia-do-senhor",
+					"titulo": "Como é o culto",
+					"tipo": "texto",
+					"texto": "No 2º sábado de cada mês, às 19h30, a igreja se reúne para a Ceia do Senhor. É um momento de memória, comunhão e gratidão pelo sacrifício de Jesus.\n\nAntes da ceia, a igreja se prepara em oração. Em alguns meses há vigília na sexta-feira anterior, às 22h; nos outros, consagração no próprio sábado, pela manhã, às 8h.\n\n[Quem pode participar dos elementos e orientações para visitantes a confirmar]",
+					"versiculo": "",
+					"referencia": "",
+					"itens": []
+				},
+				{
+					"ancora": "porque-ceia-do-senhor",
+					"titulo": "Por que nos reunimos",
+					"tipo": "versiculo+texto",
+					"texto": "Jesus mandou que a igreja fizesse isso em memória dele. O pão e o cálice lembram o corpo entregue e o sangue derramado na cruz, e anunciam que Ele vai voltar.",
+					"versiculo": "E, tomando um pão, tendo dado graças, o partiu e lhes deu, dizendo: Isto é o meu corpo oferecido por vós; fazei isto em memória de mim.",
+					"referencia": "Lucas 22.19 (ARA)",
+					"itens": []
+				},
+				{
+					"ancora": "esperar-ceia-do-senhor",
+					"titulo": "O que esperar",
+					"tipo": "objetivos",
+					"texto": "",
+					"versiculo": "",
+					"referencia": "",
+					"itens": [
+						"Louvor e oração",
+						"Pregação da Palavra",
+						"Partilha do pão e do cálice",
+						"Momento de exame e gratidão"
+					]
+				},
+				{
+					"ancora": "datas-ceia-do-senhor",
+					"titulo": "Próximas datas",
+					"tipo": "datas",
+					"texto": "",
+					"versiculo": "",
+					"referencia": "",
+					"itens": []
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Partes do texto",
+				"itens": {
+					"ancora": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Âncora (id)",
+							"ajuda": "Ex.: como-ceia-do-senhor"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"foraDoIndice": {
+						"type": "boolean",
+						"ieadc": {
+							"rotulo": "Não mostrar no índice"
+						}
+					},
+					"tipo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Tipo",
+							"campo": "opcao",
+							"opcoes": [
+								{
+									"valor": "texto",
+									"rotulo": "Texto"
+								},
+								{
+									"valor": "versiculo+texto",
+									"rotulo": "Versículo + texto"
+								},
+								{
+									"valor": "objetivos",
+									"rotulo": "Lista com ✓"
+								},
+								{
+									"valor": "encontros",
+									"rotulo": "Quando | o quê"
+								},
+								{
+									"valor": "datas",
+									"rotulo": "Próximas datas (agenda)"
+								}
+							]
+						}
+					},
+					"versiculo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Versículo",
+							"campo": "rico"
+						}
+					},
+					"referencia": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Referência do versículo",
+							"ajuda": "Ex.: Lucas 22.19 (ARA)"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto",
+							"campo": "texto-longo"
+						}
+					},
+					"itens": {
+						"type": "array",
+						"ieadc": {
+							"campo": "lista",
+							"rotulo": "Itens",
+							"ajuda": "Lista com ✓: um item por linha. Quando | o quê: separe com \" | \".",
+							"itens": {
+								"type": "string",
+								"ieadc": {
+									"campo": "rico",
+									"rotulo": "Item"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"datasTitulos": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Títulos na agenda (próximas datas)",
+				"ajuda": "Um por linha. Vazio = o campo \"Títulos na agenda\" da página."
+			}
+		},
+		"datasQuantidade": {
+			"type": "number",
+			"default": 4,
+			"ieadc": {
+				"rotulo": "Quantas datas mostrar"
+			}
+		},
+		"indiceTitulo": {
+			"type": "string",
+			"default": "Nesta página",
+			"ieadc": {
+				"rotulo": "Título do índice"
+			}
+		},
+		"indiceExtras": {
+			"type": "array",
+			"default": [
+				{
+					"ancora": "fotos-ceia-do-senhor",
+					"titulo": "Fotos"
+				},
+				{
+					"ancora": "participar-ceia-do-senhor",
+					"titulo": "Como participar"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Mais links no índice",
+				"itens": {
+					"ancora": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Âncora (id)"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					}
+				},
+				"ajuda": "Seções de outros blocos (fotos, como participar)."
+			}
+		},
+		"lateralTitulo": {
+			"type": "string",
+			"default": "Endereço",
+			"ieadc": {
+				"rotulo": "Título do quadro azul"
+			}
+		},
+		"lideres": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Quem lidera",
+				"ajuda": "Um nome por linha. Última linha \"e equipe\" mostra \"e equipe\"."
+			}
+		},
+		"lateralTexto": {
+			"type": "string",
+			"default": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto do quadro azul",
+				"ajuda": "Usado quando \"Quem lidera\" está vazio (ex.: endereço)."
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "Como chegar",
+					"link": "https://share.google/9UqZuK0EVcGxwFH63",
+					"icone": "pin",
+					"classe": "branco"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões do quadro azul",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Link",
+							"campo": "link"
+						}
+					},
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"classe": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Estilo",
+							"campo": "opcao",
+							"opcoes": [
+								"branco",
+								"sol",
+								"out",
+								""
+							]
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

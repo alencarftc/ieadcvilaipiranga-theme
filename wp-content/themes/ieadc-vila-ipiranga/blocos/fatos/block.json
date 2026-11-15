@@ -1,0 +1,88 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/fatos",
+	"title": "Fatos rápidos",
+	"category": "ieadc",
+	"icon": "info",
+	"description": "Faixa com 4 fatos (quando, quem, onde…) com ícone.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-bottom:var(--s6)",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"fatos": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "relogio",
+					"rotulo": "Quando",
+					"valor": "2º sábado do mês, às 19h30"
+				},
+				{
+					"icone": "pessoas",
+					"rotulo": "Quem participa",
+					"valor": "[a confirmar]"
+				},
+				{
+					"icone": "pin",
+					"rotulo": "Onde",
+					"valor": "No templo da igreja"
+				},
+				{
+					"icone": "chama",
+					"rotulo": "Preparação",
+					"valor": "Vigília ou consagração"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Fatos",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"rotulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Rótulo"
+						}
+					},
+					"valor": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Valor",
+							"campo": "rico"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

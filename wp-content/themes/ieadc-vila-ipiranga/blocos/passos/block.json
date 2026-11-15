@@ -1,0 +1,135 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/passos",
+	"title": "Passos (como participar)",
+	"category": "ieadc",
+	"icon": "editor-ol",
+	"description": "Passos numerados ou um cartão com um passo e botão.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Como participar",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Venha cultuar conosco",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão (cabeçalho)"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão (cabeçalho)"
+			}
+		},
+		"variante": {
+			"type": "string",
+			"default": "passos",
+			"ieadc": {
+				"campo": "opcao",
+				"rotulo": "Formato",
+				"opcoes": [
+					{
+						"valor": "passos",
+						"rotulo": "Passos numerados"
+					},
+					{
+						"valor": "passo-unico",
+						"rotulo": "Um cartão com botão"
+					}
+				]
+			}
+		},
+		"passos": {
+			"type": "array",
+			"default": [
+				"Participe da vigília ou da consagração do mês.",
+				"Chegue às 19h30 do 2º sábado.",
+				"Tem dúvidas sobre a ceia? Converse com o pastor."
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Passos",
+				"itens": {
+					"type": "string",
+					"ieadc": {
+						"campo": "rico",
+						"rotulo": "Passo"
+					}
+				}
+			}
+		},
+		"icone": {
+			"type": "string",
+			"default": "pessoas",
+			"ieadc": {
+				"campo": "icone",
+				"rotulo": "Ícone do cartão"
+			}
+		},
+		"unicoBotaoTexto": {
+			"type": "string",
+			"default": "Fale conosco",
+			"ieadc": {
+				"rotulo": "Texto do botão do cartão"
+			}
+		},
+		"unicoBotaoLink": {
+			"type": "string",
+			"default": "contato",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão do cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

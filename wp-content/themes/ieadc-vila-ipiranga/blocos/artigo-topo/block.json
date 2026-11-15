@@ -1,0 +1,67 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/artigo-topo",
+	"title": "Topo do artigo",
+	"category": "ieadc",
+	"icon": "media-document",
+	"description": "Categoria, título, resumo, autor e foto do artigo (vêm do post).",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec glow",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-bottom:0",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"migalha": {
+			"type": "string",
+			"default": "Artigos e conteúdo",
+			"ieadc": {
+				"rotulo": "Texto do caminho"
+			}
+		},
+		"migalhaLink": {
+			"type": "string",
+			"default": "artigos",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do caminho"
+			}
+		},
+		"selo": {
+			"type": "string",
+			"default": "Artigo de exemplo",
+			"ieadc": {
+				"rotulo": "Selo dos artigos de exemplo"
+			}
+		},
+		"icone": {
+			"type": "string",
+			"default": "texto",
+			"ieadc": {
+				"campo": "icone",
+				"rotulo": "Ícone da categoria"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
