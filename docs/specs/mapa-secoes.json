@@ -1,0 +1,203 @@
+{
+ "aceitar-jesus": [
+  "hero",
+  "aceitar-passos",
+  "chamadas"
+ ],
+ "artigo-alcancar-curitiba": [
+  "artigo-topo",
+  "artigo-corpo",
+  "artigos-grade"
+ ],
+ "artigo-ate-que-ele-venha": [
+  "artigo-topo",
+  "artigo-corpo",
+  "artigos-grade"
+ ],
+ "artigo-orai-uns-pelos-outros": [
+  "artigo-topo",
+  "artigo-corpo",
+  "artigos-grade"
+ ],
+ "artigos": [
+  "hero",
+  "artigos-grade",
+  "artigos-categorias"
+ ],
+ "ceia-do-senhor": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "contato": [
+  "hero",
+  "contato-lista",
+  "capa"
+ ],
+ "culto-de-ensino": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "culto-de-oracao": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "culto-do-circulo-de-oracao": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "culto-dominical": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "eventos": [
+  "hero",
+  "eventos-grade",
+  "calendario"
+ ],
+ "galeria": [
+  "hero",
+  "fotos"
+ ],
+ "horarios-e-localizacao": [
+  "hero",
+  "semana",
+  "cultos-grade",
+  "tabela-horarios",
+  "faixa",
+  "local"
+ ],
+ "inicio": [
+  "hero-home",
+  "semana",
+  "faixa",
+  "boas-vindas",
+  "eventos-grade",
+  "chamadas",
+  "artigos-grade",
+  "ministerios-trilho",
+  "galeria-faixa",
+  "local"
+ ],
+ "lideranca": [
+  "hero",
+  "pastores",
+  "departamentos"
+ ],
+ "ministerios-circulo-de-oracao": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-criancas": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "fotos-pendentes",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-ensinai": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "fotos-pendentes",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-escola-biblica-dominical": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-familia": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-missao-e-evangelismo": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios-mocidade": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ],
+ "ministerios": [
+  "hero",
+  "ministerios-grade",
+  "trocador"
+ ],
+ "pedidos-de-oracao": [
+  "hero",
+  "pedido-oracao"
+ ],
+ "politica-de-privacidade": [
+  "hero",
+  "leitura"
+ ],
+ "sobre-nos": [
+  "hero",
+  "linha-tempo",
+  "historia",
+  "mvv",
+  "credo"
+ ],
+ "vigilia-e-consagracao": [
+  "hero",
+  "fatos",
+  "corpo-indice",
+  "carrossel",
+  "passos",
+  "vizinhos",
+  "trocador"
+ ]
+}
