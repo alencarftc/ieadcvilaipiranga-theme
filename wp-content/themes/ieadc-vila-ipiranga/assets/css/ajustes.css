@@ -23,3 +23,5 @@ h1,h2,h3,h4,h5,h6,.entry-title,.page-title{font-family:var(--f-tit);color:var(--
 body{background:var(--branco)}
 .ieadc-ui fieldset{border:0;padding:0;margin:0;min-width:0}
 .ieadc-ui legend{display:block;padding:0;font:700 14px/21px var(--f-txt);color:var(--marinho);margin-bottom:6px}
+/* Textarea: o Blocksy aumenta a altura natural; o protótipo mostra 144px. */
+.ieadc-ui .campo textarea{height:144px}
