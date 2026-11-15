@@ -4,8 +4,44 @@
  * - Eventos (públicos): data, horário e local em campos próprios.
  * - Mensagens (públicas): pregações e estudos em vídeo ou áudio.
  * - Pedidos de oração (privados): só a equipe de oração vê no painel; apagados após 90 dias.
+ * - Departamentos (não públicos): ver departamentos.php.
+ * Campos e caixas do painel (eventos, ministérios, cultos, artigos): ver campos.php.
  */
 defined('ABSPATH') || exit;
+
+require __DIR__ . '/departamentos.php';
+require __DIR__ . '/campos.php';
+
+/** Categorias de evento (classe da cor na agenda) => rótulo no painel. */
+function ieadc_evento_categorias(): array {
+	return [
+		'c-culto'   => 'Culto',
+		'c-ensino'  => 'Ensino',
+		'c-domingo' => 'Domingo',
+		'c-ceia'    => 'Ceia do Senhor',
+		'c-vigilia' => 'Vigília e consagração',
+		'c-jovens'  => 'Jovens',
+	];
+}
+
+/** Link: URL completa, /caminho ou caminho de página do site (ex.: ministerios/mocidade). */
+function ieadc_sanitizar_link($v): string {
+	$v = trim(sanitize_text_field((string) $v));
+	if ($v === '') {
+		return '';
+	}
+	if (str_starts_with($v, '/') || preg_match('#^[a-z][a-z0-9+.-]*:#i', $v)) {
+		return esc_url_raw($v);
+	}
+	return implode('/', array_filter(array_map('sanitize_title', explode('/', $v)), 'strlen')); // caminho de página
+}
+
+/** Data no formato Y-m-d (ou vazio). */
+function ieadc_sanitizar_data($v): string {
+	$v = sanitize_text_field((string) $v);
+	$d = DateTimeImmutable::createFromFormat('!Y-m-d', $v);
+	return ($d && $d->format('Y-m-d') === $v) ? $v : '';
+}
 
 add_action('init', function () {
 	register_post_type('evento', [
@@ -22,8 +58,16 @@ add_action('init', function () {
 		'supports'      => ['title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'],
 	]);
 
-	foreach (['evento_data' => 'string', 'evento_data_fim' => 'string', 'evento_horario' => 'string', 'evento_local' => 'string'] as $chave => $tipo) {
-		register_post_meta('evento', $chave, ['type' => $tipo, 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'sanitize_text_field']);
+	$meta_evento = [
+		'evento_data'      => 'ieadc_sanitizar_data',
+		'evento_data_fim'  => 'ieadc_sanitizar_data',
+		'evento_horario'   => 'sanitize_text_field',
+		'evento_local'     => 'sanitize_text_field',
+		'evento_categoria' => fn($v) => array_key_exists($v, ieadc_evento_categorias()) ? $v : 'c-culto',
+		'evento_link'      => 'ieadc_sanitizar_link',
+	];
+	foreach ($meta_evento as $chave => $limpar) {
+		register_post_meta('evento', $chave, ['type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => $limpar]);
 	}
 
 	register_post_type('mensagem', [
@@ -40,7 +84,7 @@ add_action('init', function () {
 		'supports'      => ['title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'],
 	]);
 	register_post_meta('mensagem', 'mensagem_pregador', ['type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'sanitize_text_field']);
-	register_post_meta('mensagem', 'mensagem_url', ['type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'esc_url_raw']);
+	register_post_meta('mensagem', 'mensagem_url', ['type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => fn($v) => esc_url_raw((string) $v)]);
 
 	register_post_type('pedido_oracao', [
 		'labels'              => [
