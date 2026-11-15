@@ -144,5 +144,11 @@ ieadc_teste_post(104)->meta['evento_data'] = '2026-10-22';
 do_action('updated_post_meta', 1, 104, 'evento_data', '2026-10-22');
 ok(ieadc_agenda_dia(d('2026-10-21'))[0]['titulo'] === 'Culto de Ensino' && ieadc_agenda_dia(d('2026-10-22'))[0]['titulo'] === 'Batismo', 'mudar um evento limpa o cache');
 
+/* 10. Entradas fora do normal. */
+ok(ieadc_agenda_resumo_mes(2026, 13) === '' && ieadc_agenda_resumo_mes(2026, 0) === '', 'resumo de mês inválido devolve vazio, sem exceção');
+$GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 105, 'post_title' => 'Sem resumo', 'post_name' => 'sem-resumo', 'meta' => ['evento_data' => '2026-10-27']]);
+do_action('save_post_evento', 105);
+ok(ieadc_agenda_dia(d('2026-10-27'))[0]['descricao'] === '', 'evento sem resumo fica com descrição vazia (nada de [&hellip;] automático)');
+
 echo "\n" . ($total - $falhas) . " de $total testes passaram.\n";
 exit($falhas ? 1 : 0);

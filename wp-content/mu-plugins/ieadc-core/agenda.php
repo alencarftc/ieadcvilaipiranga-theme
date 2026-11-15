@@ -50,6 +50,7 @@ function ieadc_agenda_norm(DateTimeInterface $d): DateTimeImmutable {
 
 /** 2º sábado do mês = primeiro sábado + 7 dias (dia da Ceia do Senhor). */
 function ieadc_agenda_segundo_sabado(int $ano, int $mes): DateTimeImmutable {
+	$mes = min(12, max(1, $mes));
 	$d = new DateTimeImmutable(sprintf('%04d-%02d-01', $ano, $mes), ieadc_agenda_fuso());
 	$ate_sabado = (6 - (int) $d->format('w') + 7) % 7; // w: 0 = domingo … 6 = sábado
 	return $d->modify('+' . ($ate_sabado + 7) . ' days');
@@ -217,13 +218,13 @@ function ieadc_agenda_avulsos(): array {
 			'hora'      => trim((string) get_post_meta($p->ID, 'evento_horario', true)),
 			'titulo'    => (string) $p->post_title, // cru: quem exibe escapa (get_the_title aplicaria wptexturize)
 			'categoria' => preg_match('/^c-[a-z0-9-]+$/', $cat) ? $cat : 'c-culto',
-			'descricao' => (string) get_the_excerpt($p),
+			'descricao' => trim((string) $p->post_excerpt), // cru: o resumo automático do WP termina em [&hellip;], que viraria pendência
 			'link'      => ieadc_agenda_link_evento($p),
 			'origem'    => (int) $p->ID,
 		];
 	}
 	usort($lista, static fn($a, $b) => [$a['ini'], $a['origem']] <=> [$b['ini'], $b['origem']]);
-	wp_cache_set($chave, $lista, IEADC_AGENDA_GRUPO);
+	wp_cache_set($chave, $lista, IEADC_AGENDA_GRUPO, DAY_IN_SECONDS);
 	return $lista;
 }
 
@@ -254,7 +255,7 @@ function ieadc_agenda_dia(DateTimeImmutable $d): array {
 		}
 	}
 	$out = array_merge($out, ieadc_agenda_regras_dia($d));
-	wp_cache_set($chave, $out, IEADC_AGENDA_GRUPO);
+	wp_cache_set($chave, $out, IEADC_AGENDA_GRUPO, DAY_IN_SECONDS);
 	return $out;
 }
 
@@ -312,6 +313,7 @@ function ieadc_agenda_proximas(array $titulos, int $n = 4): array {
 
 /** Resumo do mês (o <small> do calendário): especiais sem "Culto dominical", sem repetir, separados por " · ". */
 function ieadc_agenda_resumo_mes(int $ano, int $mes): string {
+	if ($mes < 1 || $mes > 12) return '';
 	$ini = new DateTimeImmutable(sprintf('%04d-%02d-01', $ano, $mes), ieadc_agenda_fuso());
 	$tit = [];
 	foreach (ieadc_agenda($ini, $ini->modify('last day of this month')) as $o) {

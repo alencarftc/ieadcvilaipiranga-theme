@@ -4,6 +4,7 @@
  * Só o que agenda.php usa. Os eventos avulsos ficam em $GLOBALS['ieadc_teste_eventos'].
  */
 define('ABSPATH', __DIR__ . '/');
+define('DAY_IN_SECONDS', 86400);
 
 class WP_Post {
 	public int $ID = 0;
@@ -27,7 +28,7 @@ function add_action($gancho, $fn, $prio = 10, $args = 1) { $GLOBALS['ieadc_teste
 function do_action($gancho, ...$a) { foreach ($GLOBALS['ieadc_teste_acoes'][$gancho] ?? [] as $fn) $fn(...$a); }
 
 function wp_cache_get($k, $g = '') { return $GLOBALS['ieadc_teste_cache'][$g][$k] ?? false; }
-function wp_cache_set($k, $v, $g = '') { $GLOBALS['ieadc_teste_cache'][$g][$k] = $v; return true; }
+function wp_cache_set($k, $v, $g = '', $exp = 0) { $GLOBALS['ieadc_teste_cache'][$g][$k] = $v; return true; }
 function wp_rand() { return random_int(0, PHP_INT_MAX); }
 
 function ieadc_teste_post($id) {
@@ -40,7 +41,6 @@ function get_posts($q) {
 }
 function get_post_meta($id, $k, $single) { return ieadc_teste_post($id)->meta[$k] ?? ''; }
 function get_post_type($id) { return ieadc_teste_post($id)?->post_type ?? false; }
-function get_the_excerpt($p) { return $p->post_excerpt; }
 function get_permalink($p) { return 'http://localhost:8080/' . ($p instanceof WP_Post && $p->post_type === 'evento' ? 'eventos/evento/' : '') . $p->post_name . '/'; }
 function home_url($c = '') { return 'http://localhost:8080' . $c; }
 function get_page_by_path($c) { return new WP_Post(['post_type' => 'page', 'post_name' => $c]); }
