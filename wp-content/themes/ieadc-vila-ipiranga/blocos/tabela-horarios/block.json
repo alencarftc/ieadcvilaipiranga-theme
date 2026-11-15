@@ -1,0 +1,95 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/tabela-horarios",
+	"title": "Tabelas de horários",
+	"category": "ieadc",
+	"icon": "editor-table",
+	"description": "Duas colunas com tabelas de dias, eventos e horários.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "padding-top:0",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"colunas": {
+			"type": "array",
+			"default": [
+				{
+					"eyebrow": "Toda semana",
+					"titulo": "Dias e horários",
+					"cabecalhos": "Dia|Evento|Horário",
+					"linhas": "Segunda-feira | Culto de Oração | 20h\nQuarta-feira | Culto de Ensino | 20h\nQuinta-feira | Culto dirigido pelo Círculo de Oração | 20h\nSexta-feira | Ensinai (Curso de Teologia Ministerial) | 19h30\nDomingo | Café comunitário | 9h\nDomingo | EBD (Escola Bíblica Dominical) | 9h30\nDomingo | Culto dominical | 19h",
+					"nota": ""
+				},
+				{
+					"eyebrow": "Todo mês",
+					"titulo": "Programação mensal",
+					"cabecalhos": "Quando|Evento|Horário",
+					"linhas": "2º sábado do mês | Ceia do Senhor | 19h30\nSexta-feira que antecede a ceia (meses ímpares) | Vigília | 22h\nSábado da ceia, pela manhã (meses pares) | Consagração | 8h",
+					"nota": "Vigília e consagração se revezam mês a mês: nos meses pares há consagração e, nos ímpares, vigília."
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Colunas",
+				"itens": {
+					"eyebrow": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Sobretítulo"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título",
+							"campo": "rico"
+						}
+					},
+					"cabecalhos": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Cabeçalhos (separados por |)"
+						}
+					},
+					"linhas": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Linhas (uma por linha: Dia | Evento | Horário)",
+							"campo": "texto-longo"
+						}
+					},
+					"nota": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Nota abaixo da tabela",
+							"campo": "rico"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

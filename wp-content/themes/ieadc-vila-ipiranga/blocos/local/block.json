@@ -1,0 +1,155 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/local",
+	"title": "Localização e mapa",
+	"category": "ieadc",
+	"icon": "location",
+	"description": "Endereço, linhas de ônibus, botão para o Google Maps e o mapa ilustrado.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "como-chegar",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Como chegar",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Onde estamos",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"linhasEndereco": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "pin",
+					"texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR<br>Estamos junto à Praça Nova República."
+				},
+				{
+					"icone": "onibus",
+					"texto": "De ônibus, as linhas 030 Interbairros III, 625 Gramados e 665 Vila Rex param a 5 ou 6 minutos a pé da igreja, nas ruas Bortolo Gusso e Professor João Mazzarotto. Os terminais Pinheirinho e Capão Raso ficam a cerca de 1,5 km."
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Linhas do endereço",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto (vazio = endereço da igreja)",
+							"campo": "rico"
+						}
+					}
+				}
+			}
+		},
+		"onibus": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "030 Interbairros III"
+				},
+				{
+					"texto": "625 Gramados"
+				},
+				{
+					"texto": "665 Vila Rex"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Linhas de ônibus",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Linha"
+						}
+					}
+				},
+				"ajuda": "Deixe vazio para não mostrar."
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "Abrir no Google Maps",
+					"link": "https://share.google/9UqZuK0EVcGxwFH63",
+					"icone": "pin"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Link",
+							"campo": "link"
+						}
+					},
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Ícone",
+							"campo": "icone"
+						}
+					}
+				}
+			}
+		},
+		"rotuloPin": {
+			"type": "string",
+			"default": "IEADC Vila Ipiranga",
+			"ieadc": {
+				"rotulo": "Nome no mapa"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

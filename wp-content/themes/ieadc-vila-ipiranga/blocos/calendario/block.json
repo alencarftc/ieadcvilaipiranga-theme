@@ -1,0 +1,168 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/calendario",
+	"title": "Calendário da agenda",
+	"category": "ieadc",
+	"icon": "calendar",
+	"description": "Meses da agenda a partir do mês atual, com legenda e notas.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo curva-top",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Agenda",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Cultos, confraternizações e eventos",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Agenda montada a partir da programação fixa semanal, dos temas do culto dominical e da programação mensal.",
+			"ieadc": {
+				"rotulo": "Texto",
+				"campo": "texto-longo"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do botão",
+				"campo": "link"
+			}
+		},
+		"legenda": {
+			"type": "array",
+			"default": [
+				{
+					"classe": "c-culto",
+					"texto": "Cultos da semana"
+				},
+				{
+					"classe": "c-ensino",
+					"texto": "Ensino e EBD"
+				},
+				{
+					"classe": "c-domingo",
+					"texto": "Domingo"
+				},
+				{
+					"classe": "c-ceia",
+					"texto": "Ceia do Senhor"
+				},
+				{
+					"classe": "c-vigilia",
+					"texto": "Vigília e consagração"
+				},
+				{
+					"classe": "c-jovens",
+					"texto": "Mocidade"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Legenda",
+				"itens": {
+					"classe": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Cor",
+							"campo": "opcao",
+							"opcoes": [
+								"c-culto",
+								"c-ensino",
+								"c-domingo",
+								"c-ceia",
+								"c-vigilia",
+								"c-jovens"
+							]
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					}
+				}
+			}
+		},
+		"meses": {
+			"type": "number",
+			"default": 3,
+			"ieadc": {
+				"rotulo": "Quantidade de meses"
+			}
+		},
+		"notaTitulo": {
+			"type": "string",
+			"default": "Confraternizações e eventos dos departamentos",
+			"ieadc": {
+				"rotulo": "Título da nota"
+			}
+		},
+		"notaTexto": {
+			"type": "string",
+			"default": "As datas das confraternizações e eventos de cada departamento são apresentadas pelas lideranças na reunião de início de ano. [datas de 2027 a confirmar]",
+			"ieadc": {
+				"rotulo": "Texto da nota",
+				"campo": "rico"
+			}
+		},
+		"vazioTitulo": {
+			"type": "string",
+			"default": "Quando a agenda estiver vazia",
+			"ieadc": {
+				"rotulo": "Título do cartão tracejado"
+			}
+		},
+		"vazioTexto": {
+			"type": "string",
+			"default": "Nenhum evento especial marcado por enquanto. Os cultos da semana seguem normalmente.",
+			"ieadc": {
+				"rotulo": "Texto do cartão tracejado",
+				"campo": "rico"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
