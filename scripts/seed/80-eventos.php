@@ -12,7 +12,7 @@ $eventos = [
 		'horario'   => '[horário a confirmar]',
 		'local'     => '',
 		'categoria' => 'c-jovens',
-		'link'      => '',
+		'link'      => 'ministerios/mocidade',
 	],
 ];
 

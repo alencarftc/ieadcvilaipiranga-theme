@@ -24,6 +24,18 @@ function ieadc_evento_categorias(): array {
 	];
 }
 
+/** Link: URL completa, /caminho ou caminho de página do site (ex.: ministerios/mocidade). */
+function ieadc_sanitizar_link($v): string {
+	$v = trim(sanitize_text_field((string) $v));
+	if ($v === '') {
+		return '';
+	}
+	if (str_starts_with($v, '/') || preg_match('#^[a-z][a-z0-9+.-]*:#i', $v)) {
+		return esc_url_raw($v);
+	}
+	return implode('/', array_filter(array_map('sanitize_title', explode('/', $v)), 'strlen')); // caminho de página
+}
+
 /** Data no formato Y-m-d (ou vazio). */
 function ieadc_sanitizar_data($v): string {
 	$v = sanitize_text_field((string) $v);
@@ -52,7 +64,7 @@ add_action('init', function () {
 		'evento_horario'   => 'sanitize_text_field',
 		'evento_local'     => 'sanitize_text_field',
 		'evento_categoria' => fn($v) => array_key_exists($v, ieadc_evento_categorias()) ? $v : 'c-culto',
-		'evento_link'      => fn($v) => esc_url_raw((string) $v),
+		'evento_link'      => 'ieadc_sanitizar_link',
 	];
 	foreach ($meta_evento as $chave => $limpar) {
 		register_post_meta('evento', $chave, ['type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => $limpar]);

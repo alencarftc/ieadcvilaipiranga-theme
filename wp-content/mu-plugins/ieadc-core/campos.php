@@ -98,7 +98,7 @@ function ieadc_caixa_evento(WP_Post $p): void {
 	ieadc_painel_campo('evento_horario', 'Horário', $m('evento_horario'), ['dica' => '19h30']);
 	ieadc_painel_campo('evento_local', 'Local', $m('evento_local'), ['dica' => 'No templo da igreja']);
 	ieadc_painel_campo('evento_categoria', 'Categoria (cor na agenda)', $m('evento_categoria') ?: 'c-culto', ['opcoes' => ieadc_evento_categorias()]);
-	ieadc_painel_campo('evento_link', 'Link (opcional)', $m('evento_link'), ['tipo' => 'url', 'ajuda' => 'Endereço completo. Vazio = página do evento.']);
+	ieadc_painel_campo('evento_link', 'Link (opcional)', $m('evento_link'), ['dica' => 'ministerios/mocidade', 'ajuda' => 'Página do site (ex.: ministerios/mocidade) ou endereço completo. Vazio = página do evento.']);
 }
 
 function ieadc_caixa_artigo(WP_Post $p): void {
