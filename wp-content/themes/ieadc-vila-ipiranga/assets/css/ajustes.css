@@ -39,3 +39,11 @@ html body{background:var(--branco)} /* o Blocksy imprime body{background-color:#
 /* O botão do Blocksy (button[type=submit]) sobrepunha fonte e espaçamento do .btn do protótipo. */
 .ieadc-ui .btn{font:700 16px/1 var(--f-tit);letter-spacing:.06em}
 .ieadc-ui .aceite{margin-bottom:0} /* o Blocksy dá margin-bottom:8px ao label e empurrava o botão Enviar */
+
+/* === M6: acessibilidade (só foco e movimento; nada muda no visual em repouso) === */
+/* O anel de foco do protótipo é azul-claro (#39A7F0): só 2,5:1 sobre branco. Em fundo claro usa o azul da marca (AA). */
+.ieadc-ui :focus-visible{outline-color:var(--azul)}
+.ieadc-ui :is(.on-dark,.faixa,.hero) :focus-visible,.rodape.ieadc-ui :focus-visible{outline-color:var(--claro)}
+/* Texto de apoio (.small, .note): --suave (#5E6C85) dá 5,4:1 no branco e 4,9:1 no gelo (AA); não muda. */
+/* Quem pede menos movimento não recebe rolagem suave nem animação. */
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important}}
