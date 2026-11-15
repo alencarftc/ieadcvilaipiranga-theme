@@ -35,7 +35,9 @@ services:
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('DISALLOW_FILE_EDIT', true);
         define('WPLANG', 'pt_BR');
+        if (getenv('IEADC_HOJE')) { define('IEADC_HOJE', getenv('IEADC_HOJE')); }
       SITE_URL: ${SITE_URL}
+      IEADC_HOJE: ${IEADC_HOJE:-}
     volumes:
       - wp:/var/www/html
       - ./wp-content/themes/ieadc-vila-ipiranga:/var/www/html/wp-content/themes/ieadc-vila-ipiranga
@@ -54,6 +56,8 @@ services:
       WORDPRESS_DB_USER: ${DB_USUARIO}
       WORDPRESS_DB_PASSWORD: ${DB_SENHA}
       SITE_URL: ${SITE_URL}
+      IEADC_HOJE: ${IEADC_HOJE:-}
+      IEADC_ATUALIZAR: ${IEADC_ATUALIZAR:-}
     volumes:
       - wp:/var/www/html
       - ./wp-content/themes/ieadc-vila-ipiranga:/var/www/html/wp-content/themes/ieadc-vila-ipiranga
