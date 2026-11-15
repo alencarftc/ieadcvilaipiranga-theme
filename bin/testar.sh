@@ -57,7 +57,7 @@ testes_playwright() {
   passo "playwright: $1"
   # Limite de envios dos formulários (5 por hora): zera antes de testar a interação.
   [ "$1" = "interacao" ] && docker compose run --rm -T wpcli wp transient delete --all >/dev/null 2>&1
-  npx playwright test -c tests/visual "$1" --reporter=list
+  npx playwright test -c tests/visual "$1.spec" --reporter=list
 }
 
 case "$parte" in
