@@ -22,4 +22,6 @@ if (wp_get_environment_type() === 'local') {
 		$m->Port     = 1025;
 		$m->SMTPAuth = false;
 	});
+	// "wordpress@localhost" é recusado como remetente; no Docker usa um endereço válido.
+	add_filter('wp_mail_from', fn() => 'site@ieadc.local');
 }
