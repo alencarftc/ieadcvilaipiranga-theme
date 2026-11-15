@@ -1,0 +1,46 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "sem-foto",
+   "eyebrow": "Contato",
+   "titulo": "Contato",
+   "lead": "Quer falar com a igreja? Mande uma mensagem pelo formulário ou use um dos contatos abaixo."
+  }
+ },
+ {
+  "bloco": "ieadc/contato-lista",
+  "attrs": {
+   "eyebrow": "Contatos",
+   "titulo": "Fale com a igreja",
+   "itens": [
+    {
+     "icone": "fone",
+     "titulo": "1° dirigente: Ev. Robson Stein",
+     "texto": "+55 (41) 98838-1994<br/>robsondouglass@terra.com.br"
+    },
+    {
+     "icone": "fone",
+     "titulo": "2º dirigente: Pb. Manoel Lima",
+     "texto": "+55 (41) 98444-5001<br/>E-mail [a definir]"
+    },
+    {
+     "icone": "pin",
+     "titulo": "Endereço",
+     "texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR"
+    },
+    {
+     "icone": "instagram",
+     "titulo": "Redes sociais",
+     "texto": "<a href=\"https://www.instagram.com/ieadc.vilaipiranga/\">Instagram</a> · <a href=\"https://www.facebook.com/ieadcvipagina\">Facebook</a> · <a href=\"https://www.youtube.com/channel/UC7la6gW5oIvo83_DQhBp9sQ\">YouTube</a>"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/capa",
+  "attrs": {
+   "foto": "f_contato_hero.webp"
+  }
+ }
+]
