@@ -1,0 +1,26 @@
+[
+ {
+  "bloco": "ieadc/artigo-topo",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/artigo-corpo",
+  "attrs": {
+   "versiculo": "mas recebereis poder, ao descer sobre vós o Espírito Santo, e sereis minhas testemunhas tanto em Jerusalém como em toda a Judeia e Samaria e até aos confins da terra.",
+   "referencia": "Atos 1.8 (ARA)"
+  }
+ },
+ {
+  "bloco": "ieadc/artigos-grade",
+  "attrs": {
+   "secao": "sec gelo curva-top",
+   "eyebrow": "Continue lendo",
+   "titulo": "Outras publicações",
+   "texto": "",
+   "botaoTexto": "",
+   "quantidade": 2,
+   "colunas": "g2",
+   "excluirAtual": true
+  }
+ }
+]

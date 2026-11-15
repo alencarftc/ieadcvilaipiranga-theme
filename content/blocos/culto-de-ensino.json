@@ -1,0 +1,173 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_cx_4.webp",
+   "foco": "center 25%",
+   "migalha": [
+    {
+     "texto": "Horários",
+     "link": "horarios-e-localizacao"
+    },
+    {
+     "texto": "Culto de Ensino",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Cultos · Culto de Ensino",
+   "titulo": "Culto de Ensino",
+   "lead": "Toda quarta-feira, às 20h, a igreja se reúne para aprender a Palavra de Deus.",
+   "botoes": [
+    {
+     "texto": "Próximas datas",
+     "link": "#datas-culto-de-ensino",
+     "estilo": "",
+     "icone": "cal"
+    },
+    {
+     "texto": "Como participar",
+     "link": "#participar-culto-de-ensino",
+     "estilo": "out",
+     "icone": "seta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Quarta-feira, às 20h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Aberto a todos"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem ensina",
+     "valor": "[a confirmar]"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "como-culto-de-ensino",
+     "titulo": "Como é o culto",
+     "tipo": "texto",
+     "texto": "Na quarta-feira, às 20h, o culto é dedicado ao ensino da Bíblia. É uma noite para aprender, tirar dúvidas da fé e crescer no conhecimento de Deus.\n\nO ensino é conduzido pela liderança da igreja. [Temas ou séries de estudo a confirmar]\n\nTraga a sua Bíblia para acompanhar o estudo.",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-culto-de-ensino",
+     "titulo": "Por que nos reunimos",
+     "tipo": "versiculo+texto",
+     "texto": "A fé cresce quando a Palavra é ensinada com clareza. O Culto de Ensino existe para que cada membro conheça melhor a Bíblia e saiba vivê-la no dia a dia.",
+     "versiculo": "Lâmpada para os meus pés é a tua palavra e, luz para os meus caminhos.",
+     "referencia": "Salmo 119.105 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "esperar-culto-de-ensino",
+     "titulo": "O que esperar",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Louvor congregacional",
+      "Ensino bíblico",
+      "Oração",
+      "Aplicação da Palavra à vida diária"
+     ]
+    },
+    {
+     "ancora": "datas-culto-de-ensino",
+     "titulo": "Próximas datas",
+     "tipo": "datas",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-culto-de-ensino",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-culto-de-ensino",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Endereço",
+   "lateralTexto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-culto-de-ensino",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos",
+   "fotos": [
+    "f_cx_22.webp",
+    "f_cx_120.webp",
+    "f_cx_178.webp"
+   ],
+   "legenda": "Culto de Ensino"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-culto-de-ensino",
+   "eyebrow": "Como participar",
+   "titulo": "Venha cultuar conosco",
+   "passos": [
+    "Chegue às 20h de quarta-feira.",
+    "Traga a sua Bíblia e um caderno para anotar.",
+    "Quer estudar ainda mais? Conheça a EBD e o Ensinai."
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ }
+]

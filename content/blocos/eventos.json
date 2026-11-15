@@ -1,0 +1,29 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_eventos_hero.webp",
+   "foco": "center 35%",
+   "eyebrow": "Agenda",
+   "titulo": "Eventos",
+   "lead": "Cultos especiais, confraternizações e eventos da igreja. Todos são bem-vindos.",
+   "botoes": [
+    {
+     "texto": "Ver horários",
+     "link": "horarios-e-localizacao",
+     "estilo": "out",
+     "icone": "relogio"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/eventos-grade",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/calendario",
+  "attrs": {}
+ }
+]

@@ -1,0 +1,174 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_cx_300.webp",
+   "foco": "center 30%",
+   "migalha": [
+    {
+     "texto": "Horários",
+     "link": "horarios-e-localizacao"
+    },
+    {
+     "texto": "Culto do Círculo de Oração",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Cultos · Culto do Círculo de Oração",
+   "titulo": "Culto do Círculo de Oração",
+   "lead": "Toda quinta-feira, às 20h, o culto é dirigido pelas irmãs do Círculo de Oração.",
+   "botoes": [
+    {
+     "texto": "Próximas datas",
+     "link": "#datas-culto-do-circulo-de-oracao",
+     "estilo": "",
+     "icone": "cal"
+    },
+    {
+     "texto": "Como participar",
+     "link": "#participar-culto-do-circulo-de-oracao",
+     "estilo": "out",
+     "icone": "seta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "Quinta-feira, às 20h"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Para quem",
+     "valor": "Aberto a todos"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "maos",
+     "rotulo": "Quem dirige",
+     "valor": "Círculo de Oração"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "como-culto-do-circulo-de-oracao",
+     "titulo": "Como é o culto",
+     "tipo": "texto",
+     "texto": "Na quinta-feira, às 20h, o culto é dirigido pelo Círculo de Oração, ministério que reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos.\n\nO coral do Círculo, regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), louva a Deus no culto. [Confirmar se o coral participa toda semana]\n\nO culto é aberto a todos, homens e mulheres, membros e visitantes.",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-culto-do-circulo-de-oracao",
+     "titulo": "Por que nos reunimos",
+     "tipo": "versiculo+texto",
+     "texto": "A oração é a base do Círculo, e a quinta-feira é o dia em que esse cuidado se abre para toda a igreja.",
+     "versiculo": "Porque, onde estiverem dois ou três reunidos em meu nome, ali estou no meio deles.",
+     "referencia": "Mateus 18.20 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "esperar-culto-do-circulo-de-oracao",
+     "titulo": "O que esperar",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Oração pela igreja e pelas famílias",
+      "Louvor com o coral do Círculo",
+      "Palavra de Deus",
+      "Oração pelos pedidos recebidos"
+     ]
+    },
+    {
+     "ancora": "datas-culto-do-circulo-de-oracao",
+     "titulo": "Próximas datas",
+     "tipo": "datas",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-culto-do-circulo-de-oracao",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-culto-do-circulo-de-oracao",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Endereço",
+   "lateralTexto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-culto-do-circulo-de-oracao",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos",
+   "fotos": [
+    "f_cx_276.webp",
+    "f_cx_288.webp",
+    "f_cx_316.webp",
+    "f_cx_301.webp"
+   ],
+   "legenda": "Culto do Círculo de Oração"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-culto-do-circulo-de-oracao",
+   "eyebrow": "Como participar",
+   "titulo": "Venha cultuar conosco",
+   "passos": [
+    "Chegue às 20h de quinta-feira.",
+    "Quer fazer parte do Círculo? Fale com Abigail Tostes Monteiro ou Luciana Santos de Jesus Stein.",
+    "Envie um pedido de oração pelo site."
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ }
+]

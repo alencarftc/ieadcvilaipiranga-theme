@@ -1,0 +1,26 @@
+[
+ {
+  "bloco": "ieadc/artigo-topo",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/artigo-corpo",
+  "attrs": {
+   "versiculo": "Porque, todas as vezes que comerdes este pão e beberdes o cálice, anunciais a morte do Senhor, até que ele venha.",
+   "referencia": "1 Coríntios 11.26 (ARA)"
+  }
+ },
+ {
+  "bloco": "ieadc/artigos-grade",
+  "attrs": {
+   "secao": "sec gelo curva-top",
+   "eyebrow": "Continue lendo",
+   "titulo": "Outras publicações",
+   "texto": "",
+   "botaoTexto": "",
+   "quantidade": 2,
+   "colunas": "g2",
+   "excluirAtual": true
+  }
+ }
+]

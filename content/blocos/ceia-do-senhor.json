@@ -1,0 +1,174 @@
+[
+ {
+  "bloco": "ieadc/hero",
+  "attrs": {
+   "variante": "pagina",
+   "foto": "f_cx_147.webp",
+   "foco": "center 45%",
+   "migalha": [
+    {
+     "texto": "Horários",
+     "link": "horarios-e-localizacao"
+    },
+    {
+     "texto": "Ceia do Senhor",
+     "link": ""
+    }
+   ],
+   "eyebrow": "Cultos · Ceia do Senhor",
+   "titulo": "Ceia do Senhor",
+   "lead": "Todo 2º sábado do mês, às 19h30, a igreja celebra a Ceia do Senhor.",
+   "botoes": [
+    {
+     "texto": "Próximas datas",
+     "link": "#datas-ceia-do-senhor",
+     "estilo": "",
+     "icone": "cal"
+    },
+    {
+     "texto": "Como participar",
+     "link": "#participar-ceia-do-senhor",
+     "estilo": "out",
+     "icone": "seta"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/trocador",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ },
+ {
+  "bloco": "ieadc/fatos",
+  "attrs": {
+   "fatos": [
+    {
+     "icone": "relogio",
+     "rotulo": "Quando",
+     "valor": "2º sábado do mês, às 19h30"
+    },
+    {
+     "icone": "pessoas",
+     "rotulo": "Quem participa",
+     "valor": "[a confirmar]"
+    },
+    {
+     "icone": "pin",
+     "rotulo": "Onde",
+     "valor": "No templo da igreja"
+    },
+    {
+     "icone": "chama",
+     "rotulo": "Preparação",
+     "valor": "Vigília ou consagração"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/corpo-indice",
+  "attrs": {
+   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
+   "secoes": [
+    {
+     "ancora": "como-ceia-do-senhor",
+     "titulo": "Como é o culto",
+     "tipo": "texto",
+     "texto": "No 2º sábado de cada mês, às 19h30, a igreja se reúne para a Ceia do Senhor. É um momento de memória, comunhão e gratidão pelo sacrifício de Jesus.\n\nAntes da ceia, a igreja se prepara em oração. Em alguns meses há vigília na sexta-feira anterior, às 22h; nos outros, consagração no próprio sábado, pela manhã, às 8h.\n\n[Quem pode participar dos elementos e orientações para visitantes a confirmar]",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    },
+    {
+     "ancora": "porque-ceia-do-senhor",
+     "titulo": "Por que nos reunimos",
+     "tipo": "versiculo+texto",
+     "texto": "Jesus mandou que a igreja fizesse isso em memória dele. O pão e o cálice lembram o corpo entregue e o sangue derramado na cruz, e anunciam que Ele vai voltar.",
+     "versiculo": "E, tomando um pão, tendo dado graças, o partiu e lhes deu, dizendo: Isto é o meu corpo oferecido por vós; fazei isto em memória de mim.",
+     "referencia": "Lucas 22.19 (ARA)",
+     "itens": []
+    },
+    {
+     "ancora": "esperar-ceia-do-senhor",
+     "titulo": "O que esperar",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Louvor e oração",
+      "Pregação da Palavra",
+      "Partilha do pão e do cálice",
+      "Momento de exame e gratidão"
+     ]
+    },
+    {
+     "ancora": "datas-ceia-do-senhor",
+     "titulo": "Próximas datas",
+     "tipo": "datas",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": []
+    }
+   ],
+   "indiceTitulo": "Nesta página",
+   "indiceExtras": [
+    {
+     "ancora": "fotos-ceia-do-senhor",
+     "titulo": "Fotos"
+    },
+    {
+     "ancora": "participar-ceia-do-senhor",
+     "titulo": "Como participar"
+    }
+   ],
+   "lateralTitulo": "Endereço",
+   "lateralTexto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR",
+   "botoes": [
+    {
+     "texto": "Como chegar",
+     "link": "https://share.google/9UqZuK0EVcGxwFH63",
+     "icone": "pin",
+     "classe": "branco"
+    }
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/carrossel",
+  "attrs": {
+   "ancora": "fotos-ceia-do-senhor",
+   "eyebrow": "Galeria",
+   "titulo": "Fotos",
+   "fotos": [
+    "f_cx_141.webp",
+    "f_cx_146.webp",
+    "f_cx_242.webp",
+    "f_cx_307.webp"
+   ],
+   "legenda": "Ceia do Senhor"
+  }
+ },
+ {
+  "bloco": "ieadc/passos",
+  "attrs": {
+   "ancora": "participar-ceia-do-senhor",
+   "eyebrow": "Como participar",
+   "titulo": "Venha cultuar conosco",
+   "passos": [
+    "Participe da vigília ou da consagração do mês.",
+    "Chegue às 19h30 do 2º sábado.",
+    "Tem dúvidas sobre a ceia? Converse com o pastor."
+   ]
+  }
+ },
+ {
+  "bloco": "ieadc/vizinhos",
+  "attrs": {
+   "grupo": "cultos"
+  }
+ }
+]
