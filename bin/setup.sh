@@ -38,8 +38,9 @@ wp theme delete twentytwentythree twentytwentyfour twentytwentyfive 2>/dev/null 
 
 # Plugins (poucos). Os de produção ficam instalados, mas desligados no local.
 wp plugin delete akismet hello 2>/dev/null || true
-wp plugin install wordpress-seo two-factor limit-login-attempts-reloaded --activate
-wp plugin install litespeed-cache updraftplus
+# Sem acesso ao wordpress.org (ex.: nuvem) os plugins não instalam: avisa e segue, para o seed e os testes rodarem.
+wp plugin install wordpress-seo two-factor limit-login-attempts-reloaded --activate || echo "AVISO: plugins de produção não instalados (sem acesso ao wordpress.org); o site funciona sem eles."
+wp plugin install litespeed-cache updraftplus || true
 wp language plugin install pt_BR --all || true
 wp language theme install pt_BR --all || true
 

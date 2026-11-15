@@ -41,8 +41,8 @@ WP theme activate ieadc-vila-ipiranga
 WPTalvez theme delete twentytwentythree twentytwentyfour twentytwentyfive
 
 WPTalvez plugin delete akismet hello
-WP plugin install wordpress-seo two-factor limit-login-attempts-reloaded --activate
-WP plugin install litespeed-cache updraftplus
+WPTalvez plugin install wordpress-seo two-factor limit-login-attempts-reloaded --activate
+WPTalvez plugin install litespeed-cache updraftplus
 WPTalvez language plugin install pt_BR --all
 WPTalvez language theme install pt_BR --all
 
