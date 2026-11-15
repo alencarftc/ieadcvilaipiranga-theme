@@ -62,6 +62,7 @@ add_shortcode('ieadc_pedido_oracao', function () {
 
 add_shortcode('ieadc_contato', function () {
 	$h  = ieadc_form_abre('ieadc_contato', 'contato');
+	$h .= '<div><span class="eyebrow">Formulário</span><h2 class="h2" style="margin-top:8px">Mande uma mensagem</h2><svg class="swoosh" viewBox="0 0 260 16" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 3 170 2 257 8"/></svg></div>';
 	$h .= '<div class="campo"><label for="c-nome">Nome</label><input id="c-nome" name="nome" required maxlength="80" autocomplete="name"></div>';
 	$h .= '<div class="campo"><label for="c-contato">E-mail ou telefone</label><input id="c-contato" name="contato" required maxlength="120"></div>';
 	$h .= '<div class="campo"><label for="c-msg">Mensagem</label><textarea id="c-msg" name="mensagem" required maxlength="3000"></textarea></div>';
