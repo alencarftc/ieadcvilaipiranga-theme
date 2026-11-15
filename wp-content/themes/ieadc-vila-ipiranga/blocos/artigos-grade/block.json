@@ -1,0 +1,108 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/artigos-grade",
+	"title": "Artigos (grade)",
+	"category": "ieadc",
+	"icon": "admin-post",
+	"description": "Os artigos mais recentes, com foto, categoria e resumo.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Artigos e conteúdo",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Palavra e reflexões",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Mensagens e estudos da nossa liderança.",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "Ver conteúdos",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "artigos",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão"
+			}
+		},
+		"quantidade": {
+			"type": "number",
+			"default": 3,
+			"ieadc": {
+				"rotulo": "Quantidade de artigos"
+			}
+		},
+		"colunas": {
+			"type": "string",
+			"default": "g3",
+			"ieadc": {
+				"campo": "opcao",
+				"opcoes": [
+					"g2",
+					"g3"
+				],
+				"rotulo": "Colunas"
+			}
+		},
+		"excluirAtual": {
+			"type": "boolean",
+			"default": false,
+			"ieadc": {
+				"rotulo": "Esconder o artigo aberto (Continue lendo)"
+			}
+		},
+		"maisTexto": {
+			"type": "string",
+			"default": "Ler artigo",
+			"ieadc": {
+				"rotulo": "Texto do link de cada cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

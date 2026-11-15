@@ -1,0 +1,115 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/chamadas",
+	"title": "Chamadas lado a lado",
+	"category": "ieadc",
+	"icon": "columns",
+	"description": "Dois cartões com foto de fundo, título e botão.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"chamadas": {
+			"type": "array",
+			"default": [
+				{
+					"foto": 0,
+					"eyebrow": "Aceitar Jesus",
+					"titulo": "Quer seguir Jesus?",
+					"texto": "Dê o primeiro passo. Estamos aqui para caminhar com você.",
+					"estilo": "",
+					"botaoTexto": "Saiba como",
+					"botaoLink": "aceitar-jesus"
+				},
+				{
+					"foto": 0,
+					"eyebrow": "Pedidos de oração",
+					"titulo": "Podemos orar por você?",
+					"texto": "Envie o seu pedido. Ele chega só a quem vai orar por você.",
+					"estilo": "azul",
+					"botaoTexto": "Enviar pedido",
+					"botaoLink": "pedidos-de-oracao"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Chamadas (2)",
+				"itens": {
+					"foto": {
+						"type": "number",
+						"ieadc": {
+							"campo": "imagem",
+							"rotulo": "Foto de fundo"
+						}
+					},
+					"eyebrow": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Sobretítulo"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"ieadc": {
+							"campo": "opcao",
+							"opcoes": [
+								"",
+								"azul"
+							],
+							"rotulo": "Estilo (vazio = branco, azul)"
+						}
+					},
+					"botaoTexto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto do botão"
+						}
+					},
+					"botaoLink": {
+						"type": "string",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link do botão"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

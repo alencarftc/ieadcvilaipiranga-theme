@@ -1,0 +1,131 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/artigos-categorias",
+	"title": "Artigos (outros formatos)",
+	"category": "ieadc",
+	"icon": "playlist-audio",
+	"description": "Cartões de texto sobre outros formatos de conteúdo.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo curva-top",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Textos, áudios e vídeos",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Outros formatos",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão"
+			}
+		},
+		"cartoes": {
+			"type": "array",
+			"default": [
+				{
+					"chip": "Áudios",
+					"icone": "fone-ouvido",
+					"titulo": "Mensagens em áudio",
+					"texto": "[a confirmar]",
+					"tracejado": false
+				},
+				{
+					"chip": "Quando ainda não houver publicações",
+					"icone": "",
+					"titulo": "",
+					"texto": "Em breve, mensagens e estudos da nossa liderança.",
+					"tracejado": true
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Cartões",
+				"itens": {
+					"chip": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Etiqueta"
+						}
+					},
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"campo": "icone",
+							"rotulo": "Ícone da etiqueta"
+						}
+					},
+					"titulo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Título"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"tracejado": {
+						"type": "boolean",
+						"ieadc": {
+							"rotulo": "Borda tracejada (aviso)"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

@@ -1,0 +1,176 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/boas-vindas",
+	"title": "Boas-vindas",
+	"category": "ieadc",
+	"icon": "format-quote",
+	"description": "Foto em moldura, texto de boas-vindas, botões e os valores da igreja.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec glow",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"foto": {
+			"type": "number",
+			"default": 0,
+			"ieadc": {
+				"campo": "imagem",
+				"rotulo": "Foto da moldura"
+			}
+		},
+		"foco": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Foco da foto (ex.: 50% 30%)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Boas-vindas",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "A paz do Senhor!",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Que alegria ter você aqui. A IEADC Vila Ipiranga é uma congregação da Assembleia de Deus em Curitiba onde a Palavra é ensinada, a oração é prioridade e cada família é recebida com carinho. Neste ano, nosso tema é \"Alcançar Curitiba para Cristo. Nossa missão, nossa paixão.\" Confira nossos horários e venha cultuar a Deus conosco.",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"aviso": {
+			"type": "string",
+			"default": "Opção 2 das boas-vindas. [o pastor escolhe entre as duas opções]",
+			"ieadc": {
+				"rotulo": "Aviso (opcional)"
+			}
+		},
+		"botoes": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "Conheça a nossa história",
+					"link": "sobre-nos",
+					"estilo": "out"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Botões",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					},
+					"link": {
+						"type": "string",
+						"ieadc": {
+							"campo": "link",
+							"rotulo": "Link"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"ieadc": {
+							"campo": "opcao",
+							"opcoes": [
+								"",
+								"out",
+								"branco",
+								"sol"
+							],
+							"rotulo": "Estilo (vazio, out, branco, sol)"
+						}
+					}
+				}
+			}
+		},
+		"valores": {
+			"type": "array",
+			"default": [
+				{
+					"icone": "livro",
+					"texto": "Ensino genuíno da Palavra de Deus"
+				},
+				{
+					"icone": "chama",
+					"texto": "Fé pentecostal"
+				},
+				{
+					"icone": "megafone",
+					"texto": "Evangelização"
+				},
+				{
+					"icone": "degraus",
+					"texto": "Discipulado"
+				},
+				{
+					"icone": "casa",
+					"texto": "Família"
+				},
+				{
+					"icone": "pessoas",
+					"texto": "Comunhão"
+				},
+				{
+					"icone": "maos",
+					"texto": "Amor ao próximo"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Valores",
+				"itens": {
+					"icone": {
+						"type": "string",
+						"ieadc": {
+							"campo": "icone",
+							"rotulo": "Ícone"
+						}
+					},
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Texto"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

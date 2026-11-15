@@ -1,0 +1,82 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/ministerios-grade",
+	"title": "Ministérios (grade colorida)",
+	"category": "ieadc",
+	"icon": "grid-view",
+	"description": "Um cartão colorido por ministério, com dia e horário.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Conheça cada ministério",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Escolha um ministério",
+			"ieadc": {
+				"campo": "rico",
+				"rotulo": "Título"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Toque em um ministério para ver como ele funciona, quando se reúne e como participar.",
+			"ieadc": {
+				"campo": "texto-longo",
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"campo": "link",
+				"rotulo": "Link do botão"
+			}
+		},
+		"maisTexto": {
+			"type": "string",
+			"default": "Conhecer o ministério",
+			"ieadc": {
+				"rotulo": "Texto do link de cada cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}
