@@ -1,0 +1,73 @@
+# Ambiente local do site (só na rede de casa). Uso: veja o README.
+name: ieadc-site
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NOME}
+      MARIADB_USER: ${DB_USUARIO}
+      MARIADB_PASSWORD: ${DB_SENHA}
+      MARIADB_ROOT_PASSWORD: ${DB_SENHA_ROOT}
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 30
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    ports:
+      - "${SITE_INTERFACE:-0.0.0.0}:${SITE_PORTA:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NOME}
+      WORDPRESS_DB_USER: ${DB_USUARIO}
+      WORDPRESS_DB_PASSWORD: ${DB_SENHA}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', getenv('SITE_URL') ?: 'http://localhost:8080');
+        define('WP_SITEURL', WP_HOME);
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('DISALLOW_FILE_EDIT', true);
+        define('WPLANG', 'pt_BR');
+      SITE_URL: ${SITE_URL}
+    volumes:
+      - wp:/var/www/html
+      - ./wp-content/themes/ieadc-vila-ipiranga:/var/www/html/wp-content/themes/ieadc-vila-ipiranga
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./config/php.ini:/usr/local/etc/php/conf.d/ieadc.ini:ro
+
+  # Linha de comando do WordPress (wp-cli). Usado pelos scripts em bin/.
+  wpcli:
+    image: wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on: [wordpress]
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NOME}
+      WORDPRESS_DB_USER: ${DB_USUARIO}
+      WORDPRESS_DB_PASSWORD: ${DB_SENHA}
+      SITE_URL: ${SITE_URL}
+    volumes:
+      - wp:/var/www/html
+      - ./wp-content/themes/ieadc-vila-ipiranga:/var/www/html/wp-content/themes/ieadc-vila-ipiranga
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./scripts:/scripts:ro
+      - ./content:/content
+
+  # Caixa de e-mails falsa: os formulários do ambiente local chegam em http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+
+volumes:
+  db:
+  wp:

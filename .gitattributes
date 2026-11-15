@@ -1,0 +1,8 @@
+* text=auto
+*.sh text eol=lf
+*.php text eol=lf
+*.py text eol=lf
+*.webp binary
+*.woff2 binary
+*.png binary
+*.jpg binary
