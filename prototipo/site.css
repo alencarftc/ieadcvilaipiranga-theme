@@ -922,3 +922,13 @@ a:hover .mais.acao{background:var(--marinho)}
 .faq-item a{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
 @media (max-width:900px){.faq{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:600px){.avalie{border-radius:21px;padding:var(--s4) var(--s3)}.avalie .estrela{width:20px;height:20px}}
+
+/* === Fase 3 (WCAG 2.5.8 e 1.4.3): alvo de toque dos pontos do carrossel e contraste do "hoje" da agenda no celular === */
+/* Os pontos do carrossel tinham 10 x 10 px (o mínimo é 24 x 24, sem sobrepor o vizinho). Cada botão agora tem 24 px, com o ponto de 10 px desenhado no miolo
+   (padding de 7 px + background-clip/origin: content-box): o ponto é o mesmo, mas a distância entre eles passa de 8 para 14 px. */
+.pontos{gap:0}
+.pontos button,.pontos button.on{box-sizing:border-box;height:24px;padding:7px;background-clip:content-box;background-origin:content-box}
+.pontos button{width:24px}
+.pontos button.on{width:48px}
+/* Na agenda em lista (até 900 px) o dia de hoje aparece em laranja (#FE7D00) sobre branco: 2,6:1. #B85700 dá 4,8:1 e continua laranja. */
+@media (max-width:900px){.cel.hoje .n{color:#B85700}}

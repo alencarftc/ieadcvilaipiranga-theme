@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 const IEADC_LARGURA_CELULAR = 768;
 
 /**
- * Foto do topo (a que o Lighthouse mede como LCP): no celular vai a versão de 768 px (~65 KB em vez de ~185 KB), no resto a original.
+ * Foto do topo (a que o Lighthouse mede como LCP; nos artigos, a capa): no celular vai a versão de 768 px (~65 KB em vez de ~185 KB), no resto a original.
  * O <link rel="preload"> tem `media` para o navegador baixar só uma delas; como o HTML do bloco aponta para a original (style inline),
  * um <style> no cabeçalho troca o fundo no celular. O seletor casa o nome do arquivo no atributo style.
  */
@@ -18,10 +18,18 @@ add_action('wp_head', function () {
 		return;
 	}
 	$hero = ieadc_seo_hero();
-	if (empty($hero['foto']) || ($hero['variante'] ?? 'pagina') === 'sem-foto') {
+	$id   = (int) ($hero['foto'] ?? 0);
+	$artigo = false;
+	if ($hero && ($hero['variante'] ?? 'pagina') === 'sem-foto') {
 		return;
 	}
-	$id    = (int) $hero['foto'];
+	if (!$id && ieadc_seo_bloco(null, ['ieadc/artigo-topo']) !== null) { // artigo: a capa (imagem destacada) é a maior imagem do topo
+		$id = (int) get_post_thumbnail_id();
+		$artigo = true;
+	}
+	if (!$id) {
+		return;
+	}
 	$cheia = wp_get_attachment_image_src($id, 'full');
 	$media = wp_get_attachment_image_src($id, 'medium_large');
 	if (!$cheia) {
@@ -29,14 +37,22 @@ add_action('wp_head', function () {
 	}
 	$pequena = $media && $media[0] !== $cheia[0] && $media[1] <= IEADC_LARGURA_CELULAR + 64 && $media[1] >= 640;
 	if (!$pequena) {
-		echo '<link rel="preload" as="image" href="' . esc_url($cheia[0]) . '" fetchpriority="high">' . "\n";
+		if (!$artigo) {
+			echo '<link rel="preload" as="image" href="' . esc_url($cheia[0]) . '" fetchpriority="high">' . "
+";
+		}
 		return;
 	}
 	$l = IEADC_LARGURA_CELULAR;
-	echo '<link rel="preload" as="image" href="' . esc_url($media[0]) . '" media="(max-width:' . $l . 'px)" fetchpriority="high">' . "\n";
-	echo '<link rel="preload" as="image" href="' . esc_url($cheia[0]) . '" media="(min-width:' . ($l + 1) . 'px)" fetchpriority="high">' . "\n";
+	echo '<link rel="preload" as="image" href="' . esc_url($media[0]) . '" media="(max-width:' . $l . 'px)" fetchpriority="high">' . "
+";
+	if (!$artigo) { // no artigo, no computador a capa fica mais abaixo: sem preload (não disputa banda com o CSS)
+		echo '<link rel="preload" as="image" href="' . esc_url($cheia[0]) . '" media="(min-width:' . ($l + 1) . 'px)" fetchpriority="high">' . "
+";
+	}
 	$arq = basename((string) wp_parse_url($cheia[0], PHP_URL_PATH));
-	echo '<style id="ieadc-topo-celular">@media (max-width:' . $l . 'px){.ieadc-pagina>section:first-child [style*="' . esc_attr($arq) . '"]{background-image:url(' . esc_url($media[0]) . ')!important}}</style>' . "\n";
+	echo '<style id="ieadc-topo-celular">@media (max-width:' . $l . 'px){.ieadc-pagina>section:first-child [style*="' . esc_attr($arq) . '"]{background-image:url(' . esc_url($media[0]) . ')!important}}</style>' . "
+";
 }, 2);
 
 /**

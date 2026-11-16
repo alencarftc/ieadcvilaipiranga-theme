@@ -1,5 +1,5 @@
 // Acessibilidade (WCAG 2.1 nível AA) com axe-core e navegação por teclado. Rode com ./bin/testar.sh a11y.
-// 1) axe nas 28 páginas, em 390, 900 e 1440 px (regras wcag2a, wcag2aa, wcag21a, wcag21aa e best-practice);
+// 1) axe nas 28 páginas, em 390, 900 e 1440 px (regras wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa e best-practice);
 //    a falha lista regra, impacto, seletor e trecho de cada ocorrência.
 // 2) teclado: link "Pular para o conteúdo", ordem e foco visível, menu do celular, submenu do computador, carrossel.
 // 3) prefers-reduced-motion: sem rolagem suave nem animação.
@@ -9,7 +9,8 @@ const AxeBuilder = require('@axe-core/playwright').default;
 const { paginas, urlWp, WP } = require('./lib/paginas');
 
 const LARGURAS = [390, 900, 1440];
-const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'];
+// wcag22aa entra por causa do tamanho do alvo de toque (24 px, regra target-size): o Lighthouse a cobra.
+const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
 
 /** Abre a página e espera fontes e imagens (o contraste é medido sobre o que está desenhado). */
 async function abrir(page, url) {
@@ -60,6 +61,25 @@ test.describe('axe (WCAG 2.1 AA e boas práticas)', () => {
 });
 
 
+
+// A agenda marca o "hoje" de um jeito diferente em cada data (o dia de hoje sem culto aparece em laranja na lista do celular, por exemplo), e os
+// testes fixam 06/10/2026: estas datas cobrem o "hoje" vazio, fim de ano e mês sem evento.
+test.describe('axe com outras datas na agenda', () => {
+  for (const data of ['2026-11-16', '2026-12-24', '2027-01-10']) {
+    for (const pagina of ['inicio', 'eventos', 'horarios-e-localizacao']) {
+      for (const largura of [390, 900]) {
+        test(`axe: ${pagina} @${largura} em ${data}`, async ({ page }) => {
+          await page.setExtraHTTPHeaders({ 'X-Ieadc-Hoje': data });
+          await page.setViewportSize({ width: largura, height: 900 });
+          await abrir(page, urlWp(pagina));
+          const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+          expect(violations, `${violations.length} regra(s) violada(s) em ${urlWp(pagina)} a ${largura}px com a data ${data}:${relatorio(violations)}
+`).toEqual([]);
+        });
+      }
+    }
+  }
+});
 
 test.describe('teclado', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
@@ -125,9 +145,11 @@ test.describe('teclado', () => {
     await grupo.locator('a.grp').focus();
     const sub = grupo.locator('> .sub');
     await expect(sub).toHaveCSS('visibility', 'visible');
+    await expect(sub).toHaveCSS('opacity', '1'); // a transição do submenu (0,18 s) precisa acabar: um Tab no meio dela pula o submenu
     await page.keyboard.press('Tab');
     const primeiro = sub.locator('a').first();
-    await expect(primeiro).toBeFocused();
+    const onde = await page.evaluate(() => document.activeElement.outerHTML.slice(0, 90));
+    await expect(primeiro, `depois do Tab o foco está em: ${onde}`).toBeFocused();
     const contorno = await primeiro.evaluate((el) => { const cs = getComputedStyle(el); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0; });
     expect(contorno, 'o item do submenu em foco precisa ter contorno').toBe(true);
   });

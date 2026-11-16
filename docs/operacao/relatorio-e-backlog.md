@@ -10,7 +10,7 @@ São **4 fases**, mais a trilha de infraestrutura (migração, homologação e C
 |---|---|---|
 | **1** | Data real na página inicial, eventos vindos do módulo de eventos, integração dos plugins, textos amarelos, modelo de artigo novo, manual de manutenção | **Concluída** (PR #36, no ar na homologação) |
 | **2** | SEO técnico, dados estruturados para Google e Gemini, `llms.txt`, seção "Avalie a igreja no Google" | **Concluída** (PR #37, no ar na homologação). Estrelas ajustadas na PR #38 (aguarda CI) |
-| **3** | Acessibilidade (axe, WCAG 2.1 AA), Lighthouse 100, favicon, desempenho, cabeçalhos de segurança | **Parcial, cerca de 25%**: o teste do axe e os primeiros ajustes estão commitados (branch `feat/site-a11y-perf`), sem a bateria completa |
+| **3** | Acessibilidade (axe, WCAG 2.1 AA), Lighthouse 100, favicon, desempenho, cabeçalhos de segurança | **Concluída** (branch `feat/site-a11y-perf`, PR aberto): axe sem violações, `bin/lighthouse.sh`, favicon, desempenho do front e cabeçalhos; falta medir na homologação e passar a CSP a `ativo` |
 | **4** | Rastreamento (Google Analytics com consentimento, Search Console), marketing, UX e o que mais couber (seção 4 abaixo) | **Não começou** |
 | Infra | Migração, homologação, CI/CD | Homologação **no ar** e publicada pelo mesmo `implantar.sh` do CI; CI/CD **mesclado, mas inativo** (faltam os segredos); produção **intocada** |
 
@@ -31,7 +31,7 @@ Estimativa honesta de conclusão do pedido inteiro: **cerca de 65%**. Duas das q
 ## 3. O que falta para 100%
 
 **Comigo (posso fazer sem ajuda):**
-- [ ] **Fase 3:** zerar as violações do axe (WCAG 2.1 AA) nas 28 páginas e 3 larguras; favicon e ícones (`/favicon.ico` dá 404 e entra no console); imagem do topo menor no celular (LCP 3,3 s), CSS que bloqueia a renderização e CSS do Blocksy sem uso; HSTS, X-Frame-Options e CSP; `bin/lighthouse.sh` com meta 100/100/100/100; revisão e merge.
+- [x] **Fase 3:** zerar as violações do axe (WCAG 2.1 AA) nas 28 páginas e 3 larguras; favicon e ícones (`/favicon.ico` dá 404 e entra no console); imagem do topo menor no celular (LCP 3,3 s), CSS que bloqueia a renderização e CSS do Blocksy sem uso; HSTS, X-Frame-Options e CSP; `bin/lighthouse.sh` com meta 100/100/100/100; revisão e merge.
 - [ ] **Fase 4:** itens da seção 4.
 - [ ] Republicar a homologação a cada merge e medir o Lighthouse nela.
 - [ ] Rodar o CI de ponta a ponta no GitHub (depende dos segredos, abaixo).
@@ -45,25 +45,25 @@ Estimativa honesta de conclusão do pedido inteiro: **cerca de 65%**. Duas das q
 
 ## 4. Melhorias cabíveis (a lista que o Felipe pediu)
 
-Marcas: **[feito]**, **[fase 3]**, **[fase 4]**, **[Felipe]** quando depende de dado ou decisão dele.
+Marcas: **[feito]**, **[fase 4]**, **[Felipe]** quando depende de dado ou decisão dele.
 
 **Desempenho**
-- [fase 3] Imagem do topo em tamanhos por tela (hoje a mesma de 1600 px vai ao celular) e preload da certa.
-- [fase 3] Juntar e minificar o CSS próprio; tirar o CSS do Blocksy e do WordPress que o site não usa; CSS crítico se compensar.
-- [fase 3] Imagens com `width`/`height`, `lazy` abaixo da dobra, `fetchpriority` só no LCP.
-- [fase 3] Configuração recomendada do LiteSpeed (cache de página, minificar, WebP, ESI) documentada e, se possível, gravada pelo seed.
+- [feito] Imagem do topo em tamanhos por tela (no celular, a versão de 768 px, 65 KB em vez de 185 KB) e preload da certa; fotos de baixo só carregam perto da tela.
+- [feito] Juntar e minificar o CSS próprio; tirar o CSS do Blocksy e do WordPress que o site não usa; CSS crítico se compensar.
+- [feito] Imagens com `width`/`height`, `lazy` abaixo da dobra, `fetchpriority` só no LCP.
+- [feito] Configuração recomendada do LiteSpeed (cache de página, minificar, WebP, ESI) documentada em `plugins.md` (o seed não grava: os nomes das opções mudam entre versões). [Felipe/orquestrador: ligar no painel da hospedagem].
 - [fase 4] Fontes só com os pesos usados; `preconnect` só se houver origem externa; cache longo para fontes e imagens; verificação em CDN.
 
 **Acessibilidade**
-- [fase 3] axe como teste do projeto (WCAG 2.1 A e AA) e correção de todas as violações, incluindo contraste.
-- [fase 3] Link "pular para o conteúdo", foco visível, menu e carrossel operáveis por teclado, `prefers-reduced-motion`.
+- [feito] axe como teste do projeto (WCAG 2.1 A e AA) e correção de todas as violações, incluindo contraste.
+- [feito] Link "pular para o conteúdo", foco visível, menu e carrossel operáveis por teclado, `prefers-reduced-motion`.
 - [fase 4] Mensagens de erro dos formulários anunciadas por leitor de tela (`aria-live`), alvos de toque de 44 px, texto alternativo revisado, idioma das citações bíblicas.
 
 **Experiência do usuário**
 - [fase 4] Botões "Como chegar" (Google Maps e Waze) a partir do endereço; botão de WhatsApp e de ligação [Felipe: confirmar que o telefone é WhatsApp].
 - [fase 4] "Adicionar ao calendário" (arquivo .ics e Google Agenda) em cada evento e nos cultos fixos.
 - [fase 4] Compartilhar artigo (WhatsApp, Facebook, copiar link); página 404 acolhedora; busca no site.
-- [fase 4] Página "Primeira visita" (o que esperar, onde estacionar, horários) [Felipe: conteúdo]; site instalável (webmanifest) com os ícones da fase 3.
+- [fase 4] Página "Primeira visita" (o que esperar, onde estacionar, horários) [Felipe: conteúdo]; site instalável (webmanifest e ícones: já feitos na fase 3).
 
 **Rastreamento e medição**
 - [fase 4] Google Analytics 4 com Consent Mode v2 e aviso de cookies (LGPD) com recusar/aceitar; só carrega depois do consentimento. ID configurável em Configurações [Felipe: ID do GA4].
@@ -76,7 +76,7 @@ Marcas: **[feito]**, **[fase 3]**, **[fase 4]**, **[Felipe]** quando depende de 
 - [fase 4] Descrição ou `noindex` nas categorias de artigo; redirecionar `www` e `http` para o endereço principal na hospedagem; texto alternativo e nomes de arquivo das fotos; artigos periódicos e uma página local ("igreja no Capão Raso, Curitiba") com conteúdo próprio.
 
 **Segurança**
-- [fase 3] HSTS, X-Frame-Options, Cross-Origin-Opener-Policy e CSP (primeiro só em relatório, sem quebrar o painel).
+- [feito] HSTS, X-Frame-Options, Cross-Origin-Opener-Policy e CSP (primeiro só em relatório, sem quebrar o painel).
 - [fase 4] Endurecimento do `.htaccess` (bloquear listagem de pasta e arquivos sensíveis), proteção extra nos formulários (Turnstile opcional), atualização automática de plugins em versões de correção, teste de restauração do backup.
 - [Felipe] 2FA ligado para os administradores; backup remoto no Google Drive da igreja.
 
