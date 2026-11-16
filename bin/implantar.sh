@@ -32,7 +32,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /content/backup/...
-DOMINIO_PRODUCAO="${DOMINIO_PRODUCAO:-ieadcvilaipiranga.com.br}"
+# No GitHub Actions o domínio principal é sempre este (a variável só existe para ensaiar contra um servidor de mentira).
+if [ "${GITHUB_ACTIONS:-}" = true ]; then DOMINIO_PRODUCAO="ieadcvilaipiranga.com.br"; else DOMINIO_PRODUCAO="${DOMINIO_PRODUCAO:-ieadcvilaipiranga.com.br}"; fi
 
 # Mensagens vão para a saída de erro; a saída padrão fica livre para dados (ler-deploy).
 info() { echo "$*" >&2; }
@@ -292,23 +293,25 @@ cmd_enviar() {
   # A carga completa troca TODO o conteúdo. Na produção que já recebeu uma carga (inclusive pelo caminho manual, que deixa
   # a opção ieadc_site_fechado), isso apagaria o que a equipe editou no painel: só com a confirmação explícita.
   if [ "$AMBIENTE" = producao ] && [ "$CARGA" = completo ] && [ "${CONFIRMACAO:-}" != "SUBSTITUIR-CONTEUDO" ]; then
-    carga_previa="$(ssh_alvo "w=\"\$HOME/$DESTINO\"; for o in ieadc_deploy ieadc_site_fechado; do wp --path=\"\$w\" option get \$o >/dev/null 2>&1 && echo \$o; done; true")" \
-      || erro "não consegui consultar a produção por SSH."
+    carga_previa="$(ssh_alvo "w=\"\$HOME/$DESTINO\"; wp --path=\"\$w\" core is-installed >/dev/null 2>&1 || exit 3; for o in ieadc_deploy ieadc_site_fechado; do wp --path=\"\$w\" option get \$o >/dev/null 2>&1 && echo \$o; done; true")" \
+      || erro "não consegui consultar a produção por SSH (o WordPress de lá não respondeu); por segurança a carga completa foi recusada."
     [ -z "$(printf '%s' "$carga_previa" | tr -d '[:space:]')" ] \
       || erro "a produção já recebeu uma carga completa antes. Repetir apaga o que a equipe editou no painel. Para usar só o código, escolha o modo codigo; para substituir o conteúdo de propósito, a confirmação é SUBSTITUIR-CONTEUDO."
   fi
 
   info "Implantação: ambiente $AMBIENTE, carga $CARGA${MODO:+, modo $MODO}, commit ${DEPLOY_SHA:0:7}, pacote ${PACOTE_HASH:0:12}"
+  registrar_deploy iniciado > /dev/null 2>&1 || true
   info "» 1/4 Envio do pacote"
-  scp_alvo "$pacote" "$ALVO_USUARIO@$ALVO_SERVIDOR:ieadc-pacote.tgz" >&2 || erro "o envio falhou (a chave está autorizada no hPanel?)."
+  scp_alvo "$pacote" "$ALVO_USUARIO@$ALVO_SERVIDOR:ieadc-pacote-$AMBIENTE.tgz" >&2 || erro "o envio falhou (a chave está autorizada no hPanel?)."
 
   info "» 2/4 Instalação no servidor"
-  remoto="rm -rf ~/ieadc-migracao && mkdir ~/ieadc-migracao && tar -xzf ~/ieadc-pacote.tgz -C ~/ieadc-migracao"
+  remoto="rm -rf ~/ieadc-migracao-$AMBIENTE && mkdir ~/ieadc-migracao-$AMBIENTE && tar -xzf ~/ieadc-pacote-$AMBIENTE.tgz -C ~/ieadc-migracao-$AMBIENTE"
   if [ "$CARGA" = completo ]; then
-    remoto="$remoto && bash ~/ieadc-migracao/migrar-remoto.sh '$DESTINO' '$URL' '$prefixo' '$email' '$MODO' '$origens'"
+    remoto="$remoto && bash ~/ieadc-migracao-$AMBIENTE/migrar-remoto.sh '$DESTINO' '$URL' '$prefixo' '$email' '$MODO' '$origens'"
   else
-    remoto="$remoto && bash ~/ieadc-migracao/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
+    remoto="$remoto && bash ~/ieadc-migracao-$AMBIENTE/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
   fi
+  remoto="$remoto; rm -rf ~/ieadc-migracao-$AMBIENTE ~/ieadc-pacote-$AMBIENTE.tgz"
   if ! ssh_alvo "$remoto" >&2; then
     registrar_deploy falhou > /dev/null 2>&1 || true
     erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
