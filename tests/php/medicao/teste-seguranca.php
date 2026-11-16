@@ -116,6 +116,11 @@ try {
 	ieadc_igual(503, $pedir('/wp-json/', false), 'fechado: /wp-json/ continua 503');
 	ieadc_ok($admin > 0 && $pedir('/sitemap_index.xml', true) === 200, 'fechado: quem tem login recebe 200 em /sitemap_index.xml');
 	ieadc_ok($pedir('/post-sitemap.xml', true) === 200, 'fechado: quem tem login recebe 200 em /post-sitemap.xml');
+	// O .ics de evento (rota própria) também não pode entregar título, data e local a visitante com o site fechado.
+	ieadc_igual(503, $pedir('/evento-999999.ics', false), 'fechado: /evento-<id>.ics responde 503 ao visitante');
+	ieadc_igual(404, $pedir('/evento-999999.ics', true), 'fechado: quem tem login recebe a resposta normal (404 para evento que não existe)');
+	update_option('ieadc_site_fechado', 0);
+	ieadc_igual(404, $pedir('/evento-999999.ics', false), 'aberto: evento inexistente continua 404 ao visitante');
 } finally {
 	$fechado_orig === null ? delete_option('ieadc_site_fechado') : update_option('ieadc_site_fechado', $fechado_orig);
 	if ($admin && $token !== '') {

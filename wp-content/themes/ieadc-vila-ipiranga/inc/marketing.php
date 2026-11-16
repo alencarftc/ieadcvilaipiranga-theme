@@ -172,6 +172,16 @@ add_action('parse_request', function ($wp) {
 	if (!preg_match('#^evento-(\d+)\.ics$#', (string) ($wp->request ?? ''), $m)) {
 		return;
 	}
+	// Site fechado: visitante sem login não vê nem o título e a data dos eventos (mesmo 503 das páginas e dos mapas do site).
+	if (function_exists('ieadc_site_fechado_bloqueia') && ieadc_site_fechado_bloqueia()) {
+		status_header(503);
+		nocache_headers();
+		header('Retry-After: 3600');
+		header('X-Robots-Tag: noindex, nofollow');
+		header('Content-Type: text/plain; charset=utf-8');
+		echo 'Site em preparação.';
+		exit;
+	}
 	$p = get_post((int) $m[1]);
 	$ics = $p ? ieadc_evento_ics($p) : '';
 	if ($ics === '') {
