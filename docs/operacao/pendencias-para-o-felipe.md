@@ -59,3 +59,15 @@ Formato geral da resposta: o texto exatamente como deve aparecer no site (frase 
 | E-mails dos formulários | Para quais e-mails vão os pedidos de oração e as mensagens de contato? | *Configurações > IEADC Vila Ipiranga*: os formulários hoje não têm destinatário real |
 | Manual da Comunicação (`docs/operacao/manutencao.md`) | Quem mantém o site (nome e contato), e-mail da equipe de oração, conta Google do backup e frequência do backup da Hostinger (hPanel) | Trechos "[a confirmar]" do manual |
 | Dois fatores (2FA) | Quem são os administradores que vão ligar o código por e-mail? | Login do painel protegido (ver `docs/operacao/plugins.md`) |
+
+## SEO e Google (fase 2)
+
+O passo a passo, em linguagem simples, está em `docs/operacao/seo-e-google.md`. O site já está pronto para receber estes dados; sem eles ele funciona, só não fica completo.
+
+| Assunto | Pergunta | Formato da resposta | Destrava |
+|---|---|---|---|
+| Link de avaliação | Qual é o link de avaliação do Perfil da Empresa no Google da igreja? (no perfil: "Pedir avaliações") Ou o código do lugar (`ChIJ…`) | o link completo, ou o código | *Configurações > IEADC Vila Ipiranga > Link para avaliar no Google*: o botão "Avaliar no Google" passa a abrir direto a janela de avaliação (hoje abre a igreja no Google Maps) |
+| Perfil da Empresa | A igreja já tem o Perfil da Empresa verificado? Qual conta Google é a proprietária? | sim/não e o e-mail da conta (a senha não passa por ninguém) | Nome, endereço, telefone e horários iguais aos do site; categoria "Igreja evangélica"; fotos |
+| Search Console | Quem administra o DNS do domínio (Registro.br ou hospedagem) para colar o registro TXT de verificação? | nome de quem faz | Enviar o `sitemap_index.xml` e acompanhar a indexação |
+| E-mail público | (já listado em Contato) qual é o e-mail público? | `nome@dominio` | Também atualiza os dados da igreja para o Google e o `/llms.txt` (hoje usam o e-mail do rodapé) |
+| Coordenadas (opcional) | Latitude e longitude da igreja (no Google Maps: clicar com o botão direito no ponto da igreja e copiar os números) | dois números, ex.: `-25.4999` e `-49.2999` | *Configurações > IEADC Vila Ipiranga > Latitude e Longitude*: o Google localiza a igreja no mapa com mais precisão |
