@@ -10,7 +10,7 @@ Leia primeiro: `docs/operacao/continuidade.md` (estado, como trabalhar, fidelida
 Site ieadcvilaipiranga.com.br em WordPress: tema pai **Blocksy**, tema filho `wp-content/themes/ieadc-vila-ipiranga/` (37 blocos dinâmicos `ieadc/*` em `blocos/`), mu-plugin `wp-content/mu-plugins/ieadc-core/` (dados da igreja, Eventos, Mensagens, Pedidos de oração, agenda, formulários). A referência é o **protótipo v3** em `prototipo/`: o objetivo é ficar o mais parecido possível com ele.
 
 ## Comandos (rode na raiz; no Windows use Git Bash para `./bin/*.sh`, ou PowerShell para `*.ps1`)
-- `./bin/setup.sh` (Windows: `bin\setup.ps1`): sobe o WordPress local em http://localhost:8080 e roda o seed. Precisa de `.env` (copie de `.env.example`) com `IEADC_HOJE=2026-10-06` para os testes.
+- `./bin/setup.sh` (Windows: `bin\setup.ps1`): sobe o WordPress local em http://localhost:8080 e roda o seed. Precisa de `.env` (copie de `.env.example`); deixe `IEADC_HOJE` vazio (o site local mostra o dia real; os testes fixam 06/10/2026 pelo cabeçalho `X-Ieadc-Hoje`).
 - `./bin/testar.sh [php|markup|visual|interacao] [pagina]`: testes de fidelidade ao protótipo. Tudo deve passar (php 40, markup 28, visual 84, interação 8).
 - `docker compose run --rm -T -e IEADC_ATUALIZAR=1 wpcli wp eval-file /scripts/seed.php`: reaplica o conteúdo (sobrescreve páginas, artigos e eventos do seed).
 - `./bin/wp.sh <comando>` (wp-cli), `bin\migrar.ps1` (envia para a Hostinger, ver `docs/operacao/lancamento.md`).

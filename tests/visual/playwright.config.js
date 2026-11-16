@@ -17,6 +17,9 @@ module.exports = defineConfig({
   use: {
     locale: 'pt-BR',
     timezoneId: 'America/Sao_Paulo',
+    // Data da agenda fixa em 06/10/2026 (a do protótipo). O site local mostra o dia real; só o ieadc_hoje() do
+    // ambiente "local" obedece a este cabeçalho (wp-content/mu-plugins/ieadc-core/agenda.php).
+    extraHTTPHeaders: { 'X-Ieadc-Hoje': process.env.IEADC_HOJE_TESTE || '2026-10-06' },
     trace: 'off',
     ...(process.env.IEADC_CHROMIUM ? { launchOptions: { executablePath: process.env.IEADC_CHROMIUM } } : {}),
   },

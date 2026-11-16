@@ -36,7 +36,7 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 - **Páginas**: cada página é uma lista de blocos `ieadc/<nome>` com atributos em JSON (`content/blocos/<pagina>.json`), gravada por `scripts/seed/20-paginas-p*.php`. A ordem das seções de cada página está em `docs/specs/mapa-secoes.json`.
 - **Bloco**: pasta em `wp-content/themes/ieadc-vila-ipiranga/blocos/<nome>/` com `block.json` e `render.php`; sem build. O editor do painel gera os campos a partir dos atributos (`blocos/_editor/`). Convenções em `docs/specs/00-convencoes.md`; atributos de cada ocorrência em `/docs/specs/B1..B4-*.md`.
 - **Dados da igreja**: *Configurações > IEADC Vila Ipiranga* (`ieadc_info()`); padrões em `mu-plugins/ieadc-core/info.php`.
-- **Agenda** (cultos e eventos do mês): `ieadc_agenda*()`. Regras: Ceia no 2º sábado, consagração nos meses pares e vigília nos ímpares, etc. (`docs/specs/M2-agenda.md`). A data é `IEADC_HOJE` quando definida (testes: 2026-10-06).
+- **Agenda** (cultos e eventos do mês): `ieadc_agenda*()`. Regras: Ceia no 2º sábado, consagração nos meses pares e vigília nos ímpares, etc. (`docs/specs/M2-agenda.md`). A data é a real (São Paulo). Os testes mandam o cabeçalho `X-Ieadc-Hoje: 2026-10-06` (`tests/visual/playwright.config.js`), aceito só quando `wp_get_environment_type() === 'local'`; a constante/variável `IEADC_HOJE` continua existindo (testes PHP e ensaios), mas o `.env` local a deixa vazia.
 - **Seed**: `scripts/seed.php` roda `scripts/seed/NN-*.php` em ordem; só troca conteúdo ainda não editado, a não ser com `IEADC_ATUALIZAR=1`.
 - **CSS**: `assets/css/prototipo.css` (congelado) + `ajustes.css` (por módulo). O reset do protótipo vale só dentro de `.ieadc-ui`.
 

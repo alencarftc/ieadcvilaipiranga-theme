@@ -24,7 +24,7 @@ O revisor nunca é o autor. O integrador (M0) acompanha tudo e desempata.
 ## Roteiro do revisor
 
 1. **Escopo.** `git diff --name-only origin/main...` só contém arquivos da coluna "Arquivos" da spec. Fora disso → devolver.
-2. **Do zero** (só no fim da onda, pelo integrador; em PR comum use o ambiente já rodando). `docker compose down -v`, `.env` com `IEADC_HOJE=2026-10-06`, `./bin/setup.sh` termina sem erro (no ambiente de nuvem, o Blocksy vem de cópia local: ver `docs/operacao/nuvem.md` quando existir).
+2. **Do zero** (só no fim da onda, pelo integrador; em PR comum use o ambiente já rodando). `docker compose down -v`, `.env` com `IEADC_HOJE` vazio (os testes fixam a data por cabeçalho), `./bin/setup.sh` termina sem erro (no ambiente de nuvem, o Blocksy vem de cópia local: ver `docs/operacao/nuvem.md` quando existir).
 3. **Testes.** `./bin/testar.sh` completo (depois do M1). Antes do M1: `php -l` em todos os PHP e os testes da própria spec.
 4. **Fidelidade** (B e P): `markup` sem diferenças nas seções do bloco/página; `visual` dentro de 1,0% (1440 e 390) e 1,5% (900). Abrir as imagens de diferença e olhar mesmo quando passa: fonte, cor, recorte da foto, quebra de linha do título.
 5. **Critérios da spec.** Cada caixa de "Critérios de aceite" conferida e marcada no comentário de revisão.
