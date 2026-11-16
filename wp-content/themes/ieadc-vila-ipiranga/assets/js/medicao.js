@@ -38,7 +38,7 @@
 		document.head.appendChild(s);
 	}
 	function carregar() {
-		if (carregado) { consentido = true; return; }
+		if (carregado) { consentido = true; gtag('consent', 'update', { analytics_storage: 'granted' }); return; } // aceitou de novo depois de recusar na mesma visita
 		carregado = true; consentido = true;
 		// Só a medição de acessos é liberada; anúncios (ad_*) seguem negados: o site não faz publicidade.
 		gtag('consent', 'update', { analytics_storage: 'granted' });
