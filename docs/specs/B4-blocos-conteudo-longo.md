@@ -23,7 +23,7 @@
 | `credo` | Sobre nós | `eyebrow`, `titulo`, `texto`; `itens` (lista de texto). Texto em `prototipo/fonte/credo.txt` |
 | `historia` | Sobre nós | `eyebrow`, `titulo`, `texto` (texto-longo); `foto`; `dirigentesTitulo`; `dirigentes` (lista de texto, do atual ao mais antigo) |
 | `aceitar-passos` | Aceitar Jesus | cabeçalho + `texto`; `passos` (lista: `titulo`, `texto`, `versiculo`, `referencia`); o que muda (`mudaTitulo`, `muda` lista); botão "Quero aceitar Jesus"; carta do pastor em `<details>` (`cartaTitulo`, `carta` texto-longo). Ver a referência inteira: a ordem é obrigatória (decisão de 09/10) |
-| `artigo-topo` | 3 artigos | `migalha`; o resto vem do post: categoria, selo exemplo, título, resumo (`lead`), autor e data (`[a confirmar]` enquanto vazio), imagem destacada |
+| `artigo-topo` | 3 artigos | `migalha`; o resto vem do post: categoria, selo exemplo, título, resumo (`lead`), autor e data (do próprio post), imagem destacada |
 | `artigo-corpo` | 3 artigos | `versiculo`, `referencia`; o corpo vem do conteúdo do post (blocos core: parágrafo e título nível 2) renderizado dentro de `<article class="artigo corpo-art">` |
 
 Para os artigos, o modelo de post (`single.php` do tema filho ou o template `larga`) monta: `artigo-topo` + `artigo-corpo` + `artigos-grade` (B3, `excluirAtual`). Combine com o B3 o nome do atributo.
