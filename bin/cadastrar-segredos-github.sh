@@ -37,4 +37,7 @@ if [ "$alvo" = tudo ] || [ "$alvo" = producao ]; then
   segredo PROD_IMPRESSAO producao "$imp"
   gh secret set PROD_SSH_CHAVE --env producao --repo "$repo" < content/backup/deploy-prod/id_ed25519 > /dev/null && echo "ok  producao / PROD_SSH_CHAVE"
 fi
+if [ "$alvo" = tudo ] || [ "$alvo" = homologacao ]; then
+  gh variable set HML_ATIVA --body true --repo "$repo" && echo "ok  variável HML_ATIVA=true (liga a publicação automática da homologação)"
+fi
 echo "Pronto. Os environments exigem: homologacao (só a main) e producao (aprovação do Felipe, só a main)."

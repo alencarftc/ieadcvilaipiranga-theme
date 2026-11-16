@@ -96,6 +96,8 @@ No GitHub: Settings > Environments > New environment, com os nomes `homologacao`
 | | `PROD_DESTINO` (opcional) | só é aceito se for exatamente `domains/ieadcvilaipiranga.com.br/public_html` |
 | | `PROD_EMAIL_ADMIN` (opcional) | e-mail do administrador do site |
 
+Variável do **repositório** `HML_ATIVA=true`: liga a publicação automática da homologação (sem ela, o workflow Homologação fica de fora, sem falhar; o disparo manual vale sempre). O script `bin/cadastrar-segredos-github.sh` cadastra os segredos e define essa variável.
+
 Variável (não é segredo) opcional no environment `homologacao`: `HML_MODO` = `homologacao` (padrão: aberta para quem tem o link e fora do Google) ou `homologacao-fechada` (só quem tem login). Qualquer outro valor (como `lancar`) é recusado.
 
 Não cadastre nenhum `PROD_*` como segredo do repositório nem no environment `homologacao`.

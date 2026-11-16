@@ -61,7 +61,9 @@ jobs:
   implantar:
     name: Implantar na homologação
     needs: conferir
-    if: needs.conferir.outputs.implantar == 'true'
+    # A publicação automática só liga depois que os segredos existem: a variável do repositório HML_ATIVA=true (o script
+    # bin/cadastrar-segredos-github.sh a define). O disparo manual (workflow_dispatch) vale sempre.
+    if: needs.conferir.outputs.implantar == 'true' && (github.event_name == 'workflow_dispatch' || vars.HML_ATIVA == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: homologacao
