@@ -34,7 +34,7 @@ jobs:
       - name: Subir o WordPress e rodar o setup
         run: ./bin/setup.sh
 
-      - name: Testes (php, markup, visual, interação e acessibilidade)
+      - name: Testes (travas do pipeline, php, markup, visual, interação e acessibilidade)
         run: ./bin/testar.sh
 
       - name: Imagens de diferença do teste visual
