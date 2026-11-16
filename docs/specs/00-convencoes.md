@@ -4,7 +4,7 @@
 
 - `cp .env.example .env` e `./bin/setup.sh` (Git Bash no Windows). Site em `http://localhost:8080`.
 - Testes: `./bin/testar.sh` (entregue pelo M1) roda `php -l`, testes PHP e testes visuais. `./bin/testar.sh visual inicio` testa uma página.
-- Data congelada para testes: `IEADC_HOJE=2026-10-06` no `.env` de teste. É a data em que o protótipo foi gerado; com ela a agenda do site sai igual à do protótipo.
+- Data dos testes: o site local mostra o dia real; os testes mandam o cabeçalho `X-Ieadc-Hoje: 2026-10-06` (só vale no ambiente `local`) e com ela a agenda do site sai igual à do protótipo. `IEADC_HOJE` no `.env` fica vazio.
 
 ## Git e PR
 

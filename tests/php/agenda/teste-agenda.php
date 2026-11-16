@@ -123,6 +123,28 @@ putenv('IEADC_HOJE=2026-13-45');
 ok(ieadc_hoje()->format('Y-m-d') === $agora_sp, 'IEADC_HOJE inválida é ignorada');
 putenv('IEADC_HOJE=2026-10-06');
 
+/* 8b. Cabeçalho X-Ieadc-Hoje: só vale no ambiente local; sem ele (ou fora do local) vale a data real/IEADC_HOJE. */
+if (!function_exists('wp_get_environment_type')) {
+	function wp_get_environment_type() { return $GLOBALS['ieadc_teste_ambiente'] ?? 'production'; }
+}
+putenv('IEADC_HOJE');
+$_SERVER['HTTP_X_IEADC_HOJE'] = '2026-10-06';
+$GLOBALS['ieadc_teste_ambiente'] = 'local';
+ok(ieadc_hoje()->format('Y-m-d') === '2026-10-06', 'cabeçalho X-Ieadc-Hoje fixa a data no ambiente local');
+$_SERVER['HTTP_X_IEADC_HOJE'] = '2026-13-45';
+ok(ieadc_hoje()->format('Y-m-d') === $agora_sp, 'cabeçalho inválido é ignorado');
+$_SERVER['HTTP_X_IEADC_HOJE'] = '2026-10-06';
+foreach (['staging', 'production'] as $amb) {
+	$GLOBALS['ieadc_teste_ambiente'] = $amb;
+	ok(ieadc_hoje()->format('Y-m-d') === $agora_sp, "cabeçalho X-Ieadc-Hoje é ignorado em $amb");
+}
+$GLOBALS['ieadc_teste_ambiente'] = 'local';
+putenv('IEADC_HOJE=2026-11-20');
+ok(ieadc_hoje()->format('Y-m-d') === '2026-10-06', 'o cabeçalho vale mais que IEADC_HOJE');
+unset($_SERVER['HTTP_X_IEADC_HOJE']);
+ok(ieadc_hoje()->format('Y-m-d') === '2026-11-20', 'sem cabeçalho, IEADC_HOJE continua valendo');
+putenv('IEADC_HOJE=2026-10-06');
+
 /* 9. Eventos avulsos: regras do cadastro e cache. */
 $GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 102, 'post_title' => 'Rascunho', 'post_status' => 'draft', 'meta' => ['evento_data' => '2026-10-20']]);
 $GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 103, 'post_title' => 'Sem data', 'meta' => []]);
@@ -149,6 +171,15 @@ ok(ieadc_agenda_resumo_mes(2026, 13) === '' && ieadc_agenda_resumo_mes(2026, 0) 
 $GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 105, 'post_title' => 'Sem resumo', 'post_name' => 'sem-resumo', 'meta' => ['evento_data' => '2026-10-27']]);
 do_action('save_post_evento', 105);
 ok(ieadc_agenda_dia(d('2026-10-27'))[0]['descricao'] === '', 'evento sem resumo fica com descrição vazia (nada de [&hellip;] automático)');
+
+/* 11. Evento que já passou não é "próximo": destaques e próximas datas começam em hoje; evento em andamento continua. */
+$GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 106, 'post_title' => 'Evento passado', 'post_name' => 'evento-passado', 'meta' => ['evento_data' => '2026-09-26']]);
+$GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 107, 'post_title' => 'Evento em andamento', 'post_name' => 'evento-em-andamento', 'meta' => ['evento_data' => '2026-10-05', 'evento_data_fim' => '2026-10-07']]);
+do_action('save_post_evento', 106);
+$titulos_destaques = array_column(ieadc_agenda_destaques(30, d('2026-10-06')), 'titulo');
+ok(!in_array('Evento passado', $titulos_destaques, true), 'evento passado não aparece nos próximos destaques');
+ok(in_array('Evento em andamento', $titulos_destaques, true), 'evento em andamento (começou ontem, termina amanhã) ainda aparece');
+ok(!in_array('Evento passado', array_column(ieadc_agenda_destaques(30), 'titulo'), true), 'ieadc_agenda_destaques() parte de hoje (IEADC_HOJE dos testes)');
 
 echo "\n" . ($total - $falhas) . " de $total testes passaram.\n";
 exit($falhas ? 1 : 0);

@@ -17,7 +17,7 @@
    ],
    "eyebrow": "Ministérios · Mocidade",
    "titulo": "Mocidade",
-   "lead": "Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço. No 3º domingo do mês, o culto dominical é dedicado a eles. [Encontros próprios a confirmar]",
+   "lead": "Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço. No 3º domingo do mês, o culto dominical é dedicado a eles.",
    "botoes": [
     {
      "texto": "Como participar",
@@ -76,7 +76,7 @@
      "ancora": "funciona-mocidade",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\n[Encontros próprios, retiros e eventos a confirmar]",
+     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\n[encontros e retiros a confirmar]",
      "versiculo": "",
      "referencia": "",
      "itens": []

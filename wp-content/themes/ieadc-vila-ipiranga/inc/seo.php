@@ -8,7 +8,7 @@
  */
 defined('ABSPATH') || exit;
 
-/** Primeiro bloco ieadc/hero do conteúdo do post (atributos), ou []. */
+/** Primeiro bloco de topo (ieadc/hero ou ieadc/hero-home) do conteúdo do post (atributos), ou []. */
 function ieadc_seo_hero(?WP_Post $post = null): array {
 	static $cache = [];
 	$post ??= get_post();
@@ -19,7 +19,7 @@ function ieadc_seo_hero(?WP_Post $post = null): array {
 		$cache[$post->ID] = [];
 		$procura = function (array $blocos) use (&$procura) {
 			foreach ($blocos as $b) {
-				if (($b['blockName'] ?? '') === 'ieadc/hero') {
+				if (in_array($b['blockName'] ?? '', ['ieadc/hero', 'ieadc/hero-home'], true)) {
 					return (array) $b['attrs'];
 				}
 				if (!empty($b['innerBlocks']) && ($r = $procura($b['innerBlocks']))) {
@@ -46,6 +46,7 @@ function ieadc_seo_descricao(): string {
 	if ($txt === '') {
 		$txt = (string) get_the_excerpt($post);
 	}
+	$txt = str_replace('{atualizacao}', (string) get_the_modified_date('', $post), $txt); // ver blocos/hero/render.php
 	$txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(strip_shortcodes($txt))));
 	$txt = trim(str_replace(['[', ']'], '', $txt)); // [a confirmar] não vai para o Google
 	return mb_strlen($txt) > 160 ? rtrim(mb_substr($txt, 0, 157)) . '…' : $txt;
@@ -79,24 +80,50 @@ add_filter('document_title_parts', function (array $p): array {
 	$p['site'] = $nome;
 	return $p;
 });
-add_filter('wpseo_title', function ($t) {
-	if (is_singular() && !is_front_page()) {
+/* Com o Yoast ativo é ele que imprime título, descrição, canonical, Open Graph e Twitter; estes filtros só trocam o
+   conteúdo para o do tema (sem duplicar nada). Título e descrição valem também para og: e twitter:. */
+function ieadc_seo_titulo_yoast($t) {
+	if (is_front_page()) {
+		return (ieadc_dado('nome') ?: get_bloginfo('name')) . ' · ' . (ieadc_dado('frase_topo') ?: get_bloginfo('description'));
+	}
+	if (is_singular()) {
 		return get_the_title() . ' · ' . (ieadc_dado('nome') ?: get_bloginfo('name'));
 	}
 	return $t;
-});
+}
+add_filter('wpseo_title', 'ieadc_seo_titulo_yoast');
+add_filter('wpseo_opengraph_title', 'ieadc_seo_titulo_yoast');
+add_filter('wpseo_twitter_title', 'ieadc_seo_titulo_yoast');
 add_filter('wpseo_metadesc', fn($d) => ieadc_seo_descricao() ?: $d);
-add_filter('wpseo_opengraph_image', fn($i) => ieadc_seo_imagem() ?: $i);
+add_filter('wpseo_opengraph_desc', fn($d) => ieadc_seo_descricao() ?: $d);
+add_filter('wpseo_twitter_description', fn($d) => ieadc_seo_descricao() ?: $d);
+/* Foto do topo como imagem de compartilhamento, só quando ninguém escolheu outra (foto de destaque ou campo do Yoast). */
+add_filter('wpseo_add_opengraph_additional_images', function ($imagens) {
+	$img = ieadc_seo_imagem();
+	if ($img !== '' && is_object($imagens) && method_exists($imagens, 'get_images') && !$imagens->get_images()) {
+		$imagens->add_image_by_url($img);
+	}
+	return $imagens;
+});
 
 /* ---------- Metatags próprias (só sem Yoast) ---------- */
+/* Busca e anexos fora do índice: pelo filtro do WordPress (uma só tag robots); com Yoast, quem decide é ele. */
+add_filter('wp_robots', function (array $r): array {
+	if (!ieadc_seo_yoast() && (is_search() || is_attachment())) {
+		unset($r['index']);
+		$r['noindex'] = true;
+		$r['follow']  = true;
+	}
+	return $r;
+});
+/* Sem Yoast imprimimos o canonical abaixo; o do WordPress sairia duplicado. */
+add_action('init', function () {
+	if (!ieadc_seo_yoast()) {
+		remove_action('wp_head', 'rel_canonical');
+	}
+});
 add_action('wp_head', function () {
-	if (is_admin() || is_404() || is_feed()) {
-		return;
-	}
-	if (is_search() || is_attachment()) {
-		echo '<meta name="robots" content="noindex,follow">' . "\n";
-	}
-	if (ieadc_seo_yoast()) {
+	if (is_admin() || is_404() || is_feed() || ieadc_seo_yoast()) {
 		return;
 	}
 	$desc = ieadc_seo_descricao();

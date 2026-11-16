@@ -33,7 +33,9 @@ function serializarSecoes(opcoes) {
   // O WordPress troca aspas retas por curvas (wptexturize) em todo conteúdo, inclusive o dos blocos.
   function texto(v) {
     return v.replace(/[\u201C\u201D\u2033]/g, '"').replace(/[\u2018\u2019\u2032]/g, "'")
-      .replace(/\s+/g, ' ').replace(/ [\u2013\u2014] /g, ' - ').trim();
+      .replace(/\s+/g, ' ').replace(/ [\u2013\u2014] /g, ' - ').trim()
+      // "\u00daltima atualiza\u00e7\u00e3o: <data>" muda a cada altera\u00e7\u00e3o da p\u00e1gina (\u00e9 a data real): compara s\u00f3 o texto.
+      .replace(/(\u00daltima atualiza\u00e7\u00e3o:) \d{1,2} de \p{L}+ de \d{4}/u, '$1 <data>');
   }
 
   const IGNORAR = new Set(['data-dia', 'data-hora']);

@@ -114,7 +114,8 @@
 			"default": "",
 			"ieadc": {
 				"rotulo": "Texto de apresentação",
-				"campo": "texto-longo"
+				"campo": "texto-longo",
+				"ajuda": "Escreva {atualizacao} para mostrar a data da última alteração desta página."
 			}
 		},
 		"extra": {

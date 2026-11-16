@@ -62,7 +62,7 @@
     {
      "icone": "maos",
      "rotulo": "Quem ensina",
-     "valor": "[a confirmar]"
+     "valor": "A liderança da igreja"
     }
    ]
   }
@@ -76,7 +76,7 @@
      "ancora": "como-culto-de-ensino",
      "titulo": "Como é o culto",
      "tipo": "texto",
-     "texto": "Na quarta-feira, às 20h, o culto é dedicado ao ensino da Bíblia. É uma noite para aprender, tirar dúvidas da fé e crescer no conhecimento de Deus.\n\nO ensino é conduzido pela liderança da igreja. [Temas ou séries de estudo a confirmar]\n\nTraga a sua Bíblia para acompanhar o estudo.",
+     "texto": "Na quarta-feira, às 20h, o culto é dedicado ao ensino da Bíblia. É uma noite para aprender, tirar dúvidas da fé e crescer no conhecimento de Deus.\n\nO ensino é conduzido pela liderança da igreja. [temas de estudo a confirmar]\n\nTraga a sua Bíblia para acompanhar o estudo.",
      "versiculo": "",
      "referencia": "",
      "itens": []

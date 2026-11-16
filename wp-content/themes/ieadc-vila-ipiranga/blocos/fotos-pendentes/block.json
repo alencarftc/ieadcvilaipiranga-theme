@@ -79,7 +79,7 @@
 		},
 		"aviso": {
 			"type": "string",
-			"default": "As fotos das crianças só são publicadas com a autorização de imagem dos pais ou responsáveis. [fotos autorizadas a confirmar]",
+			"default": "As fotos das crianças só são publicadas com a autorização de imagem dos pais ou responsáveis.",
 			"ieadc": {
 				"campo": "rico",
 				"rotulo": "Texto do aviso"

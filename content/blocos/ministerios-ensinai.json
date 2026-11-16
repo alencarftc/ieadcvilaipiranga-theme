@@ -76,7 +76,7 @@
      "ancora": "funciona-ensinai",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. As aulas acontecem às sextas-feiras, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\n[Duração do curso, disciplinas, forma de inscrição e certificado a confirmar]",
+     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. As aulas acontecem às sextas-feiras, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\n[duração e inscrição a confirmar]",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -154,7 +154,7 @@
    "titulo": "Dê o primeiro passo",
    "variante": "passo-unico",
    "passos": [
-    "Procure os líderes do Ensinai: [nomes a confirmar]. Eles vão receber você e explicar como participar."
+    "Procure a liderança do Ensinai. Ela vai receber você e explicar como participar."
    ],
    "icone": "pessoas",
    "unicoBotaoTexto": "Fale conosco",

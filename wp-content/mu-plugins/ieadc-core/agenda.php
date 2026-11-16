@@ -11,7 +11,7 @@
  *   ['data' => 'Y-m-d', 'hora' => '20h', 'titulo' => …, 'categoria' => 'c-…', 'especial' => bool,
  *    'descricao' => …, 'link' => URL, 'origem' => 'regra'|ID do evento, 'data_fim' => 'Y-m-d'|null]
  *
- * Data congelada para testes: constante (ou variável de ambiente) IEADC_HOJE=2026-10-06.
+ * Data para testes: cabeçalho X-Ieadc-Hoje (só no ambiente local) ou a constante/variável IEADC_HOJE (ver ieadc_hoje()).
  */
 defined('ABSPATH') || exit;
 
@@ -31,10 +31,21 @@ function ieadc_agenda_dia_de(DateTimeInterface $agora): DateTimeImmutable {
 	return new DateTimeImmutable($local->format('Y-m-d'), ieadc_agenda_fuso());
 }
 
-/** Hoje no fuso de São Paulo. Respeita IEADC_HOJE (Y-m-d) quando definida. */
+/**
+ * Hoje no fuso de São Paulo. A data real vale em uso normal. Para os testes, a data pode ser fixada de duas formas:
+ * a constante (ou variável de ambiente) IEADC_HOJE=Y-m-d, que vale para o site todo, e o cabeçalho HTTP
+ * "X-Ieadc-Hoje: Y-m-d", que vale só para aquele pedido e só no ambiente local (wp_get_environment_type() === 'local');
+ * em homologação e produção o cabeçalho é ignorado.
+ */
 function ieadc_hoje(): DateTimeImmutable {
-	$fixa = defined('IEADC_HOJE') ? (string) IEADC_HOJE : (string) getenv('IEADC_HOJE');
-	if ($fixa !== '') {
+	$candidatas = [];
+	if (isset($_SERVER['HTTP_X_IEADC_HOJE']) && is_string($_SERVER['HTTP_X_IEADC_HOJE'])
+		&& function_exists('wp_get_environment_type') && wp_get_environment_type() === 'local') {
+		$candidatas[] = trim($_SERVER['HTTP_X_IEADC_HOJE']);
+	}
+	$candidatas[] = defined('IEADC_HOJE') ? (string) IEADC_HOJE : (string) getenv('IEADC_HOJE');
+	foreach ($candidatas as $fixa) {
+		if ($fixa === '') continue;
 		$d = DateTimeImmutable::createFromFormat('!Y-m-d', $fixa, ieadc_agenda_fuso());
 		if ($d && $d->format('Y-m-d') === $fixa) {
 			return $d;

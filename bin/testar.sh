@@ -2,8 +2,9 @@
 # Roda os testes do site.
 # Uso: ./bin/testar.sh [php|markup|visual|interacao] [pagina[,pagina…]]
 #   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
-# Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
-# Node 20+ e Docker. O protótipo é servido sozinho em http://localhost:8090 durante os testes.
+# Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com o ambiente "local" do
+# WordPress (o docker-compose.yml já define), Node 20+ e Docker. O .env fica com IEADC_HOJE vazio: o site local mostra o dia real e os
+# testes fixam 06/10/2026 pelo cabeçalho X-Ieadc-Hoje (tests/visual/playwright.config.js). O protótipo é servido sozinho em http://localhost:8090 durante os testes.
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -24,9 +25,20 @@ falhou=0
 passo() { echo; echo "=== $1 ==="; }
 roda() { "$@" || falhou=1; }
 
-# Data congelada: a agenda do site tem de sair igual à do protótipo (06/10/2026).
-if [ -f .env ] && ! grep -q '^IEADC_HOJE=2026-10-06' .env && [ "$parte" != "php" ]; then
-  echo "AVISO: .env sem IEADC_HOJE=2026-10-06; a agenda não vai bater com o protótipo (rode ./bin/setup.sh depois de ajustar)." >&2
+# Data dos testes: a agenda do site tem de sair igual à do protótipo (06/10/2026). Os testes mandam o cabeçalho X-Ieadc-Hoje,
+# que só vale no ambiente local e vence o IEADC_HOJE do .env; o aviso é só para lembrar que o .env deve ficar com ele vazio.
+if [ -f .env ] && grep -Eq '^IEADC_HOJE=[^[:space:]]' .env && [ "$parte" != "php" ]; then
+  echo "AVISO: .env com IEADC_HOJE preenchido; deixe vazio (o dia real vale e os testes fixam a data por cabeçalho)." >&2
+fi
+
+# Dado de teste: o evento avulso que a agenda do protótipo mostra em 06/10/2026 ("Confraternização dos jovens", 17 e 18/10).
+# O site de verdade não tem esse evento (data passada, era exemplo): ele é criado aqui e apagado no fim (tests/fixtures/).
+fixtures() {
+  docker compose run --rm -T -v "$PWD/tests:/tests:ro" wpcli wp eval-file /tests/fixtures/evento-prototipo.php "$1" >/dev/null 2>&1
+}
+if [ "$parte" != "php" ]; then
+  fixtures criar || echo "AVISO: não consegui criar o evento de teste (agenda do protótipo); markup e visual vão falhar." >&2
+  trap 'fixtures remover' EXIT
 fi
 
 testes_php() {
@@ -53,7 +65,7 @@ testes_php() {
 
   passo "testes PHP: funções comuns (dentro do WordPress)"
   local t
-  for t in tests/php/*/teste-helpers.php; do
+  for t in tests/php/*/teste-helpers.php tests/php/*/teste-modelo-artigo.php; do
     [ -f "$t" ] || continue
     docker compose run --rm -T --no-deps -v "$PWD/tests:/tests:ro" --entrypoint php wpcli "/tests/${t#tests/}" || return 1
   done

@@ -26,10 +26,9 @@ jobs:
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
 
-      - name: Configurar o ambiente (data congelada em 06/10/2026)
+      - name: Configurar o ambiente (os testes fixam a data em 06/10/2026 por cabeçalho)
         run: |
           cp .env.example .env
-          sed -i 's/^IEADC_HOJE=.*/IEADC_HOJE=2026-10-06/' .env
           sed -i 's/^SITE_INTERFACE=.*/SITE_INTERFACE=127.0.0.1/' .env
 
       - name: Subir o WordPress e rodar o setup

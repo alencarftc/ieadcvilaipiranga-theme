@@ -33,7 +33,7 @@ cp .env.example .env        # troque as senhas e, se quiser abrir em outros apar
 
 No Windows, use `powershell -ExecutionPolicy Bypass -File bin\setup.ps1` (ou os comandos `./bin/...` no Git Bash ou no WSL).
 
-Testes (`./bin/testar.sh`): precisam de Node 20+ e, na primeira vez, do navegador do Playwright (`npx playwright install chromium`; se já existe um Chromium do Playwright de outra versão, `IEADC_CHROMIUM=<caminho do chrome ou headless_shell>`). O `.env` precisa de `IEADC_HOJE=2026-10-06`. Os testes abrem o site no `SITE_URL` do `.env`; se a variável `WP_URL` estiver definida, ela vale no lugar.
+Testes (`./bin/testar.sh`): precisam de Node 20+ e, na primeira vez, do navegador do Playwright (`npx playwright install chromium`; se já existe um Chromium do Playwright de outra versão, `IEADC_CHROMIUM=<caminho do chrome ou headless_shell>`). O `.env` fica com `IEADC_HOJE` vazio: o site local mostra o dia real e os testes fixam a data do protótipo (06/10/2026) pelo cabeçalho `X-Ieadc-Hoje`, que só vale no ambiente `local` do WordPress (para ver a agenda de outro dia no navegador, ponha `IEADC_HOJE=AAAA-MM-DD` no `.env` e rode `docker compose up -d`; lembre de esvaziar depois). Os testes abrem o site no `SITE_URL` do `.env`; se a variável `WP_URL` estiver definida, ela vale no lugar.
 
 Atalhos: `./bin/wp.sh <comando>` (wp-cli), `./bin/exportar.sh` (conteúdo para o git), `docker compose down` (desliga; os dados ficam).
 

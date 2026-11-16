@@ -72,7 +72,7 @@
 		},
 		"aviso": {
 			"type": "string",
-			"default": "Opção 2 das boas-vindas. [o pastor escolhe entre as duas opções]",
+			"default": "",
 			"ieadc": {
 				"rotulo": "Aviso (opcional)"
 			}
