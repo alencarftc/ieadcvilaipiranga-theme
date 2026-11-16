@@ -67,3 +67,32 @@ add_action('enqueue_block_editor_assets', function () {
 	// O painel lateral fica fora do iframe do editor: o CSS dos campos vai para os dois lados.
 	wp_enqueue_style('ieadc-blocos-editor');
 });
+
+/* ---------- Modelo do artigo novo ----------
+   Posts > Adicionar post já abre com os blocos do artigo (como em content/blocos/artigo-*.json): topo, corpo, um
+   parágrafo vazio para o texto e "Continue lendo". Sem isto, um post só com parágrafos sai no layout padrão do Blocksy.
+   O modelo não trava nada: a equipe pode escrever mais parágrafos e títulos. Só vale para artigos novos. */
+function ieadc_artigo_modelo(): array {
+	return [
+		['ieadc/artigo-topo', []],
+		['ieadc/artigo-corpo', []],
+		['core/paragraph', ['placeholder' => 'Escreva o artigo aqui. Para mais parágrafos ou títulos, continue abaixo deste.']],
+		['ieadc/artigos-grade', [
+			'secao'        => 'sec gelo curva-top',
+			'eyebrow'      => 'Continue lendo',
+			'titulo'       => 'Outras publicações',
+			'texto'        => '',
+			'botaoTexto'   => '',
+			'quantidade'   => 2,
+			'colunas'      => 'g2',
+			'excluirAtual' => true,
+		]],
+	];
+}
+add_filter('register_post_type_args', function (array $args, string $tipo): array {
+	if ($tipo === 'post') {
+		$args['template'] = ieadc_artigo_modelo();
+		$args['template_lock'] = false;
+	}
+	return $args;
+}, 10, 2);
