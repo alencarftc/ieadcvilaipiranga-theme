@@ -29,7 +29,7 @@ cp .env.example .env        # troque as senhas e, se quiser abrir em outros apar
 - E-mails dos formulários (de mentira, só local): `http://localhost:8025`.
 - Para deixar o site só nesta máquina, use `SITE_INTERFACE=127.0.0.1` no `.env`.
 
-No Windows, rode os comandos `./bin/...` no **Git Bash** ou no WSL.
+No Windows, use `powershell -ExecutionPolicy Bypass -File bin\setup.ps1` (ou os comandos `./bin/...` no Git Bash ou no WSL).
 
 Atalhos: `./bin/wp.sh <comando>` (wp-cli), `./bin/exportar.sh` (conteúdo para o git), `docker compose down` (desliga; os dados ficam).
 
@@ -56,12 +56,7 @@ Poucos, de propósito:
 
 ## Migração para a Hostinger (30/11/2026)
 
-1. Na Hostinger: WordPress instalado, modo manutenção, PHP 8.3.
-2. Enviar `wp-content/themes/ieadc-vila-ipiranga` e `wp-content/mu-plugins` (Git da Hostinger ou SFTP).
-3. Instalar Blocksy e os plugins da tabela; ligar LiteSpeed Cache e UpdraftPlus.
-4. Levar o conteúdo: `./bin/exportar.sh` e importar o banco, trocando `SITE_URL` pelo domínio (`wp search-replace`).
-5. *Configurações > Leitura*: permitir indexação. Ligar 2FA para os administradores.
-6. Testar formulários (e-mail real), celular, PageSpeed, e tirar do modo manutenção.
+Um script faz tudo a partir do computador (Windows): [`docs/operacao/lancamento.md`](docs/operacao/lancamento.md). Para retomar o projeto: [`docs/operacao/continuidade.md`](docs/operacao/continuidade.md) e [`CLAUDE.md`](CLAUDE.md).
 
 ## Cronograma
 

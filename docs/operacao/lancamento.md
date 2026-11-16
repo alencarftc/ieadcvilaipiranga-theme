@@ -6,7 +6,8 @@ Passo a passo para colocar o site local na Hostinger. O servidor da nuvem não a
 
 1. No hPanel, instale o WordPress no domínio (Sites > WordPress), em português, com o prefixo de tabelas `wp_`. Anote o e-mail e a senha do administrador.
 2. Em Avançado > SSH, deixe o acesso SSH habilitado (usuário e porta aparecem ali). Confira a pasta do site (padrão `domains/ieadcvilaipiranga.com.br/public_html`).
-3. No computador: Docker Desktop aberto, site local funcionando (`bin\setup.ps1` já rodado) e o Cliente OpenSSH do Windows (já vem no Windows 10/11).
+3. No `.env` do computador (não vai para o git), acrescente as três linhas que aparecem no hPanel em Avançado > SSH: `HOSTINGER_SERVIDOR=...`, `HOSTINGER_PORTA=...` e `HOSTINGER_USUARIO=...`.
+4. No computador: Docker Desktop aberto, site local funcionando (`bin\setup.ps1` já rodado) e o Cliente OpenSSH do Windows (já vem no Windows 10/11).
 
 ## Ensaio (28/11)
 

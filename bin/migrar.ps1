@@ -5,9 +5,9 @@
 #   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Lancar
 # A senha do SSH é pedida duas vezes (envio e execução) e só é digitada aqui, no seu terminal.
 param(
-  [string]$Servidor = '185.211.7.39',
-  [int]$Porta = 65002,
-  [string]$Usuario = 'u184534870',
+  [string]$Servidor = '',
+  [int]$Porta = 0,
+  [string]$Usuario = '',
   [string]$Destino = 'domains/ieadcvilaipiranga.com.br/public_html',
   [string]$Url = 'https://ieadcvilaipiranga.com.br',
   [string]$EmailAdmin = '-',
@@ -15,6 +15,17 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
+
+# Servidor, porta e usuário do SSH ficam no .env (que não vai para o git), não neste arquivo:
+#   HOSTINGER_SERVIDOR=...   HOSTINGER_PORTA=...   HOSTINGER_USUARIO=...
+$env_ = @{}
+if (Test-Path .env) {
+  Get-Content .env | Where-Object { $_ -match '^\s*HOSTINGER_[A-Z_]+=' } | ForEach-Object { $k, $v = $_ -split '=', 2; $env_[$k.Trim()] = $v.Trim() }
+}
+if (-not $Servidor) { $Servidor = $env_['HOSTINGER_SERVIDOR'] }
+if (-not $Porta)    { $Porta    = [int]($env_['HOSTINGER_PORTA']) }
+if (-not $Usuario)  { $Usuario  = $env_['HOSTINGER_USUARIO'] }
+if (-not $Servidor -or -not $Porta -or -not $Usuario) { throw 'Faltam HOSTINGER_SERVIDOR, HOSTINGER_PORTA e HOSTINGER_USUARIO no .env (veja o hPanel > Avançado > SSH), ou passe -Servidor, -Porta e -Usuario.' }
 
 foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
   if (-not (Get-Command $c -ErrorAction SilentlyContinue)) { throw "Não achei o comando '$c'. Ele vem com o Docker Desktop e o Windows 10/11 (Recursos opcionais > Cliente OpenSSH)." }
