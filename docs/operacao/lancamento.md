@@ -6,15 +6,15 @@ Passo a passo para levar o site local para a Hostinger. O servidor da nuvem não
 
 | Ambiente | Para quê | Estado do site depois do script |
 |---|---|---|
-| **Homologação** (o padrão) | Hospedagem alternativa, em um endereço temporário da Hostinger. O pastor e a equipe validam o site aqui. | Aberto para quem tem o link e **fora do Google** (`blog_public=0`). Com `-Fechado`, só para quem tem login. |
+| **Homologação** (o padrão) | O staging da Hostinger, `https://hml.ieadcvilaipiranga.com.br`, que fica na **subpasta `hml` da produção** (`domains/ieadcvilaipiranga.com.br/public_html/hml`, WordPress e banco próprios). O pastor e a equipe validam o site aqui. (De transição, ainda é aceito um endereço `*.hostingersite.com` de hospedagem alternativa.) | Aberto para quem tem o link e **fora do Google** (`blog_public=0`). Com `-Fechado`, só para quem tem login. |
 | **Produção** (`-Ambiente producao`) | O domínio principal, `ieadcvilaipiranga.com.br`. | Ensaio: **fechado** e fora do Google. Com `-Lancar`: **no ar** e liberado para o Google. |
 
 A homologação vem primeiro: o script só envia para a produção com `-Ambiente producao`, pede para digitar `PRODUCAO` e, no `-Lancar`, também `SIM`. O `-Lancar` só é aceito na produção.
 
 ## Antes (uma vez por ambiente)
 
-1. No hPanel da hospedagem, instale o WordPress no endereço do ambiente (Sites > WordPress), em português, com o prefixo de tabelas `wp_`. Anote o e-mail e a senha do administrador. O script falha com uma mensagem clara se não achar o WordPress na pasta.
-2. Em Avançado > SSH, deixe o acesso SSH habilitado (servidor, porta e usuário aparecem ali). A pasta do site é, por padrão, `domains/<endereço do site>/public_html`.
+1. No hPanel da hospedagem, instale o WordPress no endereço do ambiente (Sites > WordPress), em português, com o prefixo de tabelas `wp_`. Para a homologação, crie o **staging** do domínio (`hml.ieadcvilaipiranga.com.br`) pelo recurso da Hostinger; ele nasce com WordPress e banco próprios. Anote o e-mail e a senha do administrador. O script falha com uma mensagem clara se não achar o WordPress na pasta. **Não use os botões "Sync" nem "Push to live" do staging**: eles copiam entre a homologação e a produção sem passar pelas travas (veja `docs/operacao/ci-cd.md`).
+2. Em Avançado > SSH, deixe o acesso SSH habilitado (servidor, porta e usuário aparecem ali). A pasta do site é `domains/ieadcvilaipiranga.com.br/public_html` (produção) e `domains/ieadcvilaipiranga.com.br/public_html/hml` (homologação, o staging).
 3. No `.env` do computador (**não vai para o git**: o repositório é público, então servidor, porta, usuário e endereços de teste ficam só ali; nunca coloque a senha):
 
    ```
@@ -22,14 +22,15 @@ A homologação vem primeiro: o script só envia para a produção com `-Ambient
    HOMOLOG_SERVIDOR=...
    HOMOLOG_PORTA=...
    HOMOLOG_USUARIO=...
-   HOMOLOG_URL=https://...        # o endereço temporário da hospedagem de homologação
+   HOMOLOG_URL=https://hml.ieadcvilaipiranga.com.br
+   HOMOLOG_DESTINO=domains/ieadcvilaipiranga.com.br/public_html/hml
    # Produção (só quando for usar)
    HOSTINGER_SERVIDOR=...
    HOSTINGER_PORTA=...
    HOSTINGER_USUARIO=...
    ```
 
-   Se a pasta do site não for a padrão, acrescente `HOMOLOG_DESTINO=` ou `HOSTINGER_DESTINO=`; se o endereço da produção não for `https://ieadcvilaipiranga.com.br`, `PRODUCAO_URL=`.
+   A homologação só aceita **um destes dois pares exatos** de endereço e pasta (qualquer outro é recusado antes de conectar): `https://hml.ieadcvilaipiranga.com.br` com `domains/ieadcvilaipiranga.com.br/public_html/hml` (a hml fica **dentro** da pasta da produção, por isso a comparação é por igualdade), ou, de transição, `https://<algo>.hostingersite.com` com `domains/<algo>.hostingersite.com/public_html` (sem `HOMOLOG_DESTINO`). A produção só aceita `domains/ieadcvilaipiranga.com.br/public_html` (`HOSTINGER_DESTINO`, opcional) e, se o endereço dela não for `https://ieadcvilaipiranga.com.br`, `PRODUCAO_URL=`.
 4. No computador: Docker Desktop aberto, site local funcionando (`bin\setup.ps1` já rodado) e o Cliente OpenSSH do Windows (já vem no Windows 10/11).
 5. Confira o destino sem enviar nada: `powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Conferir` mostra o ambiente, o servidor, a pasta e o endereço final, e testa se a porta do SSH responde.
 
@@ -72,6 +73,8 @@ powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1 -Parar      # apag
 
 Sobe uma "Hostinger de mentira" no Docker (`tests\migracao`: SSH, Apache, WordPress e MariaDB, com o mesmo caminho `domains/.../public_html`) e roda o `bin\migrar.ps1` de verdade contra ela, com uma chave de ensaio (sem senha, em `content\backup\ensaio-hospedagem`, fora do git). Só fala com esse servidor de mentira. O site migrado abre em `http://localhost:8081` (painel: `admhost` / `Ensaio-Hospedagem-1`) e o script imprime uma conferência: endereço, `blog_public`, site fechado, regras do `.htaccess` e o status HTTP de um visitante. Para testar a fidelidade do site migrado: com o site aberto (homologação ou lançamento), defina a data fixa dos testes no servidor de mentira (`wp config set IEADC_HOJE 2026-10-06`) e rode `WP_URL=http://localhost:8081 ./bin/testar.sh markup` e `visual`. A agenda do protótipo mostra a "Confraternização dos jovens" (17 e 18/10/2026), que o site de verdade não tem: o `testar.sh` a cria só no banco local; no servidor de mentira crie-a antes com `wp eval-file tests/fixtures/evento-prototipo.php criar` (e `remover` depois).
 
+Esse ensaio simples tem a produção e um único WordPress. Para ensaiar a homologação **aninhada** (um segundo WordPress dentro de `public_html/hml`, com outro banco) e provar que uma implantação nunca muda a outra, use `bash tests/migracao/aninhado/provar.sh` (veja `docs/operacao/ci-cd.md`; projeto `ieadc-ci-teste`, portas 2223 e 8082).
+
 ## O que o script faz e não faz
 
 - Substitui o conteúdo (páginas, artigos, eventos, configurações, fotos, tema e mu-plugin) pelo do computador. **Não leva os usuários locais**: a conta de administrador da Hostinger continua a mesma.
@@ -81,7 +84,7 @@ Sobe uma "Hostinger de mentira" no Docker (`tests\migracao`: SSH, Apache, WordPr
 - Guarda o banco anterior em `~/backup-antes-da-migracao-*.sql` no servidor (para voltar atrás: `wp db import` desse arquivo).
 - Instala Blocksy e os plugins (SEO, 2FA, limite de login, LiteSpeed Cache, UpdraftPlus). Configure 2FA, UpdraftPlus (cópia para o Google Drive da igreja) e os e-mails dos formulários no painel depois.
 - Na homologação os formulários funcionam de verdade: o que a equipe enviar ao testar vai para os e-mails de *Configurações > IEADC Vila Ipiranga* ou, se estiverem vazios, para o `admin_email` **que veio do banco local** (o script só o troca com `-EmailAdmin`). Por isso, na homologação rode com `-EmailAdmin <e-mail da equipe>` ou preencha os dois e-mails no painel. Pedidos de oração de teste ficam gravados lá e são apagados na próxima migração.
-- **A conta de hospedagem pode ter várias pastas** (por exemplo, a do domínio principal e a de outros sites). O script só escreve na pasta do endereço escolhido (`domains/<endereço>/public_html`) e a homologação **recusa** o domínio principal (`ieadcvilaipiranga.com.br`), mesmo que o `.env` ou um parâmetro aponte para ele.
+- **A conta de hospedagem pode ter várias pastas** (a do domínio principal, a da homologação em `public_html/hml` e as de outros sites). O script só escreve na pasta do par endereço + pasta escolhido (veja o `.env` acima) e a homologação **recusa** o domínio principal (`ieadcvilaipiranga.com.br`) e qualquer outro endereço ou pasta que não seja o par exato, mesmo que o `.env` ou um parâmetro aponte para ele. No servidor, a produção avisa se há uma `hml` e **não a toca**; a `hml` não escreve nada acima de si mesma.
 - A Hostinger desativa `proc_open()` no PHP de linha de comando, e o wp-cli precisa dele para `db export` e `db import`. O `migrar-remoto.sh` detecta isso e roda o wp-cli com `php -d disable_functions=`.
 - Reenviar sobre um site que já está no ar: o cache do LiteSpeed é esvaziado antes das opções finais; se aparecer página antiga, esvazie o cache pelo painel (LiteSpeed Cache > Gerenciar > Limpar tudo).
 - A cada execução uma pasta temporária (cerca de 35 MB) fica em `content\backup\migracao` (fora do git); apague as antigas quando quiser.

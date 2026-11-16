@@ -35,8 +35,17 @@ Depois disso o pacote é baixado e conferido pelo SHA-256 gravado na homologaç�
 
 Travas no próprio `bin/implantar.sh` (valem para qualquer uso do script):
 
-- A **homologação nunca aceita o domínio da produção** (nem `www.`), e a **produção só aceita o domínio da produção**.
-- A pasta no servidor é **exatamente** `domains/<domínio do site>/public_html` (a da produção é sempre `domains/ieadcvilaipiranga.com.br/public_html`): sem `..`, sem `/` no início, sem `//`, sem espaços. Qualquer outra pasta, inclusive as de outros sites que existem na mesma conta de hospedagem, é recusada antes de qualquer conexão. O `bin/atualizar-remoto.sh` repete a conferência no servidor.
+- Só existem **três pares exatos de endereço + pasta** (a comparação é sempre por **igualdade**, nunca por prefixo: a pasta da homologação nova começa pelo caminho da produção):
+
+  | Ambiente | Endereço aceito | Pasta aceita |
+  |---|---|---|
+  | produção | `ieadcvilaipiranga.com.br` (ou `www.`) | `domains/ieadcvilaipiranga.com.br/public_html` (nunca a subpasta `hml`) |
+  | homologação | `hml.ieadcvilaipiranga.com.br` | `domains/ieadcvilaipiranga.com.br/public_html/hml` |
+  | homologação (transição, a hospedagem alternativa antiga) | `<algo>.hostingersite.com` | `domains/<algo>.hostingersite.com/public_html` |
+
+- A **homologação nunca aceita o domínio da produção** (nem `www.`) nem qualquer outro host do domínio principal (`staging.`, `hml2.`, `a.hml.`...), e a **produção só aceita o domínio da produção**. O host é comparado sem diferenciar maiúsculas (é assim no DNS); a **pasta é exata**: `hml/` (barra final), `HML`, `hml/..`, `public_html//hml`, caminho absoluto, espaços e `~` são recusados.
+- Sem `..`, sem `/` no início, sem `//`, sem espaços na pasta. Qualquer outra pasta, inclusive as de outros sites que existem na mesma conta de hospedagem, é recusada antes de qualquer conexão. `bin/atualizar-remoto.sh` e `bin/migrar-remoto.sh` repetem a conferência no servidor (a produção ainda pode ser ensaiada contra `localhost` no servidor de mentira) e o `bin/migrar.ps1` (caminho manual) tem a mesma trava.
+- `bin/implantar.sh conferir` mostra se um destino passa nas travas sem conectar em nada (o `bin/cadastrar-segredos-github.sh` o usa antes de gravar os segredos).
 - Ambiente e modo precisam combinar: homologação só com `homologacao` ou `homologacao-fechada`; produção só com `ensaio` ou `lancar`. Por isso `HML_MODO=lancar` é recusado.
 - A carga `completo` na produção que **já recebeu uma carga** (opção `ieadc_deploy` ou `ieadc_site_fechado` no site) só passa com a confirmação `SUBSTITUIR-CONTEUDO`, para não apagar o que a equipe editou no painel.
 
@@ -44,11 +53,35 @@ Travas no próprio `bin/implantar.sh` (valem para qualquer uso do script):
 
 A homologação e a produção ficam **na mesma conta de hospedagem, com o mesmo usuário SSH**. Portanto, no nível da hospedagem, a chave da homologação alcança a pasta da produção (e as pastas de outros sites da conta). Os segredos do GitHub continuam separados (só o environment `producao` enxerga os `PROD_*`), mas **a chave SSH da homologação não é uma barreira de segurança para a produção**. O que protege a produção é: a trava de domínio e de pasta do `bin/implantar.sh`, o revisor obrigatório no environment `producao`, a restrição à `main`, as regras da `main` e o `CODEOWNERS` (quem muda `.github/` e `bin/` precisa da sua aprovação). Se a hospedagem permitir contas SSH separadas para cada site, prefira isso.
 
+### A homologação em `hml.ieadcvilaipiranga.com.br` (staging aninhado)
+
+A homologação passou a ser o ambiente de staging que a Hostinger cria para o domínio: `https://hml.ieadcvilaipiranga.com.br`. **Ele mora numa subpasta da produção**, `domains/ieadcvilaipiranga.com.br/public_html/hml`, com WordPress próprio (`wp-config.php`), banco próprio e prefixo `wp_`. Por isso as travas tratam os dois como pares distintos e comparam sempre por igualdade. O pipeline continua o mesmo (a produção só por release, depois da homologação); a Hostinger só fornece a pasta e o endereço.
+
+Barreiras (no `bin/atualizar-remoto.sh` e no `bin/migrar-remoto.sh`, que rodam no servidor, além das travas do cliente):
+
+- **A produção nunca toca a pasta `hml`.** Se a pasta da produção tem uma subpasta `hml` com `wp-config.php`, o script **avisa e segue sem tocá-la**: todas as operações (`rm`, `cp`, `wp search-replace`, `wp db import`, `.htaccess`, `.maintenance`, limpeza de cache) ficam dentro do `wp-content` e da raiz da própria produção. Se os dois WordPress usarem o **mesmo banco**, a carga é recusada (uma carga na produção atingiria a homologação).
+- **A homologação nunca toca o que está acima dela.** A pasta `hml` precisa ser uma pasta comum (não um link simbólico) logo abaixo da pasta da produção, e o banco dela não pode ser o da produção; senão, recusa. Só escreve dentro de `hml`.
+- As cópias de segurança no `$HOME` ganham o rótulo `hml-` (`backup-codigo-antes-hml-*.tgz`, `backup-antes-da-migracao-hml-*.sql`): a poda das 5 cópias de código de cada site e os nomes não se misturam (antes, as implantações frequentes da homologação apagariam as cópias da produção).
+
+**O que NÃO fazer no hPanel** (os botões da Hostinger contornam a trava):
+
+- **Nunca use "Sync" nem "Push to live"** do staging. Eles copiam arquivos e banco entre `hml` e a produção sem passar pela homologação do pipeline, sem confirmação e sem registrar o `ieadc_deploy`. A produção só recebe o que o workflow Produção implanta.
+- Mantenha o **noindex** do staging (a homologação grava `blog_public=0` a cada implantação; não o reative nem libere o robots.txt) e não crie links dele em páginas públicas.
+- Não apague nem mova a pasta `hml`, não troque o `wp-config.php` dela por um que use o banco da produção e não instale um segundo staging na mesma conta para usar como destino (só o par acima é aceito).
+
+**Trocar os segredos para a homologação nova** (feito por você, uma vez, depois do merge deste PR):
+
+1. No `.env` do computador (fora do git): `HOMOLOG_URL=https://hml.ieadcvilaipiranga.com.br` e `HOMOLOG_DESTINO=domains/ieadcvilaipiranga.com.br/public_html/hml`. O servidor, a porta e o usuário SSH são os mesmos da conta (mesma conta de hospedagem); a chave pública do deploy já autorizada continua valendo.
+2. `./bin/cadastrar-segredos-github.sh homologacao`: confere o par (`implantar.sh conferir`, sem conectar) e só então grava `HML_URL` e `HML_DESTINO` (e os demais `HML_*`). Se preferir pela página do GitHub: environment `homologacao` > `HML_URL` = `https://hml.ieadcvilaipiranga.com.br` e `HML_DESTINO` = `domains/ieadcvilaipiranga.com.br/public_html/hml`.
+3. Actions > Homologação > Run workflow (na `main`): a primeira implantação na hml nova. Confira o site em `https://hml.ieadcvilaipiranga.com.br` (e que `/wp-login.php` abre com o administrador do WordPress dessa pasta). Só depois lance a produção (a trava lê o `ieadc_deploy` de lá).
+
+**Remover a homologação antiga** (a hospedagem alternativa, depois que a nova estiver validada e a Homologação estiver verde nela): (a) no hPanel, exclua o site WordPress da hospedagem alternativa; (b) apague do `.env` o endereço antigo (a linha `HOMOLOG_URL` já foi trocada no passo 1); (c) se sobrou algum segredo `HML_*` que só valia para ela, apague-o no environment `homologacao`. O suporte de transição a `*.hostingersite.com` no código pode sair depois, em um pull request à parte (apague o terceiro par da tabela acima e os casos dele em `tests/ci/guardas.sh`).
+
 ## Preparação (uma vez)
 
 ### 1. As hospedagens
 
-Em cada uma (homologação e produção): WordPress instalado pelo hPanel, em português, com prefixo de tabelas `wp_`, e SSH habilitado (hPanel > Avançado > SSH). É o mesmo pré-requisito do `lancamento.md`.
+Em cada uma (homologação e produção): WordPress instalado pelo hPanel, em português, com prefixo de tabelas `wp_`, e SSH habilitado (hPanel > Avançado > SSH). É o mesmo pré-requisito do `lancamento.md`. A homologação é o **staging que a Hostinger cria para o domínio** (`hml.ieadcvilaipiranga.com.br`, na subpasta `hml` da produção; veja a seção acima): crie-o pelo hPanel e deixe-o com WordPress próprio, banco próprio e prefixo `wp_`.
 
 ### 2. Uma chave SSH para cada ambiente
 
@@ -83,9 +116,9 @@ No GitHub: Settings > Environments > New environment, com os nomes `homologacao`
 | | `HML_SERVIDOR` | servidor SSH (hPanel > Avançado > SSH) |
 | | `HML_PORTA` | porta SSH |
 | | `HML_USUARIO` | usuário SSH |
-| | `HML_URL` | endereço do site de homologação (`https://...`; nunca o domínio da produção) |
+| | `HML_URL` | endereço do site de homologação: `https://hml.ieadcvilaipiranga.com.br` (ou, na transição, `https://<algo>.hostingersite.com`); nunca o domínio da produção nem outro subdomínio |
 | | `HML_IMPRESSAO` | impressão digital do servidor (`SHA256:...`) |
-| | `HML_DESTINO` (opcional) | só é aceito se for exatamente `domains/<endereço da homologação>/public_html` (o padrão); outra pasta é recusada |
+| | `HML_DESTINO` (obrigatório para a hml nova) | só é aceito o par exato: `domains/ieadcvilaipiranga.com.br/public_html/hml` com `hml.ieadcvilaipiranga.com.br` (na hospedagem antiga: `domains/<endereço>/public_html`, o padrão, e o segredo pode ficar vazio); outra pasta é recusada |
 | | `HML_EMAIL_ADMIN` (opcional) | e-mail do administrador do site |
 | `producao` | `PROD_SSH_CHAVE` | chave privada SSH da produção |
 | | `PROD_SERVIDOR` | servidor SSH |
@@ -176,13 +209,16 @@ No fim de toda implantação (homologação e produção): página inicial, `/so
 | "Não há artifact pacote-hml-... válido" | O pacote expirou (30 dias) ou não foi guardado. Rode a Homologação de novo. |
 | "a impressão digital do servidor NÃO bate" | O servidor mudou de chave ou o segredo `*_IMPRESSAO` está errado. Confira como no passo 3 e atualize o segredo. |
 | "a homologação não pode apontar para o domínio da produção" | `HML_URL` está com o endereço da produção. Corrija o segredo. |
-| "a pasta do site deve ser exatamente ..." | `HML_DESTINO`/`PROD_DESTINO` aponta para outra pasta. Apague o segredo (vale o padrão) ou use a pasta padrão. |
+| "a pasta do site deve ser exatamente ..." | `HML_DESTINO`/`PROD_DESTINO` aponta para outra pasta. Use exatamente a pasta que a mensagem mostra (a da hml é `domains/ieadcvilaipiranga.com.br/public_html/hml`, sem barra no fim). |
+| "a homologação só aceita o endereço hml.ieadcvilaipiranga.com.br ..." | `HML_URL` é de outro endereço (outro subdomínio, `www.`, domínio de outro site). Use `https://hml.ieadcvilaipiranga.com.br`. |
+| "na produção o endereço deve ser o do domínio principal" | `PROD_URL` aponta para a hml ou outro endereço. Apague o segredo (vale `https://ieadcvilaipiranga.com.br`). |
+| "a produção e a homologação (hml) usam o mesmo banco de dados" / "a pasta da homologação (hml) não é uma pasta comum" | O servidor recusou por segurança: a hml deve ter banco próprio e ser uma pasta comum logo abaixo da pasta da produção (como o staging da Hostinger cria). Nada foi alterado; corrija no hPanel. |
 | "o modo X não combina com o ambiente Y" | Homologação só com `homologacao` ou `homologacao-fechada` (`HML_MODO`); produção só com `ensaio` ou `lancar`. |
 | "a produção já recebeu uma carga completa antes" | Use o modo `codigo`. Para substituir o conteúdo de propósito, a confirmação é `SUBSTITUIR-CONTEUDO`. |
 
 ## Voltar atrás
 
-- **Só código** (modo `codigo`): o servidor guarda as 5 últimas cópias em `~/backup-codigo-antes-*.tgz`. Pelo SSH: `tar -xzf ~/backup-codigo-antes-<data>.tgz -C ~/domains/<site>/public_html/wp-content` e depois `wp --path=~/domains/<site>/public_html cache flush`. O jeito normal, porém, é reverter o commit por pull request: a `main` muda, a homologação recebe e você lança uma versão nova.
+- **Só código** (modo `codigo`): o servidor guarda as 5 últimas cópias de cada site em `~/backup-codigo-antes-*.tgz` (as da homologação aninhada têm o rótulo `hml-`: `~/backup-codigo-antes-hml-*.tgz`, e as dela não apagam as da produção). Pelo SSH: `tar -xzf ~/backup-codigo-antes-<data>.tgz -C ~/domains/<site>/public_html/wp-content` e depois `wp --path=~/domains/<site>/public_html cache flush`. O jeito normal, porém, é reverter o commit por pull request: a `main` muda, a homologação recebe e você lança uma versão nova.
 - **Carga completa**: o banco anterior fica em `~/backup-antes-da-migracao-*.sql`. Pelo SSH: `wp --path=~/domains/<site>/public_html db import ~/backup-antes-da-migracao-<data>.sql`. Isso desfaz também o que a equipe editou depois da carga.
 - **Aprovação recusada ou falha no meio**: a release fica marcada como *pré-lançamento* (sinal de que não foi implantada). Os pré-lançamentos antigos **não são apagados sozinhos**: apague a release e a tag dela antes de reutilizar o número, ou use a próxima versão.
 - Nunca reaproveite uma tag para outro commit.
@@ -195,3 +231,5 @@ No fim de toda implantação (homologação e produção): página inicial, `/so
 - Se uma hospedagem bloquear os endereços do GitHub (firewall), o envio ou a fumaça vão falhar com a mensagem do problema; nesse caso use o caminho manual do `lancamento.md` (sem trava).
 - Sem acesso ao wordpress.org o servidor não instala os plugins (a fumaça acusa se o sitemap sumir).
 - Teste sem tocar em servidor real: o mesmo `bin/implantar.sh` roda contra a "hospedagem de mentira" de `tests/migracao`; passe as `ALVO_*`, `ALVO_IMPRESSAO` com a impressão do servidor de mentira e uma pasta `domains/<endereço>/public_html` que exista lá. Para ensaiar o ambiente `producao` contra ela, `DOMINIO_PRODUCAO=<endereço de teste>` troca o domínio considerado principal (os workflows nunca definem essa variável).
+- As travas têm testes offline (sem rede, sem docker, sem servidor) em `tests/ci/guardas.sh`, que o workflow Testes roda (`./bin/testar.sh ci`, também dentro do `tudo`): os pares aceitos, mais de uma centena de recusas (inclusive as variações da pasta `hml`), a trava repetida nos scripts do servidor, uma simulação com um `$HOME` e um wp-cli de mentira (a produção não toca a pasta `hml`, a `hml` não toca nada acima dela, as cópias de segurança não se misturam), a trava do `migrar.ps1` e o cadastro de segredos. Mude uma trava só junto com os casos dela nesse arquivo.
+- A prova com a homologação **aninhada de verdade** (um segundo WordPress dentro de `public_html/hml`, outro banco) roda em `tests/migracao/aninhado/` (`bash tests/migracao/aninhado/provar.sh`; projeto Docker `ieadc-ci-teste`, SSH 2223, web 8082, chave descartável): implanta na hml e na produção do servidor de teste e confere por hash que uma não muda a outra, além das recusas ao vivo e da leitura do `ieadc_deploy` pela trava da produção. Apague depois com `bash tests/migracao/aninhado/provar.sh parar`.
