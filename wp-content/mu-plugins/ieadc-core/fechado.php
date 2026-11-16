@@ -25,7 +25,7 @@ function ieadc_site_fechado_html(): string {
 		. '<meta name="robots" content="noindex,nofollow">'
 		. '<title>' . $nome . ' · em preparação</title>'
 		. '<style>html,body{margin:0;height:100%}body{display:grid;place-items:center;background:#071946;color:#fff;font-family:Roboto,system-ui,sans-serif;text-align:center;padding:24px;box-sizing:border-box}'
-		. '.logo{display:block;width:300px;max-width:78vw;height:auto;margin:0 auto 28px}'
+		. '.logo{display:block;width:300px;max-width:78vw;height:auto;margin:0 auto 28px}@media(max-width:600px){.logo{width:200px;margin-bottom:22px}}'
 		. 'h1{font-size:clamp(28px,6vw,44px);margin:0 0 12px}p{margin:0;font-size:18px;opacity:.85}</style></head>'
 		. '<body><main><img class="logo" src="' . $logo . '" alt="Assembleia de Deus em Curitiba" width="300" height="90">'
 		. '<h1>' . $nome . '</h1><p>Nosso site novo está sendo preparado. Volte em breve.</p></main></body></html>';
