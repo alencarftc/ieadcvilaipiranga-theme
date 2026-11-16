@@ -64,10 +64,29 @@ Todo o código está em `wp-content/themes/ieadc-vila-ipiranga/inc/desempenho.ph
 - **Fontes**: as duas mais usadas já têm `preload` e `font-display: swap`; nenhuma origem externa (nada de `preconnect`).
 - **Ícones** (`inc/identidade.php`): favicon, ícone do iPhone e `site.webmanifest`; `/favicon.ico` responde 200 (antes dava 404 e entrava no console).
 
-## 4. Notas locais (16/11/2026, `./bin/lighthouse.sh`, `lighthouse@12.8.2`)
+## 4. Notas locais (16/11/2026, `./bin/lighthouse.sh`, `lighthouse@12.8.2`, site Docker sem cache de página)
 
-Preenchido na seção "Resultado" abaixo.
+Desempenho / acessibilidade / boas práticas / SEO. **Computador: 100 / 100 / 100 / 100 nas 9 páginas** (LCP de 0,4 a 0,7 s, TBT 0 ms, CLS 0).
 
-## 5. Resultado
+| Página | Celular | LCP (celular) |
+|---|---|---|
+| início | 98 / 100 / 100 / 100 | 2,2 s |
+| sobre-nos | 98 / 100 / 100 / 100 | 2,2 s |
+| ministerios | 98 / 100 / 100 / 100 | 2,2 s |
+| ministerios/mocidade | 97 / 100 / 100 / 100 | 2,3 s |
+| eventos | 99 / 100 / 100 / 100 | 1,9 s |
+| contato | 100 / 100 / 100 / 100 | 1,8 s |
+| horarios-e-localizacao | 98 / 100 / 100 / 100 | 2,2 s |
+| artigo (alcancar-curitiba) | 98 / 100 / 100 / 100 | 2,2 s |
+| politica-de-privacidade | 100 / 100 / 100 / 100 | 1,8 s |
 
-(ver o fim do arquivo, atualizado pelo agente da fase 3 depois da última medição)
+Acessibilidade, boas práticas e SEO ficam em 100 nas 18 medições. **O desempenho do celular fica entre 97 e 100** (TBT 0, CLS 0): o que sobra é LCP de ~2,2 s e FCP de ~1,4 s sob 4G lenta simulada. Antes das mudanças da fase 3, a mesma página inicial dava 78 (celular) com 2,4 MB e 32 pedidos; hoje são ~250 KB e 10 pedidos. Referência na homologação **antes** da fase 3 (home): celular 90 / 98 / 96 / 66 e computador 95 / 98 / 96 / 66.
+
+O que impede o 100 no celular **local** e onde está o resto:
+
+- **Resposta do servidor de ~300 ms** (WordPress sem cache de página no Docker): o LiteSpeed Cache na hospedagem a reduz para dezenas de milissegundos, o que melhora diretamente FCP e LCP. É a principal razão de esperar mais que 98 na homologação ligada ao cache.
+- **Dois CSS bloqueando a renderização**: o do tema (14 KB comprimido) e o `main.min.css` do Blocksy (17 KB). Tirar o do Blocksy por inteiro rendeu só 1 ponto no celular (97 para 98) e exigiria uma cópia congelada dele no tema; ficou como está (ver `docs/operacao/plugins.md`).
+- Medições variam 1 ponto entre execuções; no celular, `ministerios/mocidade` ainda acusa um "forced reflow" de `site.js` (posição inicial dos botões de troca) de efeito pequeno.
+- **Preload da foto do topo**: medido, no celular ele piora o LCP (disputa banda com o CSS), por isso só vale para o computador.
+
+Para refazer: `./bin/lighthouse.sh` (8 a 9 minutos para as 18 medições). Para a homologação ou a produção: `LH_URL_BASE=<endereço> ./bin/lighthouse.sh` e compare com esta tabela.
