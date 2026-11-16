@@ -185,6 +185,64 @@ imp no "carga completa sem CONFIRMACAO" "CONFIRMACAO deve ser CARGA-INICIAL" CAR
 imp no "produção com MODO=homologacao" "não combina" AMBIENTE=producao CARGA=completo MODO=homologacao CONFIRMACAO=CARGA-INICIAL ALVO_URL="https://$PROD"
 imp no "produção com MODO=homologacao-fechada" "não combina" AMBIENTE=producao CARGA=completo MODO=homologacao-fechada CONFIRMACAO=CARGA-INICIAL ALVO_URL="https://$PROD"
 
+# --- 1b. GTM_ID e CLARITY_ID (fase 4): validados, só na produção e nunca com payload ------------------------------------------
+# Os IDs de medição são gravados no servidor dentro de um comando "wp eval" (PHP): por isso o formato é validado ANTES de abrir
+# qualquer conexão e só a produção os aceita. O teste usa "enviar" com um pacote mínimo e sem ALVO_SERVIDOR: se a validação passa,
+# o script para logo depois, em "falta a variável ALVO_SERVIDOR" (nunca conecta); se a validação recusa, a mensagem é a do ID.
+secao "implantar.sh: GTM_ID e CLARITY_ID (formato, só na produção, payloads)"
+MINI_DIR="$TMP/mini"; mkdir -p "$MINI_DIR"
+printf 'PACOTE_PREFIXO=wp_\nPACOTE_ORIGENS=http://localhost:8080\nPACOTE_SHA=desconhecido\n' > "$MINI_DIR/pacote.env"
+tar -czf "$TMP/mini.tgz" -C "$MINI_DIR" pacote.env
+# med ok|no "descrição" "trecho" VAR=valor...
+med() {
+  local esperado="$1" nome="$2" trecho="$3" saida rc; shift 3
+  total=$((total + 1))
+  saida="$(env -i PATH="$PATH" HOME="$TMP" "$@" bash bin/implantar.sh enviar "$TMP/mini.tgz" 2>&1)"; rc=$?
+  if [ "$esperado" = ok ]; then
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"GTM_ID"* ]] && [[ "$saida" != *"CLARITY_ID"* ]]; then passa; else falhou "deveria ACEITAR o ID (validação passa e para sem conectar): $nome" "$saida"; fi
+  else
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"ERRO"* ]] && [[ "$saida" == *"$trecho"* ]] && [[ "$saida" != *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"Chave do servidor"* ]]; then passa; else falhou "deveria RECUSAR o ID: $nome" "$saida"; fi
+  fi
+}
+MP=(AMBIENTE=producao CARGA=codigo CONFIRMACAO=PRODUCAO ALVO_URL="https://$PROD")          # produção
+MH=(AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://$HML" ALVO_DESTINO="$P_HML")         # homologação aninhada
+MT=(AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://abc123.hostingersite.com")           # homologação de transição
+med ok "sem GTM_ID nem CLARITY_ID (produção)" "" "${MP[@]}"
+med ok "GTM_ID vazio e CLARITY_ID vazio (produção)" "" "${MP[@]}" GTM_ID= CLARITY_ID=
+med ok "GTM-ABCD (mínimo, 4)" "" "${MP[@]}" GTM_ID=GTM-ABCD
+med ok "GTM-ABCDEFGHIJKL (máximo, 12)" "" "${MP[@]}" GTM_ID=GTM-ABCDEFGHIJKL
+med ok "GTM-A1B2C3D (7, o formato comum)" "" "${MP[@]}" GTM_ID=GTM-A1B2C3D
+med ok "CLARITY_ID abcdef (mínimo, 6)" "" "${MP[@]}" CLARITY_ID=abcdef
+med ok "CLARITY_ID abc123def456 (máximo, 12)" "" "${MP[@]}" CLARITY_ID=abc123def456
+med ok "GTM_ID e CLARITY_ID juntos" "" "${MP[@]}" GTM_ID=GTM-ABCD1234 CLARITY_ID=k4l9m2n7p1
+for v in 'GTM-ABC' 'GTM-ABCDEFGHIJKLM' 'gtm-ABCD' 'GTM-abcd' 'GTM_ABCD' 'GTM-' 'GTM' 'ABCD' ' GTM-ABCD' 'GTM-ABCD ' 'GTM-AB CD' 'GTM-ABCD-1' \
+  'GTM-ABCD;ls' 'GTM-ABCD$(id)' 'GTM-ABCD`id`' "GTM-ABCD'" 'GTM-ABCD";system("id");//' 'GTM-ABCD";update_option("siteurl","x");//' 'GTM-ABCD\' \
+  'GTM-ABCD|id' 'GTM-ABCD&id' 'GTM-ABCD>x' 'GTM-<script>' 'GTM-ABCÀ' 'GTM-ABCD%0a' 'GTM-ABCD\n' '../GTM-ABCD' 'GTM-ABCD/../x' '*' 'GTM-*' ; do
+  med no "GTM_ID malicioso/inválido na produção: $v" "GTM_ID fora do formato" "${MP[@]}" GTM_ID="$v"
+done
+med no "GTM_ID com nova linha no fim" "GTM_ID fora do formato" "${MP[@]}" GTM_ID="GTM-ABCD"$'\n'
+med no "GTM_ID com nova linha e comando" "GTM_ID fora do formato" "${MP[@]}" GTM_ID="GTM-ABCD"$'\n'"touch /tmp/x"
+med no "GTM_ID com nova linha no início" "GTM_ID fora do formato" "${MP[@]}" GTM_ID=$'\n'"GTM-ABCD"
+for v in 'ABCDEF' 'abcde' 'abcdefghijklm' 'abc-def' 'abc def' 'abc_def' 'abcdef;ls' 'abcdef$(id)' 'abcdef`id`' "abcdef'" 'abcdef";system("id");//' 'abcdef";update_option("siteurl","x");//' \
+  'abcdef\' 'abcdef|id' 'abcdef&id' 'abcdef>x' 'abcdéf' 'abcdef%0a' 'abcdef\n' '../abcdef' '*' 'abc*' 'GTM-ABCD' ; do
+  med no "CLARITY_ID malicioso/inválido na produção: $v" "CLARITY_ID fora do formato" "${MP[@]}" CLARITY_ID="$v"
+done
+med no "CLARITY_ID com nova linha no fim" "CLARITY_ID fora do formato" "${MP[@]}" CLARITY_ID="abcdef"$'\n'
+med no "CLARITY_ID com nova linha e comando" "CLARITY_ID fora do formato" "${MP[@]}" CLARITY_ID="abcdef"$'\n'"touch /tmp/x"
+# Fora da produção, nem o ID certo passa (a homologação recebe visitas de teste e não entra nas estatísticas).
+med no "GTM_ID válido na homologação aninhada (hml)" "só vale na produção" "${MH[@]}" GTM_ID=GTM-ABCD1234
+med no "CLARITY_ID válido na homologação aninhada (hml)" "só vale na produção" "${MH[@]}" CLARITY_ID=abcdef123456
+med no "GTM_ID válido na homologação de transição" "só vale na produção" "${MT[@]}" GTM_ID=GTM-ABCD1234
+med no "CLARITY_ID válido na homologação de transição" "só vale na produção" "${MT[@]}" CLARITY_ID=abcdef123456
+med no "GTM_ID e CLARITY_ID válidos na hml" "só vale na produção" "${MH[@]}" GTM_ID=GTM-ABCD1234 CLARITY_ID=abcdef123456
+med no "GTM_ID malicioso na hml (a validação do formato vem primeiro)" "GTM_ID fora do formato" "${MH[@]}" GTM_ID='GTM-ABCD";system("id");//'
+med no "CLARITY_ID malicioso na hml" "CLARITY_ID fora do formato" "${MH[@]}" CLARITY_ID='abcdef";system("id");//'
+med no "GTM_ID válido na homologação com MODO completo" "só vale na produção" AMBIENTE=homologacao CARGA=completo MODO=homologacao ALVO_URL="https://$HML" GTM_ID=GTM-ABCD1234
+# Um destino que a trava recusa continua recusado, com ou sem ID (a trava de destino vem antes).
+med no "produção com a pasta da hml e GTM_ID válido" "pasta do site deve ser exatamente" "${MP[@]}" ALVO_DESTINO="$P_HML" GTM_ID=GTM-ABCD1234
+med no "produção com o endereço da hml e GTM_ID válido" "na produção o endereço deve ser" AMBIENTE=producao CARGA=codigo CONFIRMACAO=PRODUCAO ALVO_URL="https://$HML" GTM_ID=GTM-ABCD1234
+med no "produção sem confirmação e GTM_ID válido" "CONFIRMACAO" AMBIENTE=producao CARGA=codigo ALVO_URL="https://$PROD" GTM_ID=GTM-ABCD1234
+
 # --- 2. Os scripts que rodam no servidor, só a trava de pasta -------------------------------------------------------------
 # Cada execução usa um pacote e um HOME vazios (copiados para a pasta temporária: os scripts apagam o próprio pacote no fim).
 secao "atualizar-remoto.sh e migrar-remoto.sh: a trava repetida no servidor"
@@ -194,6 +252,7 @@ novo_pacote() {   # cria $TMP/pacotes/N com os dois scripts e um pacote mínimo;
   mkdir -p "$PAC/wp-content/themes/ieadc-vila-ipiranga" "$PAC/wp-content/mu-plugins/ieadc-core" "$PAC/wp-content/uploads"
   cp bin/atualizar-remoto.sh bin/migrar-remoto.sh "$PAC/"
   echo "/* tema novo */" > "$PAC/wp-content/themes/ieadc-vila-ipiranga/style.css"
+  mkdir -p "$PAC/wp-content/themes/ieadc-vila-ipiranga/assets/img/icones"; echo icone > "$PAC/wp-content/themes/ieadc-vila-ipiranga/assets/img/icones/icone-32.png"   # o favicon.ico da raiz (fase 4)
   echo "<?php // mu-plugin novo" > "$PAC/wp-content/mu-plugins/ieadc-core/core.php"
   echo foto > "$PAC/wp-content/uploads/foto.jpg"; echo "-- Dump completed" > "$PAC/banco.sql"
 }
@@ -320,6 +379,7 @@ for s in atualizar migrar; do
   confere "$s/produção: tema novo na produção" grep -q "tema novo" "$SITE_P/wp-content/themes/ieadc-vila-ipiranga/style.css"
   confere "$s/produção: o .htaccess da produção foi regravado" grep -q "index.php" "$SITE_P/.htaccess"
   confere "$s/produção: todas as chamadas do wp-cli foram na pasta da produção" so_caminho "$SITE_P"
+  confere "$s/produção: o favicon.ico (fase 4) foi para a raiz da produção e não para a hml" bash -c '[ -f "$1/favicon.ico" ] && [ ! -e "$1/hml/favicon.ico" ]' _ "$SITE_P"
   confere "$s/produção: nada sobrou na hml (sem .maintenance)" test ! -e "$SITE_P/hml/.maintenance"
 
   # --- hml (dentro da pasta da produção) ---
@@ -333,6 +393,7 @@ for s in atualizar migrar; do
   confere "$s/hml: tema novo na hml" grep -q "tema novo" "$SITE_H/wp-content/themes/ieadc-vila-ipiranga/style.css"
   confere "$s/hml: o .htaccess da hml foi regravado" grep -q "index.php" "$SITE_H/.htaccess"
   confere "$s/hml: todas as chamadas do wp-cli foram na pasta hml" so_caminho "$SITE_H"
+  confere "$s/hml: o favicon.ico (fase 4) foi para a raiz da hml e não para a produção" bash -c '[ -f "$1/hml/favicon.ico" ] && [ ! -e "$1/favicon.ico" ]' _ "$SITE_P"
   confere "$s/hml: sem .maintenance no pai" test ! -e "$SITE_P/.maintenance"
   if [ "$s" = atualizar ]; then
     confere "$s/hml: a cópia de código tem o rótulo hml-" bash -c "ls '$C'/backup-codigo-antes-hml-*.tgz"
