@@ -19,17 +19,17 @@ $site = '/var/www/html'
 # No PowerShell 5 o progresso que o docker escreve em stderr não pode virar erro: por isso o 'Continue' aqui.
 function Compose {
   $ErrorActionPreference = 'Continue'
-  & docker compose -f $compose @args
+  & docker compose -p ieadc-hospedagem-teste -f $compose @args
   if ($LASTEXITCODE -ne 0) { throw "docker compose $args falhou" }
 }
 # Comando no servidor de mentira, como o usuário do cliente (u123), sem derrubar o script se falhar.
 function Remoto {
   $ErrorActionPreference = 'Continue'
-  & docker compose -f $compose exec -T -u u123 servidor @args 2>&1 | ForEach-Object { "$_" }
+  & docker compose -p ieadc-hospedagem-teste -f $compose exec -T -u u123 servidor @args 2>&1 | ForEach-Object { "$_" }
 }
 function RemotoOk {
   $ErrorActionPreference = 'Continue'
-  & docker compose -f $compose exec -T -u u123 servidor @args *> $null
+  & docker compose -p ieadc-hospedagem-teste -f $compose exec -T -u u123 servidor @args *> $null
   return ($LASTEXITCODE -eq 0)
 }
 

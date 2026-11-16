@@ -50,8 +50,15 @@ if (-not $Url) {
 }
 if (-not $Url) { throw 'Falta HOMOLOG_URL no .env (o endereço da hospedagem de homologação) ou o parâmetro -Url.' }
 $Url = $Url.TrimEnd('/')
+if ($Url -notmatch '^https?://[^/\s]+') { throw "O endereço do site ($Url) precisa começar com https:// (confira HOMOLOG_URL no .env ou o parâmetro -Url)." }
 if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
 if (-not $Destino) { $Destino = 'domains/' + ([uri]$Url).Host + '/public_html' }
+# Trava: a homologação nunca pode apontar para o domínio de produção (um .env ou um parâmetro errado enviaria sem a
+# confirmação PRODUCAO). Para a produção use -Ambiente producao.
+$dominioProducao = 'ieadcvilaipiranga.com.br'
+if ($Ambiente -eq 'homologacao' -and (([uri]$Url).Host -match ('(^|\.)' + [regex]::Escape($dominioProducao) + '$') -or $Destino -match [regex]::Escape($dominioProducao))) {
+  throw "A homologação não pode apontar para $dominioProducao (endereço $Url, pasta $Destino). Para enviar à produção use -Ambiente producao."
+}
 
 foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
   if (-not (Get-Command $c -ErrorAction SilentlyContinue)) { throw "Não achei o comando '$c'. Ele vem com o Docker Desktop e o Windows 10/11 (Recursos opcionais > Cliente OpenSSH)." }

@@ -11,7 +11,14 @@ SITE="$HOME/$DEST"
 
 [ -f "$SITE/wp-config.php" ] || { echo "ERRO: não achei o WordPress em $SITE. Instale o WordPress pelo hPanel (Sites > WordPress) e confira a pasta."; exit 1; }
 cd "$SITE"
-WP="wp --path=$SITE"
+# Hospedagens como a da Hostinger desativam proc_open() no PHP de linha de comando, e o wp-cli precisa dele (db export e
+# db import). O -d disable_functions= religa as funções só para este processo.
+WPBIN="$(command -v wp)"
+if php -r 'exit(function_exists("proc_open") ? 0 : 1);'; then
+  WP="$WPBIN --path=$SITE"
+else
+  WP="php -d disable_functions= $WPBIN --path=$SITE"
+fi
 
 atual="$($WP config get table_prefix)"
 [ "$atual" = "$PREFIXO" ] || { echo "ERRO: o prefixo das tabelas aqui é '$atual' e o local é '$PREFIXO'. Reinstale o WordPress com prefixo '$PREFIXO' ou avise a Comunicação."; exit 1; }

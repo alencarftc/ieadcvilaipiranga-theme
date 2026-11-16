@@ -70,6 +70,11 @@ ieadc_ok(wp_script_is('ieadc-blocos-editor', 'registered'), 'script do editor re
 echo "ieadc_site_fechado_bloqueia (site em preparação)\n";
 $fechado_antes = get_option('ieadc_site_fechado', null);
 $usuario_antes = get_current_user_id();
+// Se o teste for interrompido no meio, o site local não pode ficar fechado: restaura de qualquer jeito.
+$fechado_restaurar = function () use ($fechado_antes) {
+	$fechado_antes === null ? delete_option('ieadc_site_fechado') : update_option('ieadc_site_fechado', $fechado_antes);
+};
+register_shutdown_function($fechado_restaurar);
 wp_set_current_user(0);
 delete_option('ieadc_site_fechado');
 ieadc_igual(false, ieadc_site_fechado_bloqueia(), 'sem a opção o site é aberto');
@@ -83,7 +88,7 @@ if ($admins) {
 }
 update_option('ieadc_site_fechado', 0);
 ieadc_igual(false, ieadc_site_fechado_bloqueia(), 'opção 0: aberto');
-$fechado_antes === null ? delete_option('ieadc_site_fechado') : update_option('ieadc_site_fechado', $fechado_antes);
+$fechado_restaurar();
 wp_set_current_user($usuario_antes);
 
 ieadc_teste_fim();
