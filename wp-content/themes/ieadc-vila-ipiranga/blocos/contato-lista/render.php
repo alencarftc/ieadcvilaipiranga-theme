@@ -25,7 +25,9 @@ if ($itens) {
 			echo '<b>' . ieadc_pend($i['titulo']) . '</b>';
 		}
 		if (!empty($i['texto'])) {
-			echo '<span>' . ieadc_kses_rico($i['texto']) . '</span>';
+			// {maps} e {waze}: links montados a partir do endereço de Configurações (fase 4).
+			$texto = str_replace(['{maps}', '{waze}'], [function_exists('ieadc_google_maps_url') ? ieadc_google_maps_url() : '', function_exists('ieadc_waze_url') ? ieadc_waze_url() : ''], (string) $i['texto']);
+			echo '<span>' . ieadc_kses_rico($texto) . '</span>';
 		}
 		echo '</p></div>';
 	}
