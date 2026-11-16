@@ -20,7 +20,8 @@ function ieadc_t_baixar(string $url): array {
 		return ['status' => 0, 'corpo' => '', 'tipo' => '', 'erro' => $r->get_error_message()];
 	}
 	return ['status' => (int) wp_remote_retrieve_response_code($r), 'corpo' => (string) wp_remote_retrieve_body($r),
-		'tipo' => (string) wp_remote_retrieve_header($r, 'content-type'), 'erro' => ''];
+		'tipo' => (string) wp_remote_retrieve_header($r, 'content-type'), 'erro' => '',
+		'cab' => array_change_key_case((array) wp_remote_retrieve_headers($r)->getAll(), CASE_LOWER)];
 }
 
 /** Monta DOM, XPath e os dados estruturados de uma página. */
@@ -245,7 +246,17 @@ ieadc_t_todas($paginas, 'toda <img> tem alt, width e height; as do rodapé são 
 });
 $ini = $paginas[$home_path];
 $pre = $ini['xp']->query('//link[@rel="preload"][@as="image"]');
-ieadc_ok($pre->length === 1 && $pre->item(0)->getAttribute('fetchpriority') === 'high', 'foto do topo da página inicial pré-carregada com fetchpriority=high');
+$medias = [];
+$altas = true;
+foreach ($pre as $l) {
+	$medias[] = $l->getAttribute('media');
+	$altas = $altas && $l->getAttribute('fetchpriority') === 'high';
+}
+// computador: preload da original com media (min-width) e prioridade alta; o celular recebe a versão de 768 px pelo <style> (sem preload: ver inc/desempenho.php).
+// Sem versão menor, um preload só, sem media.
+ieadc_ok($altas && $pre->length === 1 && ($medias[0] === '' || str_contains($medias[0], 'min-width')), 'foto do topo da página inicial pré-carregada com fetchpriority=high (a original; no computador)', $medias);
+$estilo_topo = $ini['xp']->query('//style[@id="ieadc-topo-celular"]');
+ieadc_ok($medias === [''] || ($estilo_topo->length === 1 && str_contains($estilo_topo->item(0)->textContent, '-768x')), 'foto do topo: no celular o fundo troca para a versão de 768 px');
 
 /* ---------- Dados estruturados ---------- */
 echo "dados estruturados (JSON-LD)\n";
@@ -509,5 +520,42 @@ foreach ([ieadc_info('endereco'), ieadc_info('telefone'), ieadc_info('email'), i
 }
 ieadc_ok($ok, 'llms.txt: endereço, telefone, e-mail, redes e cultos iguais aos de Configurações');
 ieadc_ok(!preg_match('/a confirmar|a definir|aggregateRating|nota |avalia[çc][õo]es/i', $llms['corpo']) && strlen($llms['corpo']) < 6000, 'llms.txt: curto, sem pendência e sem nota ou número de avaliações', strlen($llms['corpo']));
+
+/* ---------- Favicon, ícones e webmanifest (fase 3) ---------- */
+echo "favicon, ícones e webmanifest
+";
+$fav = ieadc_t_baixar($base . '/favicon.ico');
+ieadc_ok($fav['status'] === 200 && str_starts_with($fav['tipo'], 'image/') && substr($fav['corpo'], 1, 3) === 'PNG', '/favicon.ico responde 200 com imagem (nada de 404 no console)', [$fav['status'], $fav['tipo']]);
+$ini = ieadc_t_analisar($inicio_resp['corpo']);
+$links = [];
+foreach ($ini['xp']->query('//head/link[@rel]') as $l) {
+	$links[$l->getAttribute('rel')][] = $l->getAttribute('href');
+}
+ieadc_ok(!empty($links['icon']) && !empty($links['apple-touch-icon']) && !empty($links['manifest']), 'início: link rel icon, apple-touch-icon e manifest no head', array_keys($links));
+$ok = true;
+foreach ([32, 180, 192, 512] as $t) {
+	$im = ieadc_t_baixar($base . wp_parse_url(ieadc_icone_url($t), PHP_URL_PATH));
+	$ok = $ok && $im['status'] === 200 && substr($im['corpo'], 1, 3) === 'PNG' && (@getimagesizefromstring($im['corpo'])[0] ?? 0) === $t;
+}
+ieadc_ok($ok, 'ícones PNG 32, 180, 192 e 512 existem e têm o tamanho do nome');
+$man = ieadc_t_baixar($base . '/site.webmanifest');
+$mj = json_decode($man['corpo'], true) ?: [];
+ieadc_ok($man['status'] === 200 && str_contains($man['tipo'], 'manifest+json') && ($mj['name'] ?? '') === $nome && ($mj['theme_color'] ?? '') === '#071946'
+	&& count($mj['icons'] ?? []) === 2, 'site.webmanifest: nome de Configurações, theme_color igual ao das metatags e ícones 192 e 512', [$man['status'], $mj['name'] ?? null]);
+ieadc_ok(str_contains($ini['html'] ?? $inicio_resp['corpo'], '<meta name="theme-color" content="' . ($mj['theme_color'] ?? 'x') . '">'), 'theme_color do manifesto é o theme-color da página');
+
+/* ---------- Cabeçalhos de segurança (fase 3) ---------- */
+echo "cabeçalhos de segurança
+";
+$cab = $inicio_resp['cab'];
+ieadc_ok(($cab['x-frame-options'] ?? '') === 'SAMEORIGIN' && ($cab['cross-origin-opener-policy'] ?? '') === 'same-origin-allow-popups'
+	&& ($cab['x-content-type-options'] ?? '') === 'nosniff' && str_contains($cab['referrer-policy'] ?? '', 'strict-origin'), 'X-Frame-Options SAMEORIGIN, COOP same-origin-allow-popups, nosniff e Referrer-Policy', array_intersect_key($cab, array_flip(['x-frame-options', 'cross-origin-opener-policy'])));
+ieadc_ok(!isset($cab['strict-transport-security']) || str_starts_with($base, 'https'), 'HSTS só em https (o teste local é http)');
+$csp = $cab['content-security-policy-report-only'] ?? ($cab['content-security-policy'] ?? '');
+ieadc_ok($csp !== '' && str_contains($csp, "default-src 'self'") && str_contains($csp, "object-src 'none'") && !str_contains($csp, "script-src 'self' 'unsafe-inline'") && str_contains($csp, "frame-src 'none'"),
+	'CSP com default-src self, sem unsafe-inline em script, sem objetos nem quadros', $csp);
+ieadc_ok(isset($cab['content-security-policy-report-only']) === (get_option('ieadc_csp_modo', 'relatorio') === 'relatorio'), 'CSP começa em modo só-relatório (opção ieadc_csp_modo)');
+$login = ieadc_t_baixar($base . '/wp-login.php');
+ieadc_ok($login['status'] === 200 && !isset($login['cab']['content-security-policy-report-only']), 'tela de login responde 200 e sem a CSP do site (o painel não recebe CSP)', $login['status']);
 
 ieadc_teste_fim();

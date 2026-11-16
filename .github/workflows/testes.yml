@@ -12,7 +12,7 @@ concurrency:
 jobs:
   testes:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +34,7 @@ jobs:
       - name: Subir o WordPress e rodar o setup
         run: ./bin/setup.sh
 
-      - name: Testes (php, markup, visual e interação)
+      - name: Testes (php, markup, visual, interação e acessibilidade)
         run: ./bin/testar.sh
 
       - name: Imagens de diferença do teste visual

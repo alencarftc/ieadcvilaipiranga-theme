@@ -309,13 +309,7 @@ add_action('parse_request', function ($wp) {
 require_once __DIR__ . '/seo-schema.php';
 
 /* ---------- Desempenho ---------- */
-/* A foto do topo é o LCP: preload só dela, com prioridade alta (fundos CSS não aceitam loading="lazy" nem fetchpriority). */
-add_action('wp_head', function () {
-	$img = is_singular() ? ieadc_seo_imagem() : '';
-	if ($img !== '' && !empty(ieadc_seo_hero()['foto']) && (ieadc_seo_hero()['variante'] ?? 'pagina') !== 'sem-foto') {
-		echo '<link rel="preload" as="image" href="' . esc_url($img) . '" fetchpriority="high">' . "\n";
-	}
-}, 2);
+/* A foto do topo (LCP): preload com prioridade alta e versão menor no celular, em inc/desempenho.php. */
 
 /* Sem emojis, embeds e links extras do WordPress no cabeçalho. */
 add_action('init', function () {
@@ -337,11 +331,7 @@ add_filter('wp_headers', function (array $h): array {
 	unset($h['X-Pingback']);
 	return $h;
 });
-add_action('send_headers', function () {
-	header('X-Content-Type-Options: nosniff');
-	header('Referrer-Policy: strict-origin-when-cross-origin');
-	header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()');
-});
+/* Cabeçalhos de segurança (nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options, COOP, HSTS e CSP): mu-plugins/ieadc-core/seguranca.php. */
 /* Não expõe a lista de usuários (e os logins dos administradores) para visitantes. */
 add_filter('rest_endpoints', function (array $e): array {
 	if (!is_user_logged_in()) {
