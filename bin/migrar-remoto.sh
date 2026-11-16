@@ -13,7 +13,7 @@ SITE="$HOME/$DEST"
 cd "$SITE"
 # Hospedagens como a da Hostinger desativam proc_open() no PHP de linha de comando, e o wp-cli precisa dele (db export e
 # db import). O -d disable_functions= religa as funções só para este processo.
-WPBIN="$(command -v wp)"
+WPBIN="$(command -v wp)" || { echo "ERRO: não achei o wp-cli neste servidor."; exit 1; }
 if php -r 'exit(function_exists("proc_open") ? 0 : 1);'; then
   WP="$WPBIN --path=$SITE"
 else

@@ -50,7 +50,7 @@ if (-not $Url) {
 }
 if (-not $Url) { throw 'Falta HOMOLOG_URL no .env (o endereço da hospedagem de homologação) ou o parâmetro -Url.' }
 $Url = $Url.TrimEnd('/')
-if ($Url -notmatch '^https?://[^/\s]+') { throw "O endereço do site ($Url) precisa começar com https:// (confira HOMOLOG_URL no .env ou o parâmetro -Url)." }
+if ($Url -notmatch '^https?://[^/\s]+') { throw "O endereço do site ($Url) precisa começar com https:// ou http:// (confira HOMOLOG_URL no .env ou o parâmetro -Url)." }
 if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
 if (-not $Destino) { $Destino = 'domains/' + ([uri]$Url).Host + '/public_html' }
 # Trava: a homologação nunca pode apontar para o domínio de produção (um .env ou um parâmetro errado enviaria sem a
