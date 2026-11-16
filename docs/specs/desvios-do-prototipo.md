@@ -12,14 +12,14 @@ O gerador antigo do protótipo (`prototipo/fonte/*.py`) **não** foi atualizado:
 |---|---|---|---|
 | Início (boas-vindas) | `Opção 2 das boas-vindas. [o pastor escolhe entre as duas opções]` | removido (fica a opção 1, o texto "A paz do Senhor!") | A opção 2 era aviso de trabalho; a opção 1 é a aprovada no protótipo. Campo "Aviso" do bloco fica vazio. |
 | Artigos de exemplo (Alcançar Curitiba, Até que ele venha, Orai uns pelos outros) | `Autor [a confirmar] · [data da publicação]`, avatar `?` | `Comunicação IEADC Vila Ipiranga · 5, 3 e 4 de outubro de 2026` (data real do post), avatar `CI` | Quem publica é a Comunicação; a data é a do próprio post. Artigos novos usam o autor do WordPress. |
-| Artigos | Cartão Áudios: `[a confirmar]` | `Em breve, as mensagens em áudio da igreja estarão disponíveis aqui.` | Não afirma data nem formato; só avisa que o espaço existe. |
+| Artigos | Cartão Áudios: `[a confirmar]` | `As mensagens em áudio ainda não estão disponíveis nesta página.` | Não afirma data nem formato; só avisa que o espaço existe. |
 | Culto de Ensino | Quem ensina: `[a confirmar]` | `A liderança da igreja` | A própria página já diz "O ensino é conduzido pela liderança da igreja". |
 | Culto do Círculo de Oração | `… louva a Deus no culto. [Confirmar se o coral participa toda semana]` | `… louva a Deus no culto.` | Era uma anotação de trabalho; a frase já não afirma frequência. |
 | Eventos | `… reunião de início de ano. [datas de 2027 a confirmar]` | `… reunião de início de ano. Quando forem definidas, as datas aparecem no calendário acima.` | O calendário mostra os eventos cadastrados; o texto descreve isso. |
 | Liderança | `Foto [a confirmar]` sob Ev. Robson Stein e Pb. Manoel Lima | removido (ficam as iniciais RS e ML) | Aviso interno para o visitante não faz sentido; as fotos reais estão nas perguntas ao Felipe. |
 | Ministérios: Família, Missão e Evangelismo, Mocidade (texto de abertura) | `… [Outros encontros a confirmar]`, `… [Ações e encontros a confirmar]`, `… [Encontros próprios a confirmar]` | removidos | Repetiam o aviso que já está no corpo da página. |
 | Ministérios: Crianças e Ensinai (galeria) | `… autorização de imagem dos pais ou responsáveis. [fotos autorizadas a confirmar]` | `… autorização de imagem dos pais ou responsáveis.` | A regra continua; a pendência (fotos) foi para a lista de perguntas. |
-| Ministérios: Ensinai (Como participar) | `Procure os líderes do Ensinai: [nomes a confirmar]. Eles vão receber você e explicar como participar.` | `Procure a liderança do Ensinai depois do culto. Ela vai receber você e explicar como participar.` | Orienta o visitante sem citar nomes. |
+| Ministérios: Ensinai (Como participar) | `Procure os líderes do Ensinai: [nomes a confirmar]. Eles vão receber você e explicar como participar.` | `Procure a liderança do Ensinai. Ela vai receber você e explicar como participar.` | Orienta o visitante sem citar nomes. |
 | Política de privacidade | `Última atualização: [data da publicação]` | `Última atualização: <data da última alteração da página>` (hoje, 16 de novembro de 2026) | Data real: o bloco `hero` troca `{atualizacao}` pela data de modificação da página. O teste de markup ignora o valor da data (`tests/visual/lib/normalizar.js`). |
 
 ## Textos amarelos encurtados (B, aguardam dado real)
