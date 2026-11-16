@@ -81,3 +81,12 @@ Nada do que o visitante vê nos blocos mudou: o HTML de cada seção segue igual
 | Início: "Vila Ipiranga" e "Venha nos visitar." (texto em degradê azul) | Degradê de `#0A4F98` a `#39A7F0` | Degradê de `#0A4F98` a `#2B8ADB` (o fim fica 3,4:1 sobre o fundo claro em vez de 2,5:1). Em `ajustes.css` e `prototipo/site.css` | WCAG 1.4.3 (texto grande, 3:1). Medido por pixels, não pelo axe (que não mede texto em degradê) |
 
 **Contraste (WCAG 1.4.3).** O axe mede o contraste de todo texto sobre fundo liso e passou nas 28 páginas e nas três larguras sem ajustar a paleta do protótipo (as cores alteradas são o laranja do "hoje" da agenda no celular e o fim claro do degradê do título da página inicial, acima): as cores do protótipo (marinho, azul `#0567B7`, claro `#39A7F0` só em fundo escuro) já atendem 4,5:1, e o anel de foco e o texto de apoio já tinham sido ajustados na fase 2. O que o axe **não consegue** medir (texto sobre degradê, foto ou pseudoelemento: ele marca "incompleto") não é verificado automaticamente; a lista para revisão manual está em `docs/operacao/desempenho-e-acessibilidade.md`.
+
+## Melhorias da fase 4
+
+Desvios do protótipo v3 introduzidos na fase 4. O que muda no visual das seções testadas também vai para `prototipo/*.html` e `prototipo/site.css`; o que só vale para o site (fontes de reserva, cabeçalhos, rotas) fica registrado aqui.
+
+| Onde | Protótipo | Site | Motivo |
+|---|---|---|---|
+| Texto antes de carregar as fontes (todas as páginas) | `'Roboto Condensed', Arial` e `'Roboto', Arial`; o Arial é mais largo e o texto do topo quebrava em outras linhas, empurrando o conteúdo quando a fonte certa entrava (CLS 0,08 no celular e 0,03 no computador na homologação) | `--f-tit` e `--f-txt` ganham `'Roboto Condensed Fallback'` e `'Roboto Fallback'` (e `'Dancing Script Fallback'` em "Venha nos visitar.") antes do Arial: faces com `local(Arial)` (ou Liberation Sans/Arimo) e `size-adjust`/`ascent-override`/`descent-override` copiados das fontes reais (`fontes.css`, `ajustes.css`) | CLS. Com a fonte carregada nada muda de aparência (os testes visual e de markup seguem iguais); com 1,5 s de atraso nas fontes o CLS local caiu de 0,068 para 0,000 no celular e no computador |
+| Pré-carregamento das fontes | `preload` sem prioridade | `preload` com `fetchpriority="low"` | No celular com rede lenta as duas fontes (93 KB) disputavam a banda com o CSS; com as fontes de reserva a troca não desloca nada |
