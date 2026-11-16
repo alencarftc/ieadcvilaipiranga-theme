@@ -70,16 +70,28 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-escola-biblica-dominical",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "A Escola Bíblica Dominical acontece todo domingo, às 9h30. Antes dela, às 9h, o café comunitário recebe quem chega.\n\nOs alunos se dividem em classes e estudam a Bíblia com a ajuda de um professor. [classes a confirmar]\n\nO tema de estudo muda a cada trimestre, e cada aula aprofunda um assunto da Palavra de Deus. [material de estudo a confirmar] As salas da EBD dos jovens e das crianças ficam na parte de baixo da igreja.",
+     "texto": "A Escola Bíblica Dominical acontece todo domingo, às 9h30. Antes dela, às 9h, o café comunitário recebe quem chega.\n\nOs alunos se dividem em classes, por faixa etária, e estudam a Bíblia com a ajuda de um professor.\n\nO tema de estudo muda a cada trimestre, e cada aula aprofunda um assunto da Palavra de Deus. O material de estudo é a revista da CPAD, trocada a cada trimestre. As salas da EBD dos jovens e das crianças ficam na parte de baixo da igreja.",
      "versiculo": "",
      "referencia": "",
      "itens": []
+    },
+    {
+     "ancora": "classes-escola-biblica-dominical",
+     "titulo": "As classes",
+     "tipo": "objetivos",
+     "texto": "",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "<b>Abraão e Sara</b>: Adultos",
+      "<b>Chama Celeste</b>: Jovens e Adolescentes",
+      "<b>Pérolas de Cristo</b>: Crianças"
+     ]
     },
     {
      "ancora": "porque-escola-biblica-dominical",
