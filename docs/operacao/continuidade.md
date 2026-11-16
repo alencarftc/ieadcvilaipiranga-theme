@@ -1,6 +1,6 @@
 # Continuidade do projeto (para o Claude Code)
 
-Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main`. Serve para quem retomar o trabalho sem o histórico das conversas.
+Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main`; atualizado no fim da fase 1 do plano de melhorias (`docs/operacao/plano-melhorias.md`, branch `feat/site-p1`). Serve para quem retomar o trabalho sem o histórico das conversas.
 
 ## Links
 - Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme
@@ -24,10 +24,10 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 ## 2. Pendências conhecidas
 
 1. Migração: `docs/operacao/lancamento.md`. O `bin/migrar.ps1` já rodou inteiro contra o servidor de mentira (`bin\ensaio-local.ps1`) nos três modos (homologação, ensaio da produção e `-Lancar`) e os defeitos que apareceram foram corrigidos (endereço de origem, `.htaccess`, fechamento do site, pasta do mesmo minuto, acentos no PowerShell 5.1). **Ainda não rodou em hospedagem de verdade.** O destino da homologação já está no `.env` (`HOMOLOG_*`; a porta SSH responde e `migrar.ps1 -Conferir` mostra o destino resolvido); falta a **senha do SSH**, que só o Felipe digita no terminal dele, e conferir que o WordPress está instalado nessa hospedagem (prefixo `wp_`). Produção (28/11 ensaio, 30/11 lançamento): faltam `HOSTINGER_*` no `.env`; o `-Lancar` só depois do "pode lançar" dele.
-2. `docs/operacao/manutencao.md` (como publicar artigo e evento, trocar foto, ler pedidos de oração, backup e restauração com UpdraftPlus): escrito no PR de manutenção; falta alguém da Comunicação percorrer os passos no painel.
+2. `docs/operacao/manutencao.md` (como publicar artigo e evento, trocar foto, ler pedidos de oração, backup e restauração com UpdraftPlus): revisado e versionado na fase 1; falta alguém da Comunicação percorrer os passos no painel.
 3. Lighthouse e axe no domínio; decidir o corte de CSS do Blocksy (Coverage do Chrome).
-4. Configurar no painel: 2FA para os administradores, UpdraftPlus com cópia para o Google Drive da igreja, e-mails reais dos formulários (hoje vazios em *Configurações > IEADC Vila Ipiranga*).
-5. Conteúdo com `[a confirmar]` (classe `pend`): depende da liderança; não preencha por conta própria.
+4. Configurar no painel (o que é automático e o que não é: `docs/operacao/plugins.md`): 2FA para os administradores, UpdraftPlus com cópia para o Google Drive da igreja (o agendamento semanal/diário, 4 cópias, já vem gravado), e-mails reais dos formulários (hoje vazios em *Configurações > IEADC Vila Ipiranga*).
+5. Conteúdo com `[a confirmar]` (classe `pend`): depende da liderança; não preencha por conta própria. Na fase 1 os 52 trechos amarelos foram revisados: 20 resolvidos sem dado novo e 32 encurtados; as perguntas, por página, estão em `docs/operacao/pendencias-para-o-felipe.md` e cada desvio do protótipo em `docs/specs/desvios-do-prototipo.md`.
 6. O rótulo de lista do editor mostra "CHAMADAS (2) (2)" (contador duplicado, no editor genérico de `blocos/_editor/`).
 7. Branches remotas antigas (feat/m1-*, feat/b1-*, fix/*, etc.) ficaram sem apagar porque o proxy da nuvem bloqueia; apague pelo GitHub.
 
@@ -36,6 +36,9 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 - **Páginas**: cada página é uma lista de blocos `ieadc/<nome>` com atributos em JSON (`content/blocos/<pagina>.json`), gravada por `scripts/seed/20-paginas-p*.php`. A ordem das seções de cada página está em `docs/specs/mapa-secoes.json`.
 - **Bloco**: pasta em `wp-content/themes/ieadc-vila-ipiranga/blocos/<nome>/` com `block.json` e `render.php`; sem build. O editor do painel gera os campos a partir dos atributos (`blocos/_editor/`). Convenções em `docs/specs/00-convencoes.md`; atributos de cada ocorrência em `/docs/specs/B1..B4-*.md`.
 - **Dados da igreja**: *Configurações > IEADC Vila Ipiranga* (`ieadc_info()`); padrões em `mu-plugins/ieadc-core/info.php`.
+- **Eventos**: só vêm do módulo (tipo `evento` + `ieadc_agenda_*()`); o seed **não** cria evento de exemplo. A "Confraternização dos jovens" do protótipo existe só durante os testes (`tests/fixtures/evento-prototipo.php`, criada e apagada por `bin/testar.sh`). Evento que passou sai dos "próximos"; cadastrar, editar ou apagar limpa o cache de página.
+- **Plugins**: `ieadc-core/integracoes.php` (páginas com formulário nunca vão para o cache; páginas com agenda expiram à meia-noite; cabeçalho `X-Ieadc-Cache` para depurar) e `inc/seo.php` (título, descrição e imagem do tema chegam ao Yoast sem duplicar tag).
+- **Artigo novo**: Posts > Adicionar novo já abre com topo, corpo, parágrafo e "Continue lendo" (`ieadc_artigo_modelo()` em `inc/blocos.php`).
 - **Agenda** (cultos e eventos do mês): `ieadc_agenda*()`. Regras: Ceia no 2º sábado, consagração nos meses pares e vigília nos ímpares, etc. (`docs/specs/M2-agenda.md`). A data é a real (São Paulo). Os testes mandam o cabeçalho `X-Ieadc-Hoje: 2026-10-06` (`tests/visual/playwright.config.js`), aceito só quando `wp_get_environment_type() === 'local'`; a constante/variável `IEADC_HOJE` continua existindo (testes PHP e ensaios), mas o `.env` local a deixa vazia.
 - **Seed**: `scripts/seed.php` roda `scripts/seed/NN-*.php` em ordem; só troca conteúdo ainda não editado, a não ser com `IEADC_ATUALIZAR=1`.
 - **CSS**: `assets/css/prototipo.css` (congelado) + `ajustes.css` (por módulo). O reset do protótipo vale só dentro de `.ieadc-ui`.
@@ -57,6 +60,8 @@ Para uma página: `./bin/testar.sh visual inicio` (ou `IEADC_PAGINAS=inicio,cont
 - Cor dos títulos: marinho só fora de `.ieadc-ui`; dentro, o título herda (branco nos cartões e faixas escuras).
 - `wptexturize` desligado (aspas e travessões iguais ao protótipo).
 - Depois de apagar e recriar `wp-content/mu-plugins`, o container fica com o mount velho: `docker compose up -d --force-recreate wordpress`.
+- Testes de markup e visual **precisam do cabeçalho** `X-Ieadc-Hoje` (já vai no `playwright.config.js`); abrir o site no navegador mostra o dia real, então a home de hoje não é igual ao protótipo. Para ver o site "como em 06/10/2026" use a extensão de cabeçalhos do navegador ou `curl -H 'X-Ieadc-Hoje: 2026-10-06'`.
+- `Última atualização` da política vem de `{atualizacao}` (data de modificação da página); `normalizar.js` ignora o valor da data no teste de markup.
 - Limite de 5 envios por hora no formulário: rodar `testar.sh` várias vezes seguidas faz os testes de envio falharem; apague o transient (`wp transient delete --all`).
 - O wp-cli **não grava o `.htaccess`** (`wp rewrite flush --hard` só avisa "requires special configuration"): sem as regras toda página que não é a inicial dá 404. O seed e o `migrar-remoto.sh` gravam com `flush_rewrite_rules(true)` depois de carregar `wp-admin/includes/{file,misc}.php` e ligar o filtro `got_rewrite` (o nome é esse, não `got_mod_rewrite`).
 - O modo manutenção do WordPress (`.maintenance`) **expira sozinho em 10 minutos** e bloqueia também o `wp-login.php`; o site fechado de verdade é a opção `ieadc_site_fechado` (`ieadc-core/fechado.php`): visitantes veem 503, quem tem login vê tudo.

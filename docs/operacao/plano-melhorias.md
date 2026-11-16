@@ -19,7 +19,7 @@ Escrito em 16/11/2026 (02h53) a pedido do Felipe: finalizar tudo o que foi pedid
 
 ## Fases e situação
 
-- [ ] **Fase 1** (`feat/site-p1`): data real na página inicial (testes fixam a data por cabeçalho), eventos vindos do módulo de eventos, integração dos plugins (cache x formulários, Yoast sem duplicar, UpdraftPlus), textos amarelos resolvidos, modelo de artigo novo, manual `manutencao.md`, `pendencias-para-o-felipe.md`.
+- [x] **Fase 1** (`feat/site-p1`, PR aberto, **não mesclado**): data real na página inicial (testes fixam a data por cabeçalho `X-Ieadc-Hoje`), eventos vindos só do módulo de eventos (seed sem exemplo; dado de teste à parte), integração dos plugins (cache x formulários, agenda que vira à meia-noite, Yoast sem duplicar, UpdraftPlus), textos amarelos (20 resolvidos, 32 encurtados), modelo de artigo novo, manual `manutencao.md` versionado, `pendencias-para-o-felipe.md` e `desvios-do-prototipo.md`.
 - [ ] **Fase 2** (`feat/site-seo`): SEO técnico e dados estruturados (Church, WebSite, BreadcrumbList, Event, Article), Open Graph e Twitter, canonical, sitemap, robots, informações para Google e Gemini, seção com botão para avaliar a igreja no Google (campo `google_avaliacao` em Configurações; sem ele, link para a igreja no Google Maps).
 - [ ] **Fase 3** (`feat/site-a11y-perf`): axe (WCAG 2.1 AA) como teste do projeto e Lighthouse 100 (desempenho, acessibilidade, boas práticas e SEO, celular e computador).
 - [ ] **Fase 4** (`feat/site-melhorias`): melhorias de desempenho, UX, rastreamento (GA4 com consentimento, Search Console, eventos de clique), segurança (cabeçalhos, CSP), marketing (compartilhamento, WhatsApp, calendário .ics) e o que mais couber.
@@ -27,3 +27,9 @@ Escrito em 16/11/2026 (02h53) a pedido do Felipe: finalizar tudo o que foi pedid
 ## Registro dos agentes
 
 (Cada agente acrescenta aqui, em poucas linhas, o que fez, o que deixou pendente e qualquer armadilha nova.)
+
+### Fase 1 (`feat/site-p1`), 16/11/2026
+- **Feito:** T1 data real (`ieadc_hoje()` aceita `X-Ieadc-Hoje` só no ambiente local; `.env` com `IEADC_HOJE` vazio); T2 eventos só do módulo (seed sem exemplo, `tests/fixtures/evento-prototipo.php` criado/apagado pelo `testar.sh`); T3 `ieadc-core/integracoes.php`, filtros do Yoast em `inc/seo.php`, seed do UpdraftPlus e `docs/operacao/plugins.md`; T4 textos amarelos, `docs/specs/desvios-do-prototipo.md` e `docs/operacao/pendencias-para-o-felipe.md`; T5 modelo do artigo novo; T6 manual.
+- **Pendente (depende do Felipe):** as respostas de `pendencias-para-o-felipe.md` (e-mail público, anos e sobrenomes de Sobre nós, regras da Ceia, dados dos ministérios, fotos dos pastores, agenda de 2027) e o que é feito no painel (destino do backup, 2FA, e-mails dos formulários).
+- **Armadilhas novas:** o site local agora mostra o dia real (a home não é mais igual ao protótipo no navegador; os testes mandam o cabeçalho); `prototipo/fonte/*.py` não foi atualizado e não deve regerar `prototipo/*.html`; o evento do protótipo só existe durante `testar.sh` (se um teste for interrompido, `wp eval-file tests/fixtures/evento-prototipo.php remover` ou o seed o apagam); `wp-content/mu-plugins/ieadc-core/integracoes.php` usa ganchos do LiteSpeed que só existem com o plugin ativo (na Hostinger).
+- **Para o orquestrador:** o PR da fase 1 não foi mesclado nem publicado em servidor.
