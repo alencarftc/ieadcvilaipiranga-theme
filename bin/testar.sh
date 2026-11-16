@@ -5,7 +5,7 @@
 # Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com o ambiente "local" do
 # WordPress (o docker-compose.yml já define), Node 20+ e Docker. O .env fica com IEADC_HOJE vazio: o site local mostra o dia real e os
 # testes fixam 06/10/2026 pelo cabeçalho X-Ieadc-Hoje (tests/visual/playwright.config.js). O protótipo é servido sozinho em http://localhost:8090 durante os testes.
-# a11y: axe (WCAG 2.1 AA) nas 28 páginas a 390, 900 e 1440 px, teclado e prefers-reduced-motion (tests/visual/a11y.spec.js).
+# a11y: axe (WCAG 2.1 e 2.2 AA) nas 28 páginas a 390, 900 e 1440 px e na agenda com outras datas, teclado e prefers-reduced-motion (tests/visual/a11y.spec.js).
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail
 cd "$(dirname "$0")/.."

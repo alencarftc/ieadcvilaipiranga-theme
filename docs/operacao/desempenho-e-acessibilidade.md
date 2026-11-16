@@ -2,23 +2,24 @@
 
 Como medir, o que o tema já faz e o que depende do servidor. Escrito em 16/11/2026, no fim da fase 3 (`feat/site-a11y-perf`).
 
-## 1. Acessibilidade (WCAG 2.1 nível AA) com o axe
+## 1. Acessibilidade (WCAG 2.1 nível AA, mais o tamanho do alvo de toque do 2.2) com o axe
 
 ```bash
 export IEADC_CHROMIUM='C:\Users\alenc\AppData\Local\ms-playwright\chromium_headless_shell-1161\chrome-win\headless_shell.exe'   # Windows
-./bin/testar.sh a11y                # tudo: 95 testes
+./bin/testar.sh a11y                # tudo: 113 testes
 ./bin/testar.sh a11y contato        # só uma página (as de mapa-secoes.json)
 ```
 
 `tests/visual/a11y.spec.js` (usa `@axe-core/playwright` 4.14.0, versão fixa) faz:
 
-- **axe nas 28 páginas, a 390, 900 e 1440 px** (84 testes), com as regras `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` e `best-practice`. A página é rolada até o fim antes (as fotos de baixo só carregam perto da tela). Se falhar, a mensagem lista, por regra: impacto, seletor, trecho do HTML e o motivo.
+- **axe nas 28 páginas, a 390, 900 e 1440 px** (84 testes), com as regras `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` (traz o `target-size`, alvo de toque de 24 px, que o Lighthouse cobra) e `best-practice`. A página é rolada até o fim antes (as fotos de baixo só carregam perto da tela). Se falhar, a mensagem lista, por regra: impacto, seletor, trecho do HTML e o motivo.
+- **Agenda em outras datas** (18 testes): início, eventos e horários a 390 e 900 px com as datas 16/11/2026, 24/12/2026 e 10/01/2027. Os testes de fidelidade fixam 06/10/2026, e o "hoje" da agenda muda de aparência conforme o dia (o Lighthouse, que roda com a data real, achou um laranja de 2,6:1 que o axe com data fixa não via).
 - **Teclado** (1440 px): o primeiro Tab leva ao link "Pular para o conteúdo", que aparece na tela e leva a `<main id="main">`; em 4 páginas, até 60 Tabs sem foco em elemento invisível, sem controle sem nome, sem `tabindex` positivo e **sempre com indicador de foco visível**; o submenu abre por teclado.
 - **Menu do celular** (390 px): botão MENU com `aria-expanded`, abre com Enter e com Espaço, o Tab entra no menu aberto, Esc fecha e devolve o foco ao botão; fechado, os links do menu não entram no fluxo do teclado.
 - **Carrossel**: setas e pontos com nome acessível, funcionam com Enter, e **nada gira sozinho** (WCAG 2.2.2: não há movimento automático, logo não há o que pausar).
 - **`prefers-reduced-motion`**: sem rolagem suave, sem animação nem transição acima de 50 ms e o carrossel salta direto.
 
-Resultado local (16/11/2026): **84 de 84 combinações página x largura sem nenhuma violação** e os 11 testes de teclado e movimento verdes. Os defeitos que o axe achou e foram corrigidos: região que rola sem foco de teclado (`scrollable-region-focusable`, carrosséis), conteúdo fora de região (`region`, a faixa do topo) e, achado pelo teste de teclado, dois links "Pular para o conteúdo" seguidos (o do tema saiu). Detalhes em `docs/specs/desvios-do-prototipo.md`, seção "Acessibilidade e desempenho (fase 3)".
+Resultado local (16/11/2026): **84 de 84 combinações página x largura e as 18 de agenda sem nenhuma violação** e os 11 testes de teclado e movimento verdes (113 no total). Defeitos achados e corrigidos: região que rola sem foco de teclado (`scrollable-region-focusable`, carrosséis), conteúdo fora de região (`region`, a faixa do topo), alvo de toque de 10 px nos pontos do carrossel (`target-size`), laranja do "hoje" da agenda no celular (`color-contrast`, 2,6:1) e, pelo teste de teclado, dois links "Pular para o conteúdo" seguidos (o do tema saiu). Detalhes em `docs/specs/desvios-do-prototipo.md`, seção "Acessibilidade e desempenho (fase 3)".
 
 **O que o axe não mede (revisão manual).** Texto sobre degradê, foto ou pseudoelemento aparece no axe como "incompleto" (não falha nem passa). Na página inicial são os títulos em degradê azul ("Vila Ipiranga" e "Venha nos visitar.", texto grande: o fim claro do degradê foi escurecido para 3:1, ver desvios), o texto dos cartões de ministério sobre foto, as legendas do carrossel sobre foto (`figcaption`, com degradê marinho por baixo) e os "SÁB/DOM" dos cartões de evento. Ao trocar uma foto por outra bem clara, confira essas legendas. O axe também não substitui um teste com leitor de tela (NVDA ou VoiceOver): vale fazer um, uma vez, na homologação.
 

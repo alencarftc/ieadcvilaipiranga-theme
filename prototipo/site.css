@@ -932,3 +932,5 @@ a:hover .mais.acao{background:var(--marinho)}
 .pontos button.on{width:48px}
 /* Na agenda em lista (até 900 px) o dia de hoje aparece em laranja (#FE7D00) sobre branco: 2,6:1. #B85700 dá 4,8:1 e continua laranja. */
 @media (max-width:900px){.cel.hoje .n{color:#B85700}}
+/* O fim claro (#39A7F0) do degradê azul do título da página inicial e de "Venha nos visitar." dava 2,5:1 sobre o fundo claro (texto grande pede 3:1): vai a #2B8ADB (3,4:1). O axe não mede texto em degradê. */
+.h1-home .nome,.hero .script.script-home{background-image:linear-gradient(90deg,#0A4F98 0%,#0567B7 45%,#2B8ADB 100%)}

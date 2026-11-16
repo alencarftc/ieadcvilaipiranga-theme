@@ -9,9 +9,9 @@ defined('ABSPATH') || exit;
 const IEADC_LARGURA_CELULAR = 768;
 
 /**
- * Foto do topo (a que o Lighthouse mede como LCP; nos artigos, a capa): no celular vai a versão de 768 px (~65 KB em vez de ~185 KB), no resto a original.
- * O <link rel="preload"> tem `media` para o navegador baixar só uma delas; como o HTML do bloco aponta para a original (style inline),
- * um <style> no cabeçalho troca o fundo no celular. O seletor casa o nome do arquivo no atributo style.
+ * Foto do topo (a que o Lighthouse mede como LCP; nos artigos, a capa): no celular (até 768 px) vai a versão de 768 px (~65 KB em vez de ~185 KB);
+ * no resto, a original. O HTML do bloco aponta para a original (style inline): um <style> no cabeçalho troca o fundo no celular (o seletor casa o
+ * nome do arquivo no atributo style). O <link rel="preload"> só vale para o computador (`media`): o motivo está no corpo da função.
  */
 add_action('wp_head', function () {
 	if (!is_singular()) {
@@ -44,9 +44,10 @@ add_action('wp_head', function () {
 		return;
 	}
 	$l = IEADC_LARGURA_CELULAR;
-	echo '<link rel="preload" as="image" href="' . esc_url($media[0]) . '" media="(max-width:' . $l . 'px)" fetchpriority="high">' . "
-";
-	if (!$artigo) { // no artigo, no computador a capa fica mais abaixo: sem preload (não disputa banda com o CSS)
+	// Sem preload no celular: medido no Lighthouse (simulação de 4G lenta), o preload com prioridade alta da versão de 768 px disputa a banda com o CSS
+	// e piora o LCP (início 97 para 98, horários 96 para 98 e artigo 94 para 98 ao tirá-lo). A foto é descoberta logo no começo do corpo e o <style> abaixo
+	// já aponta a versão certa. No computador o preload da original (que o computador mede em 100) fica; no artigo, a capa fica mais abaixo: sem preload.
+	if (!$artigo) {
 		echo '<link rel="preload" as="image" href="' . esc_url($cheia[0]) . '" media="(min-width:' . ($l + 1) . 'px)" fetchpriority="high">' . "
 ";
 	}
