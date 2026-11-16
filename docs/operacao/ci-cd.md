@@ -100,6 +100,8 @@ Variável do **repositório** `HML_ATIVA=true`: liga a publicação automática 
 
 Variável do **repositório** (opcional) `GTM_ID`: o ID público do Google Tag Manager (`GTM-XXXXXXX`). Se existir, o passo de envio do workflow de produção passa `GTM_ID` ao `bin/implantar.sh`, que valida o formato (`^GTM-[A-Z0-9]{4,12}$`) e grava o campo `gtm_id` de Configurações no servidor logo depois da instalação e antes da fumaça: é assim que a medição (Google Tag Manager e aviso de cookies) liga na produção. Não é segredo (o ID aparece no código da página) e **a homologação nunca recebe**: o `implantar.sh` recusa o `GTM_ID` fora da produção para que as visitas de teste da equipe não entrem nas estatísticas. Sem a variável, nada muda. Detalhes: `docs/operacao/rastreamento.md`.
 
+Variável do repositório (opcional) `CLARITY_ID`: o ID do projeto do Microsoft Clarity (6 a 12 letras minúsculas e números), com o mesmo caminho e as mesmas regras do `GTM_ID` (validação no `bin/implantar.sh`, gravação do campo `clarity_id` por SSH antes da fumaça, só na produção, entrada `CLARITY_ID: ${{ vars.CLARITY_ID }}` no passo de envio do `producao.yml`). Não é segredo. Se o Clarity entrar como tag dentro do Tag Manager, não cadastre esta variável.
+
 
 Variável (não é segredo) opcional no environment `homologacao`: `HML_MODO` = `homologacao` (padrão: aberta para quem tem o link e fora do Google) ou `homologacao-fechada` (só quem tem login). Qualquer outro valor (como `lancar`) é recusado.
 

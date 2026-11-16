@@ -10,10 +10,10 @@ Em *Configurações > IEADC Vila Ipiranga* há campos de medição, todos **vazi
 |---|---|---|
 | ID do Google Tag Manager (`gtm_id`) | `GTM-XXXXXXX` | O Tag Manager (o caminho recomendado). |
 | ID de medição do Google Analytics 4 (`ga4_id`) | `G-XXXXXXXXXX` | O Analytics direto, sem Tag Manager. **Se os dois estiverem preenchidos, vale só o Tag Manager** (senão cada visita seria contada duas vezes): configure o Analytics dentro do GTM. |
-| ID do Microsoft Clarity (`clarity_id`) | 10 letras e números | Mapa de calor e gravações anônimas (opcional). |
+| ID do Microsoft Clarity (`clarity_id`) | 6 a 12 letras minúsculas e números | Mapa de calor e gravações anônimas. Carrega só depois do "Aceitar" (ver a seção 5). |
 | ID do Meta Pixel (`meta_pixel_id`) | só dígitos | Medição de anúncios no Facebook e no Instagram (opcional; muda a política de privacidade). |
-| Código do Google Search Console (`search_console`) | código ou a meta tag inteira | Imprime `<meta name="google-site-verification">`. Não usa cookie nem aviso. |
-| Código do Bing Webmaster Tools (`bing_verificacao`) | 32 letras e números | Imprime `<meta name="msvalidate.01">`. Não usa cookie nem aviso. |
+| Código do Google Search Console (`search_console`) | só o código, `google-site-verification=CODIGO` ou a meta tag inteira | Imprime `<meta name="google-site-verification">` só com o código (depois do `=`). **Só é preciso se a verificação for pelo método "Tag HTML"**: pelo registro DNS (TXT) o campo fica vazio. Não usa cookie nem aviso. |
+| Código do Bing Webmaster Tools (`bing_verificacao`) | 32 letras e números | Opcional. O Bing Webmaster Tools pode **importar o site do Search Console**, então normalmente não há nada a fazer aqui. Se verificar por "Tag HTML", imprime `<meta name="msvalidate.01">`. |
 
 **Com qualquer um dos quatro primeiros preenchido** o site passa a:
 
@@ -66,11 +66,17 @@ Observação: `ieadc_formulario_enviado` pode se perder quando a página troca l
 - **Política de privacidade:** com algum serviço ligado ganha o parágrafo "Cookies de medição de acessos" (quais serviços, que só começam depois do "Aceitar", que o site informa só o tipo da ação e o botão para mudar a escolha). Com o Meta Pixel ligado sai a frase "O site não usa cookies de publicidade". Sem ID nada muda.
 - **CSP (`ieadc-core/medicao.php`, filtro `ieadc_csp_diretivas`):** os endereços do Google só entram na política quando há `gtm_id` ou `ga4_id`. **Se você criar outras tags dentro do Tag Manager** (Google Ads, Hotjar, pixel de outra rede), a CSP precisa liberar os endereços delas, senão o navegador bloqueia (hoje a CSP está em modo só relatório: o console avisa, mas nada quebra; ver `docs/operacao/plugins.md`).
 
-## 5. Outros serviços (opcional)
+## 5. Microsoft Clarity e outros serviços
 
-- **Microsoft Clarity:** coloque o código do projeto no campo. No painel do Clarity, escolha o modo de mascaramento **estrito** (esconde o texto digitado e o conteúdo dos campos) e não grave as páginas de formulário se puder. O aviso e a política passam a citar o Clarity.
+- **Microsoft Clarity (o Felipe vai usar).** Coloque o ID do projeto (6 a 12 letras minúsculas e números; aparece nas configurações do projeto no painel do Clarity) no campo *ID do Microsoft Clarity*, em *Configurações > IEADC Vila Ipiranga*, ou, na produção, na variável do repositório `CLARITY_ID` no GitHub (*Settings > Secrets and variables > Actions > Variables*): o `bin/implantar.sh` grava o campo `clarity_id` no servidor, como faz com o `GTM_ID` (só na produção; a homologação recusa). Nunca grave o ID no código, no seed nem em teste.
+  - Só carrega **depois do "Aceitar"** do mesmo aviso de cookies, pelo carregador oficial (`https://www.clarity.ms/tag/<id>`), e **só se houver ID**. Logo depois de carregar, o site envia a API de consentimento do Clarity (`clarity('consentv2', {analytics_Storage: 'granted', ad_Storage: 'denied'})`); quem recusar depois de aceitar tem os cookies do Clarity apagados (`clarity('consent', false)`).
+  - A CSP libera `clarity.ms` (`www`, `scripts` e `c.clarity.ms`) e `c.bing.com` **somente quando há `clarity_id`**.
+  - **Alternativa:** o Clarity também pode entrar como uma **tag dentro do Tag Manager** (modelo de tag "Microsoft Clarity" da galeria, ou HTML personalizado), disparada só com `analytics_storage` concedido: assim herda o consentimento do aviso. **Use um ou outro, não os dois** (senão a visita é gravada duas vezes): com a tag no GTM, deixe o campo `clarity_id` vazio.
+  - No painel do Clarity, use o modo de mascaramento **estrito** (esconde o texto digitado e o conteúdo dos campos) e evite gravar as páginas de formulário. O aviso e a política passam a citar o Clarity.
+  - **As visitas de teste entram nas estatísticas e nas gravações** (a equipe logada também é medida); no Clarity, use *Filtros > ... > Excluir IP* ou o filtro de IP do projeto para a rede da igreja (nomes de tela aproximados).
 - **Meta Pixel:** só use com um motivo claro (anúncios). Ele pode ligar a visita ao perfil da pessoa no Facebook/Instagram; por isso a política muda. Os sinais de anúncio do Consent Mode seguem negados.
-- **Search Console e Bing:** cole o código do método "Tag HTML" nos campos; depois de salvar, clique em "Verificar" no serviço. Não precisa de aviso (não há cookie). O DNS continua sendo uma alternativa (`docs/operacao/seo-e-google.md`).
+- **Search Console:** o Felipe verifica por **registro DNS (TXT)**; nesse caso o campo do site fica vazio. O campo aceita o texto `google-site-verification=CODIGO` (como o Google mostra no TXT) ou só o código e imprime a meta tag com o código depois do `=`, caso um dia a verificação passe a ser por "Tag HTML". Depois da verificação, enviar o `sitemap_index.xml`.
+- **Bing Webmaster Tools:** importa do Search Console; nada a fazer. O campo existe só para quem preferir verificar por "Tag HTML".
 
 ## 6. Visitas de teste e conferência
 
@@ -80,4 +86,4 @@ Observação: `ieadc_formulario_enviado` pode se perder quando a página troca l
 
 ## 7. Resumo dos arquivos
 
-`wp-content/mu-plugins/ieadc-core/medicao.php` (IDs, validação, verificação, CSP), `wp-content/themes/ieadc-vila-ipiranga/inc/medicao.php` (aviso, JSON de configuração, política), `assets/js/medicao.js` (consentimento, carga e eventos), `bin/implantar.sh` (variável `GTM_ID`).
+`wp-content/mu-plugins/ieadc-core/medicao.php` (IDs, validação, verificação, CSP), `wp-content/themes/ieadc-vila-ipiranga/inc/medicao.php` (aviso, JSON de configuração, política), `assets/js/medicao.js` (consentimento, carga e eventos), `bin/implantar.sh` (variáveis `GTM_ID` e `CLARITY_ID`).

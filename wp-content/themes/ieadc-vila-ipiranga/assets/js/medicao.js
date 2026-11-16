@@ -38,7 +38,12 @@
 		document.head.appendChild(s);
 	}
 	function carregar() {
-		if (carregado) { consentido = true; gtag('consent', 'update', { analytics_storage: 'granted' }); return; } // aceitou de novo depois de recusar na mesma visita
+		if (carregado) { // aceitou de novo depois de recusar na mesma visita
+			consentido = true;
+			gtag('consent', 'update', { analytics_storage: 'granted' });
+			if (cfg.clarity && typeof window.clarity === 'function') window.clarity('consentv2', { ad_Storage: 'denied', analytics_Storage: 'granted' });
+			return;
+		}
 		carregado = true; consentido = true;
 		// Só a medição de acessos é liberada; anúncios (ad_*) seguem negados: o site não faz publicidade.
 		gtag('consent', 'update', { analytics_storage: 'granted' });
@@ -56,6 +61,8 @@
 				var t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
 				var y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
 			})(window, document, 'clarity', 'script', cfg.clarity);
+			// API de consentimento do Clarity (v2): só a medição é liberada; anúncios seguem negados. O script só chega aqui depois do "Aceitar".
+			window.clarity('consentv2', { ad_Storage: 'denied', analytics_Storage: 'granted' });
 		}
 		if (cfg.pixel) {
 			(function (f, b, e, v) {
@@ -75,6 +82,7 @@
 	function parar() {
 		consentido = false;
 		if (carregado) gtag('consent', 'update', { analytics_storage: 'denied' });
+		if (carregado && cfg.clarity && typeof window.clarity === 'function') window.clarity('consent', false); // apaga os cookies do Clarity e para de gravar
 		var nomes = document.cookie.split('; ').map(function (c) { return c.split('=')[0]; });
 		var partes = location.hostname.split('.'), dominios = ['', location.hostname];
 		if (partes.length > 2) dominios.push('.' + partes.slice(-2).join('.'));

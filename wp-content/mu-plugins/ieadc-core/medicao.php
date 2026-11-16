@@ -21,7 +21,7 @@ function ieadc_medicao_id_limpar(string $servico, string $valor): string {
 	$padroes = [
 		'gtm'     => '/^GTM-[A-Z0-9]{4,12}$/',
 		'ga4'     => '/^G-[A-Z0-9]{6,12}$/',
-		'clarity' => '/^[a-z0-9]{8,12}$/',
+		'clarity' => '/^[a-z0-9]{6,12}$/',
 		'pixel'   => '/^[0-9]{10,20}$/',
 	];
 	if (!isset($padroes[$servico])) {
@@ -32,13 +32,17 @@ function ieadc_medicao_id_limpar(string $servico, string $valor): string {
 }
 
 /**
- * Código de verificação: aceita só o código ou a meta tag inteira copiada do Google/Bing (extrai o content="...").
+ * Código de verificação: aceita só o código, o texto do registro TXT (google-site-verification=CODIGO) ou a meta tag inteira copiada do Google/Bing (extrai o content="...").
  * Google: letras, números, _ e -, de 20 a 100 caracteres. Bing: 32 caracteres hexadecimais.
  */
 function ieadc_medicao_verificacao_limpar(string $tipo, string $valor): string {
 	$valor = trim($valor);
 	if (preg_match('/content\s*=\s*["\']([^"\']+)["\']/i', $valor, $m)) {
 		$valor = trim($m[1]);
+	}
+	// Registro TXT do DNS do Google: "google-site-verification=CODIGO". Para a <meta> vale só o código depois do "=".
+	if ($tipo !== 'bing' && stripos($valor, 'google-site-verification=') === 0) {
+		$valor = trim(substr($valor, strlen('google-site-verification=')), " \t\"'");
 	}
 	if ($tipo === 'bing') {
 		return preg_match('/^[A-Fa-f0-9]{32}$/', $valor) ? strtoupper($valor) : '';
@@ -110,7 +114,7 @@ add_filter('ieadc_csp_diretivas', function (array $d): array {
 	}
 	if (isset($s['clarity'])) {
 		$extra['script-src'] = array_merge($extra['script-src'], ['https://www.clarity.ms', 'https://scripts.clarity.ms']);
-		$extra['connect-src'] = array_merge($extra['connect-src'], ['https://*.clarity.ms', 'https://c.bing.com']);
+		$extra['connect-src'] = array_merge($extra['connect-src'], ['https://*.clarity.ms', 'https://c.clarity.ms', 'https://c.bing.com']);
 	}
 	if (isset($s['pixel'])) {
 		$extra['script-src'][]  = 'https://connect.facebook.net';

@@ -30,6 +30,8 @@
 #   ESPERADO          aberto | fechado: força o que a fumaça espera (padrão: deduzido do MODO ou lido do servidor)
 #   GTM_ID            opcional, só na produção: ID público do Google Tag Manager (GTM-XXXXXXX, validado). Se vier, é gravado em ieadc_info (campo gtm_id)
 #                     no servidor logo depois da instalação e antes da fumaça; a homologação recusa (visitas de teste poluiriam as estatísticas). Sem ele, nada muda.
+#   CLARITY_ID        opcional, só na produção: ID do projeto do Microsoft Clarity (6 a 12 letras minúsculas e números, validado). Mesmo tratamento do GTM_ID
+#                     (campo clarity_id). O Clarity também pode entrar como tag dentro do Tag Manager; use um ou outro.
 #   DOMINIO_PRODUCAO  só para ensaiar contra uma hospedagem de mentira (padrão: ieadcvilaipiranga.com.br); os workflows não o definem
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -289,6 +291,10 @@ cmd_enviar() {
     [[ "$GTM_ID" =~ ^GTM-[A-Z0-9]{4,12}$ ]] || erro "GTM_ID fora do formato (esperado GTM-XXXXXXX, de 4 a 12 letras maiúsculas ou números depois do hífen)."
     [ "$AMBIENTE" = producao ] || erro "o GTM_ID só vale na produção: a homologação recebe visitas de teste da equipe e não deve entrar nas estatísticas."
   fi
+  if [ -n "${CLARITY_ID:-}" ]; then
+    [[ "$CLARITY_ID" =~ ^[a-z0-9]{6,12}$ ]] || erro "CLARITY_ID fora do formato (esperado de 6 a 12 letras minúsculas ou números)."
+    [ "$AMBIENTE" = producao ] || erro "o CLARITY_ID só vale na produção: a homologação recebe visitas de teste da equipe e não deve entrar nas estatísticas."
+  fi
   DEPLOY_SHA="${DEPLOY_SHA:-$sha_pacote}"
   if [ -n "$sha_pacote" ] && [ "$sha_pacote" != "desconhecido" ] && [ "$DEPLOY_SHA" != "$sha_pacote" ]; then
     erro "o pacote foi feito do commit $sha_pacote, mas a implantação é do commit $DEPLOY_SHA."
@@ -323,12 +329,16 @@ cmd_enviar() {
     erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
   fi
 
-  # Medição (opcional): o ID do GTM vem só pela variável GTM_ID (nunca fica no código nem no pacote) e vai para o campo gtm_id de Configurações.
-  if [ -n "${GTM_ID:-}" ]; then
-    info "» 2b/4 Medição: gravando o gtm_id em Configurações (ieadc_info)"
-    if ! ssh_alvo "wp --path=\"\$HOME/$DESTINO\" eval '\$i = get_option(\"ieadc_info\", []); if (!is_array(\$i)) { \$i = []; } \$i[\"gtm_id\"] = \"$GTM_ID\"; update_option(\"ieadc_info\", \$i); echo \"gtm_id gravado\n\";'" >&2; then
+  # Medição (opcional): os IDs vêm só pelas variáveis GTM_ID e CLARITY_ID (nunca ficam no código nem no pacote) e vão para os campos
+  # gtm_id e clarity_id de Configurações (ieadc_info). Os dois já foram validados acima (só letras, números e hífen).
+  medicao_php=""
+  [ -z "${GTM_ID:-}" ] || medicao_php="$medicao_php \$i[\"gtm_id\"] = \"$GTM_ID\";"
+  [ -z "${CLARITY_ID:-}" ] || medicao_php="$medicao_php \$i[\"clarity_id\"] = \"$CLARITY_ID\";"
+  if [ -n "$medicao_php" ]; then
+    info "» 2b/4 Medição: gravando os IDs em Configurações (ieadc_info)"
+    if ! ssh_alvo "wp --path=\"\$HOME/$DESTINO\" eval '\$i = get_option(\"ieadc_info\", []); if (!is_array(\$i)) { \$i = []; }$medicao_php update_option(\"ieadc_info\", \$i); echo \"medicao gravada\n\";'" >&2; then
       registrar_deploy falhou > /dev/null 2>&1 || true
-      erro "não consegui gravar o gtm_id no servidor."
+      erro "não consegui gravar os IDs de medição no servidor."
     fi
   fi
 

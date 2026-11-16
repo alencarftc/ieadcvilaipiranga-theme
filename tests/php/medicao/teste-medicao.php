@@ -52,12 +52,17 @@ try {
 	ieadc_igual('', ieadc_medicao_id_limpar('ga4', 'G-AB'), 'GA4: curto demais não vale');
 	ieadc_igual('abcde12345', ieadc_medicao_id_limpar('clarity', 'abcde12345'), 'Clarity: 10 letras e números');
 	ieadc_igual('', ieadc_medicao_id_limpar('clarity', 'abc'), 'Clarity: curto demais não vale');
+	ieadc_igual('abcdef', ieadc_medicao_id_limpar('clarity', 'abcdef'), 'Clarity: 6 caracteres é o mínimo');
+	ieadc_igual('', ieadc_medicao_id_limpar('clarity', 'abcde'), 'Clarity: 5 caracteres não vale');
+	ieadc_igual('', ieadc_medicao_id_limpar('clarity', 'ABCDEF12'), 'Clarity: maiúsculas não valem (o ID do projeto é minúsculo)');
 	ieadc_igual('1234567890123', ieadc_medicao_id_limpar('pixel', '1234567890123'), 'Meta Pixel: só dígitos');
 	ieadc_igual('', ieadc_medicao_id_limpar('pixel', '12ab'), 'Meta Pixel: letras não valem');
 	$g = 'AbCdEfGhIjKlMnOpQrStUvWxYz_-0123';
 	ieadc_igual($g, ieadc_medicao_verificacao_limpar('google', $g), 'Search Console: aceita o código');
 	ieadc_igual($g, ieadc_medicao_verificacao_limpar('google', '<meta name="google-site-verification" content="' . $g . '" />'), 'Search Console: extrai o código da meta tag inteira');
 	ieadc_igual('', ieadc_medicao_verificacao_limpar('google', 'curto'), 'Search Console: código curto não vale');
+	ieadc_igual($g, ieadc_medicao_verificacao_limpar('google', 'google-site-verification=' . $g), 'Search Console: aceita o texto do registro TXT e usa só o código depois do =');
+	ieadc_igual('', ieadc_medicao_verificacao_limpar('google', 'google-site-verification='), 'Search Console: registro TXT sem código não vale');
 	$b = 'A1B2C3D4E5F60718293A4B5C6D7E8F90';
 	ieadc_igual($b, ieadc_medicao_verificacao_limpar('bing', strtolower($b)), 'Bing: 32 caracteres hexadecimais');
 	ieadc_igual('', ieadc_medicao_verificacao_limpar('bing', 'xyz'), 'Bing: fora do formato não vale');
@@ -70,6 +75,16 @@ try {
 	$salvo = ieadc_info_sanitizar(['ga4_id' => 'UA-1-1', 'gtm_id' => 'gtm-teste0000', 'clarity_id' => 'x', 'search_console' => 'curto', 'whatsapp' => 'abc']);
 	ieadc_ok(($salvo['ga4_id'] ?? 'x') === '' && ($salvo['gtm_id'] ?? '') === 'GTM-TESTE0000' && ($salvo['clarity_id'] ?? 'x') === '' && ($salvo['search_console'] ?? 'x') === '' && ($salvo['whatsapp'] ?? 'x') === '',
 		'a gravação em Configurações (ieadc_info_sanitizar) descarta o que está fora do formato e normaliza o resto', $salvo);
+
+	/* ---------- dados públicos que vivem no código (informados pelo Felipe) ---------- */
+	echo "valores padrão de Configurações
+";
+	update_option('ieadc_info', []);
+	ieadc_igual('ieadcvilaipiranga@gmail.com', ieadc_info('email'), 'e-mail público padrão');
+	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_info('google_avaliacao'), 'link de avaliação padrão');
+	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_google_avaliacao_url(), 'o botão "Avaliar no Google" usa o link padrão');
+	ieadc_igual(ieadc_google_avaliacao_url(), ieadc_google_avaliacao_limpar('https://share.google/U5EOVkegYKa2UcT7o'), 'o host share.google passa na validação do campo');
+	ieadc_ok((float) ieadc_info('latitude') === -25.503215673764625 && (float) ieadc_info('longitude') === -49.28838685582037, 'latitude e longitude padrão');
 
 	/* ---------- saída sem nenhum ID ---------- */
 	echo "sem ID: nada é impresso\n";

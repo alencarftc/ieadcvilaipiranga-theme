@@ -8,7 +8,7 @@ Formato geral da resposta: o texto exatamente como deve aparecer no site (frase 
 
 | Página | Pergunta | Formato da resposta | Destrava |
 |---|---|---|---|
-| Contato | Qual é o e-mail público da igreja? | um endereço (`nome@dominio`) | Linha "E-mail" do Contato, dados estruturados do Google (Church) e, em *Configurações > IEADC Vila Ipiranga*, o e-mail que recebe os formulários |
+| ~~Contato~~ | **Resolvido (16/11/2026):** o e-mail público é `ieadcvilaipiranga@gmail.com` (padrão em Configurações; o rodapé, a lista de Perguntas, os dados do Google e o `/llms.txt` já o usam). O e-mail do pastor segue só na lista de contatos da página Contato e na política de privacidade. | (nada a responder) | Linha "E-mail" do Contato e dados estruturados do Google |
 | Liderança | Quem é o responsável pelo departamento de Mídia/Comunicação? | nome completo com título | Linha "Mídia/Comunicação [a definir]" da lista de departamentos |
 | Liderança | Fotos do Ev. Robson Stein e do Pb. Manoel Lima (com a autorização deles) | arquivo JPG ou PNG, rosto visível, pelo menos 800 px de largura | Os cartões de Pastoreio hoje mostram só as iniciais (RS e ML) |
 
@@ -66,11 +66,11 @@ O passo a passo, em linguagem simples, está em `docs/operacao/seo-e-google.md`.
 
 | Assunto | Pergunta | Formato da resposta | Destrava |
 |---|---|---|---|
-| Link de avaliação | Qual é o link de avaliação do Perfil da Empresa no Google da igreja? (no perfil: "Pedir avaliações") Ou o código do lugar (`ChIJ…`) | o link completo, ou o código | *Configurações > IEADC Vila Ipiranga > Link para avaliar no Google*: o botão "Avaliar no Google" passa a abrir direto a janela de avaliação (hoje abre a igreja no Google Maps) |
+| ~~Link de avaliação~~ | **Resolvido (16/11/2026):** `https://share.google/U5EOVkegYKa2UcT7o` (padrão em Configurações; o botão "Avaliar no Google" já abre a avaliação). | (nada a responder) | Botão "Avaliar no Google" |
 | Perfil da Empresa | A igreja já tem o Perfil da Empresa verificado? Qual conta Google é a proprietária? | sim/não e o e-mail da conta (a senha não passa por ninguém) | Nome, endereço, telefone e horários iguais aos do site; categoria "Igreja evangélica"; fotos |
-| Search Console | Quem administra o DNS do domínio (Registro.br ou hospedagem) para colar o registro TXT de verificação? | nome de quem faz | Enviar o `sitemap_index.xml` e acompanhar a indexação |
-| E-mail público | (já listado em Contato) qual é o e-mail público? | `nome@dominio` | Também atualiza os dados da igreja para o Google e o `/llms.txt` (hoje usam o e-mail do rodapé) |
-| Coordenadas (opcional) | Latitude e longitude da igreja (no Google Maps: clicar com o botão direito no ponto da igreja e copiar os números) | dois números, ex.: `-00.0000` e `-00.0000` (os números reais, com sinal) | *Configurações > IEADC Vila Ipiranga > Latitude e Longitude*: o Google localiza a igreja no mapa com mais precisão |
+| Search Console | O Felipe verifica por **registro DNS (TXT)** por conta própria (o campo do site fica vazio). Depois, enviar o `sitemap_index.xml`. O Bing Webmaster Tools importa do Search Console: nada a fazer. | (feito por ele) | Acompanhar a indexação |
+| ~~E-mail público~~ | **Resolvido (16/11/2026)**, ver Contato. | | Dados da igreja para o Google e o `/llms.txt` |
+| ~~Coordenadas~~ | **Resolvido (16/11/2026):** latitude -25.503215673764625 e longitude -49.28838685582037 (padrão em Configurações; o Google passa a receber `geo` nos dados da igreja). | (nada a responder) | Localização no mapa com mais precisão |
 
 ## Medição e marketing (fase 4)
 
@@ -81,7 +81,8 @@ Todos estes campos ficam em *Configurações > IEADC Vila Ipiranga* e **começam
 | ~~WhatsApp~~ | **Resolvido (16/11/2026):** o telefone do site é WhatsApp. O botão flutuante e os links usam o telefone de Configurações; o campo *WhatsApp da igreja (com DDD)* só serve para trocar por outro número. | (nada a responder) | Botão flutuante "Falar no WhatsApp" em todas as páginas |
 | Google Tag Manager | O container já existe (ID `GTM-XXXXXXX`, que só o Felipe tem). Cadastrar na produção como variável de repositório `GTM_ID` no GitHub (ou no campo *ID do Google Tag Manager*). | `GTM-XXXXXXX` | Aviso de cookies e medição na produção (só depois do "Aceitar") |
 | Google Analytics 4 | Qual é o **ID de medição** (`G-XXXXXXXXXX`) da propriedade? Entra na tag do Google **dentro do Tag Manager** (o campo *ID de medição do Google Analytics 4* só serve sem o GTM) | `G-XXXXXXXXXX` | Estatísticas de acesso e de cliques (telefone, WhatsApp, Como chegar, formulários) |
-| Search Console | Código de verificação do método "Tag HTML" (ou a meta tag inteira): mais fácil que o registro TXT no DNS | o código | Campo *Código do Google Search Console*; depois enviar o `sitemap_index.xml` |
-| Bing Webmaster Tools (opcional) | Código de verificação, se quiser aparecer no Bing | 32 letras e números | Campo *Código do Bing Webmaster Tools* |
-| Link de avaliação (continua) | Link de avaliação do Perfil da Empresa (ver "SEO e Google") | link ou código `ChIJ…` | Botão "Avaliar no Google" abre direto a janela de avaliação |
-| Clarity e Meta Pixel (opcionais) | Só se quiser mapas de calor ou medir anúncios; mudam a política de privacidade | ID do serviço | Campos *Microsoft Clarity* e *Meta Pixel* |
+| Search Console (alternativa) | Só se um dia verificar por "Tag HTML": o campo aceita o código, o texto `google-site-verification=CODIGO` ou a meta tag inteira. Por DNS (TXT), não use o campo. | o código | Campo *Código do Google Search Console* |
+| Bing Webmaster Tools | O Bing importa o site do Search Console: nada a fazer. | (nada) | Campo opcional *Código do Bing Webmaster Tools* |
+| Perfil da Empresa | O Perfil da Empresa está em verificação; depois, conferir nome, endereço, telefone, horários e fotos iguais aos do site. | sim/não | Perfil completo no Google |
+| Microsoft Clarity | O Felipe vai usar. Cadastrar o ID do projeto na variável de repositório `CLARITY_ID` (ou no campo *ID do Microsoft Clarity*); nunca no código. Alternativa: tag dentro do Tag Manager. | ID do projeto | Mapas de calor e gravações (só depois do "Aceitar") |
+| Meta Pixel (opcional) | Só se for medir anúncios; muda a política de privacidade | número do Pixel | Campo *ID do Meta Pixel* |

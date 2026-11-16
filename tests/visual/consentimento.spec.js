@@ -42,7 +42,7 @@ test.afterAll(() => {
 async function novaPagina(browser, largura = 1280) {
   const context = await browser.newContext({ viewport: { width: largura, height: 800 }, locale: 'pt-BR' });
   const pedidos = [];
-  await context.route(/googletagmanager\.com|google-analytics\.com/, (rota) => {
+  await context.route(/googletagmanager\.com|google-analytics\.com|clarity\.ms/, (rota) => {
     pedidos.push(rota.request().url());
     return rota.fulfill({ status: 200, contentType: 'application/javascript', body: '' });
   });
@@ -118,6 +118,35 @@ test('Aceitar carrega o gtm.js com o ID, libera só a medição e a escolha pers
   await expect(page.locator('#ieadc-cookies')).toBeHidden();
   expect(pedidos.some((u) => u.includes('gtm.js'))).toBe(true);
   await context.close();
+});
+
+test('Clarity: só com o ID, só depois do Aceitar, com a API de consentimento e a CSP liberada', async ({ browser }) => {
+  const atual = JSON.parse(wp(['option', 'get', 'ieadc_info', '--format=json']));
+  wp(['option', 'update', 'ieadc_info', JSON.stringify(Object.assign({}, atual, { clarity_id: 'abcde12345' })), '--format=json']);
+  try {
+    // Recusar: nada do Clarity.
+    let { context, page, pedidos } = await novaPagina(browser);
+    await abrir(page);
+    await expect(page.locator('script[src*="clarity.ms"]')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Recusar' }).click();
+    await page.waitForTimeout(400);
+    expect(pedidos.filter((u) => u.includes('clarity.ms'))).toEqual([]);
+    await context.close();
+    // Aceitar: o carregador oficial, com o ID, e o consentimento só de medição.
+    ({ context, page, pedidos } = await novaPagina(browser));
+    await abrir(page);
+    const resp = await page.request.get(WP + '/');
+    const csp = resp.headers()['content-security-policy-report-only'] || resp.headers()['content-security-policy'] || '';
+    expect(csp).toContain('https://www.clarity.ms');
+    expect(csp).toContain('https://c.clarity.ms');
+    await page.getByRole('button', { name: 'Aceitar' }).click();
+    await expect.poll(() => pedidos.some((u) => u.includes('clarity.ms/tag/abcde12345'))).toBe(true);
+    const consent = await page.evaluate(() => Array.from((window.clarity && window.clarity.q) || []).map((a) => Array.from(a)).find((a) => a[0] === 'consentv2'));
+    expect(consent && consent[1]).toMatchObject({ analytics_Storage: 'granted', ad_Storage: 'denied' });
+    await context.close();
+  } finally {
+    wp(['option', 'update', 'ieadc_info', JSON.stringify(atual), '--format=json']);
+  }
 });
 
 test('eventos por dataLayer só depois do consentimento e sem dado pessoal', async ({ browser }) => {

@@ -14,7 +14,7 @@ function ieadc_info_padrao(): array {
 		'nome_longo' => 'Congregação da Igreja Evangélica Assembleia de Deus em Curitiba',
 		'endereco'   => 'Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR',
 		'telefone'   => '+55 (41) 98838-1994',
-		'email'      => 'robsondouglass@terra.com.br',
+		'email'      => 'ieadcvilaipiranga@gmail.com', // e-mail público da igreja (o do pastor fica só na lista de contatos e na política de privacidade)
 		'instagram'  => 'https://www.instagram.com/ieadc.vilaipiranga/',
 		'facebook'   => 'https://www.facebook.com/ieadcvipagina',
 		'youtube'    => 'https://www.youtube.com/channel/UC7la6gW5oIvo83_DQhBp9sQ',
@@ -27,9 +27,10 @@ function ieadc_info_padrao(): array {
 		'email_pedidos' => '',
 		'email_contato' => '',
 		// Link para avaliar a igreja no Google (vazio = o botão leva à igreja no Google Maps). Coordenadas: opcionais, ajudam o Google.
-		'google_avaliacao' => '',
-		'latitude'   => '',
-		'longitude'  => '',
+		// Dados públicos informados pelo Felipe (16/11/2026). Ficam no código porque a carga completa substitui o banco; pode trocar em Configurações.
+		'google_avaliacao' => 'https://share.google/U5EOVkegYKa2UcT7o',
+		'latitude'   => '-25.503215673764625',
+		'longitude'  => '-49.28838685582037',
 		// Fase 4: WhatsApp e medição. Todos vazios por padrão = o recurso fica desligado e invisível (ver medicao.php).
 		'whatsapp'         => '',
 		'gtm_id'           => '',
@@ -108,9 +109,9 @@ function ieadc_info_tela(): void {
 		'whatsapp' => 'Número do WhatsApp com DDD (exemplo: 41 9XXXX-XXXX). Vazio: o botão flutuante e os links usam o telefone do site (confirmado como WhatsApp, desde que seja celular). Preencha só para usar outro número.',
 		'gtm_id' => 'Formato GTM-XXXXXXX. Vazio: o Tag Manager não é usado. Preenchido, o site mostra o aviso de cookies e só carrega o GTM depois que a pessoa aceita. Se este campo e o do Google Analytics estiverem preenchidos, vale só o GTM (configure o Analytics dentro dele). Passo a passo: docs/operacao/rastreamento.md.',
 		'ga4_id' => 'Formato G-XXXXXXXXXX (Google Analytics > Administrador > Fluxos de dados). Vazio: sem medição. Use só se NÃO usar o Tag Manager. Preenchido, o site mostra o aviso de cookies e só carrega o Analytics depois que a pessoa aceita.',
-		'search_console' => 'Código de verificação (ou a meta tag inteira) do Google Search Console, método "Tag HTML". Vazio: nada é impresso. Não usa cookie.',
-		'bing_verificacao' => 'Código do Bing Webmaster Tools (32 letras e números, ou a meta tag inteira). Vazio: nada é impresso.',
-		'clarity_id' => 'Código do projeto no Microsoft Clarity (10 letras e números). Vazio: não é usado. Só carrega depois que a pessoa aceita o aviso de cookies.',
+		'search_console' => 'Só se verificar o site pelo método "Tag HTML" (a verificação por registro DNS/TXT não precisa deste campo). Aceita o código, o texto google-site-verification=CODIGO ou a meta tag inteira; a meta tag usa só o código. Vazio: nada é impresso. Não usa cookie.',
+		'bing_verificacao' => 'Opcional. O Bing Webmaster Tools pode importar o site do Search Console (nada a fazer aqui). Só preencha se verificar por "Tag HTML" (32 letras e números, ou a meta tag inteira).',
+		'clarity_id' => 'Código do projeto no Microsoft Clarity (de 6 a 12 letras minúsculas e números). Vazio: não é usado. Só carrega depois que a pessoa aceita o aviso de cookies. Alternativa: o Clarity também pode entrar como tag dentro do Tag Manager (herda o consentimento); use um ou outro, não os dois.',
 		'meta_pixel_id' => 'Número do Meta Pixel (só dígitos). Vazio: não é usado. Só carrega depois que a pessoa aceita o aviso de cookies e muda a política de privacidade.',
 	];
 	$v = ieadc_info();
