@@ -3,6 +3,7 @@
 # Uso: ./bin/setup.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
+export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /scripts/seed.php
 [ -f .env ] || { echo "Crie o .env a partir do .env.example primeiro."; exit 1; }
 set -a; . ./.env; set +a
 

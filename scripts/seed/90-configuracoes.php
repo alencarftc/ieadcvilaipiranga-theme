@@ -7,6 +7,12 @@ $nome = 'IEADC Vila Ipiranga';
 
 // Links limpos e descrição do site.
 update_option('permalink_structure', '/%postname%/');
+// O wp-cli não regrava o .htaccess sozinho ("requires special configuration"): sem as regras dos links limpos, toda
+// página que não é a inicial dá 404. As funções do painel e o filtro got_rewrite fazem o WordPress gravar as regras.
+require_once ABSPATH . 'wp-admin/includes/file.php';
+require_once ABSPATH . 'wp-admin/includes/misc.php';
+add_filter('got_rewrite', '__return_true');
+flush_rewrite_rules(true);
 update_option('blogdescription', 'Uma família de fé no Capão Raso, em Curitiba.');
 update_option('blog_public', getenv('IEADC_INDEXAR') === '0' ? 0 : 1); // IEADC_INDEXAR=0 esconde o site dos buscadores (servidor local)
 update_option('default_ping_status', 'closed');

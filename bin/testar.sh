@@ -9,6 +9,13 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /tests
 
+# Os testes abrem o site no endereço do .env (SITE_URL), igual ao que o celular usa na rede de casa.
+# Se o .env tem o IP da máquina, o HTML sai com esse endereço e o teste precisa saber disso. Sem .env: http://localhost:8080.
+if [ -z "${WP_URL:-}" ] && [ -f .env ]; then
+  WP_URL="$(sed -n 's/^SITE_URL=//p' .env | head -1 | tr -d '\r "'"'")"
+  [ -n "$WP_URL" ] && export WP_URL
+fi
+
 parte="${1:-tudo}"
 [ $# -ge 2 ] && export IEADC_PAGINAS="$2"
 case "$parte" in tudo|php|markup|visual|interacao) ;; *) echo "Uso: $0 [php|markup|visual|interacao] [pagina]"; exit 2 ;; esac

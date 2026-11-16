@@ -1,6 +1,8 @@
-# Instala e configura o WordPress local do zero no Windows (PowerShell 5+ e Docker Desktop).
+﻿# Instala e configura o WordPress local do zero no Windows (PowerShell 5+ e Docker Desktop).
 # Pode rodar de novo sem estragar nada. Uso: powershell -ExecutionPolicy Bypass -File bin\setup.ps1
-$ErrorActionPreference = 'Stop'
+# 'Continue' de propósito: no PowerShell 5, com 'Stop', qualquer linha que o docker escreve em stderr (o progresso
+# "Container ... Running") vira erro fatal quando o comando leva 2>$null. Os erros de verdade são checados em $LASTEXITCODE.
+$ErrorActionPreference = 'Continue'
 Set-Location (Join-Path $PSScriptRoot '..')
 if (-not (Test-Path .env)) { Write-Host 'Crie o .env a partir do .env.example primeiro.'; exit 1 }
 
