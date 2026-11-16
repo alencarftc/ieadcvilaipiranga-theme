@@ -2,3 +2,5 @@
 # Owners" no ruleset da main; veja docs/operacao/ci-cd.md).
 /.github/ @alencarftc
 /bin/ @alencarftc
+/tests/ci/ @alencarftc
+/tests/migracao/ @alencarftc

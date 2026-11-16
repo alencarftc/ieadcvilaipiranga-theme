@@ -9,7 +9,7 @@
 # ci: as travas de destino do pipeline de implantação (tests/ci/guardas.sh), sem site, sem docker e sem rede; roda também no "tudo".
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /tests
 
 # Os testes abrem o site no endereço do .env (SITE_URL), igual ao que o celular usa na rede de casa.

@@ -11,10 +11,11 @@
 #     nada acima dela, as cópias de segurança de uma não apagam as da outra e o banco repartido é recusado.
 #  4. bin/migrar.ps1 (caminho manual): a mesma trava no PowerShell (só se houver pwsh ou powershell).
 #  5. bin/cadastrar-segredos-github.sh: só cadastra HML_URL e HML_DESTINO se o par for aceito (com gh e ssh de mentira).
+# shellcheck disable=SC2012  # os "ls | wc -l" contam arquivos de nome conhecido (cópias de segurança de mentira)
 set -uo pipefail
-cd "$(dirname "$0")/../.."
-RAIZ="$PWD"
+cd "$(dirname "$0")/../.." || exit 1
 TMP="$(mktemp -d)"
+TIL='~'   # o til literal (a trava recusa ~ na pasta)
 trap 'rm -rf "$TMP"' EXIT
 
 total=0; falhas=0
@@ -114,7 +115,7 @@ for v in \
   " $P_HML|espaço no início" \
   "domains/$PROD/public_html/h ml|espaço no meio" \
   "domains\\$PROD\\public_html\\hml|barras invertidas" \
-  "~/$P_HML|til" \
+  "$TIL/$P_HML|til" \
   "$P_HML/wp-content|dentro da hml" \
   "$P_PROD/hml2|hml2" \
   "$P_PROD/hml-old|hml-old" \

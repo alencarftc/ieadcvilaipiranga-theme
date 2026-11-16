@@ -51,7 +51,7 @@ Travas no próprio `bin/implantar.sh` (valem para qualquer uso do script):
 
 ### Conta SSH compartilhada: o que isso muda
 
-A homologação e a produção ficam **na mesma conta de hospedagem, com o mesmo usuário SSH**. Portanto, no nível da hospedagem, a chave da homologação alcança a pasta da produção (e as pastas de outros sites da conta). Os segredos do GitHub continuam separados (só o environment `producao` enxerga os `PROD_*`), mas **a chave SSH da homologação não é uma barreira de segurança para a produção**. O que protege a produção é: a trava de domínio e de pasta do `bin/implantar.sh`, o revisor obrigatório no environment `producao`, a restrição à `main`, as regras da `main` e o `CODEOWNERS` (quem muda `.github/` e `bin/` precisa da sua aprovação). Se a hospedagem permitir contas SSH separadas para cada site, prefira isso.
+A homologação e a produção ficam **na mesma conta de hospedagem, com o mesmo usuário SSH**. Portanto, no nível da hospedagem, a chave da homologação alcança a pasta da produção (e as pastas de outros sites da conta). Os segredos do GitHub continuam separados (só o environment `producao` enxerga os `PROD_*`), mas **a chave SSH da homologação não é uma barreira de segurança para a produção**. O que protege a produção é: a trava de domínio e de pasta do `bin/implantar.sh`, o revisor obrigatório no environment `producao`, a restrição à `main`, as regras da `main` e o `CODEOWNERS` (quem muda `.github/`, `bin/`, `tests/ci/` e `tests/migracao/` precisa da sua aprovação). Se a hospedagem permitir contas SSH separadas para cada site, prefira isso.
 
 ### A homologação em `hml.ieadcvilaipiranga.com.br` (staging aninhado)
 
@@ -139,7 +139,7 @@ Não cadastre nenhum `PROD_*` como segredo do repositório nem no environment `h
 
 - **Environment `producao`**: marque **Required reviewers** (você e, se houver, uma segunda pessoa; com duas pessoas, marque também *Prevent self-review*) e em **Deployment branches and tags** deixe só `main`. Isso impede que alguém dispare o workflow de outra branch (com um script alterado) para chegar às credenciais da produção.
 - **Environment `homologacao`**: sem revisores (a implantação é automática); deployment branches só `main`.
-- **Branch `main`** (Settings > Rules > Rulesets): exigir pull request, exigir o status check `testes` (o job do workflow Testes), **exigir revisão dos Code Owners** (o arquivo `.github/CODEOWNERS` põe você como dono de `.github/` e `bin/`), bloquear force push e exclusão. Sem isso, qualquer commit direto na `main` seguiria para a homologação.
+- **Branch `main`** (Settings > Rules > Rulesets): exigir pull request, exigir o status check `testes` (o job do workflow Testes), **exigir revisão dos Code Owners** (o arquivo `.github/CODEOWNERS` põe você como dono de `.github/`, `bin/`, `tests/ci/` e `tests/migracao/`: as travas e os testes delas), bloquear force push e exclusão. Sem isso, qualquer commit direto na `main` seguiria para a homologação.
 - Settings > Actions > General: *Fork pull request workflows* exigindo aprovação, e *Workflow permissions* só leitura (cada workflow pede o que precisa).
 
 ### Checklist antes da primeira release
