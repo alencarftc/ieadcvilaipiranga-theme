@@ -116,6 +116,10 @@ function ieadc_seo_descricao_evento(WP_Post $p): string {
 function ieadc_seo_descricao(?WP_Post $post = null): string {
 	$post ??= is_singular() ? get_post() : null;
 	if (!$post) {
+		if (is_category()) { // arquivo de categoria (Mensagem, Estudo, Reflexão, Notícia): a descrição da categoria (seed 70-artigos.php; editável em Artigos > Categorias)
+			$t = get_queried_object();
+			return $t instanceof WP_Term ? ieadc_seo_cortar(ieadc_seo_limpar(term_description($t->term_id, 'category')), IEADC_SEO_DESC_MAX) : '';
+		}
 		return is_front_page() ? ieadc_seo_limpar((string) get_bloginfo('description')) : '';
 	}
 	$txt = trim((string) $post->post_excerpt);
@@ -206,9 +210,26 @@ add_filter('wpseo_add_opengraph_additional_images', function ($imagens) {
 });
 
 /* ---------- Metatags próprias (só sem Yoast) ---------- */
-/* Busca e anexos fora do índice: pelo filtro do WordPress (uma só tag robots); com Yoast, quem decide é ele. */
+/**
+ * Arquivos de categoria, de etiqueta, de autor e de data ficam FORA do Google (noindex, follow): com poucos artigos eles só repetem a lista de artigos
+ * (conteúdo parecido com a página de Conteúdos). Cada categoria tem descrição própria (meta description e prévia ao compartilhar) e os artigos continuam
+ * indexáveis. Para indexar as categorias no futuro, quando houver muitos artigos: add_filter('ieadc_arquivos_indexaveis', '__return_true').
+ */
+function ieadc_seo_arquivo_fora(): bool {
+	return (is_category() || is_tag() || is_author() || is_date()) && !apply_filters('ieadc_arquivos_indexaveis', false);
+}
+add_filter('wpseo_robots', fn($r) => ieadc_seo_arquivo_fora() ? 'noindex, follow' : $r);
+add_filter('wpseo_robots_array', function ($r) { // é o que o Yoast entrega ao wp_robots (a tag que sai na página)
+	if (is_array($r) && ieadc_seo_arquivo_fora()) {
+		$r['index'] = 'noindex';
+		$r['follow'] = 'follow';
+	}
+	return $r;
+});
+add_filter('wpseo_sitemap_exclude_taxonomy', fn($excluir, $tax) => ($tax === 'category' || $tax === 'post_tag') && !apply_filters('ieadc_arquivos_indexaveis', false) ? true : $excluir, 10, 2);
+/* Busca, anexos e arquivos fora do índice: pelo filtro do WordPress (uma só tag robots); com Yoast, quem decide é ele (filtro wpseo_robots acima). */
 add_filter('wp_robots', function (array $r): array {
-	if (!ieadc_seo_yoast() && (is_search() || is_attachment())) {
+	if (!ieadc_seo_yoast() && (is_search() || is_attachment() || ieadc_seo_arquivo_fora())) {
 		unset($r['index']);
 		$r['noindex'] = true;
 		$r['follow']  = true;
@@ -227,7 +248,7 @@ add_action('wp_head', function () {
 	}
 	$desc = ieadc_seo_descricao();
 	$img  = ieadc_seo_imagem_dados();
-	$url  = is_singular() ? get_permalink() : home_url('/');
+	$url  = is_singular() ? get_permalink() : (is_category() ? get_category_link(get_queried_object_id()) : home_url('/'));
 	$tit  = wp_get_document_title();
 	if ($desc !== '') {
 		echo '<meta name="description" content="' . esc_attr($desc) . '">' . "\n";

@@ -221,5 +221,32 @@ ExpiresByType image/vnd.microsoft.icon "access plus 30 days"
 </IfModule>
 
 HTACCESS;
-	return $bloco . $regras;
+	return $bloco . ieadc_htaccess_seguranca() . $regras;
 });
+
+/**
+ * Endurecimento do .htaccess (fase 4), no mesmo bloco do WordPress e com o mesmo mecanismo da fase 3 (vale depois do próximo flush_rewrite_rules(true):
+ * o seed e o migrar-remoto.sh/atualizar-remoto.sh o fazem). Tudo dentro de <IfModule>/<FilesMatch>: onde o módulo não existe a regra é ignorada, sem erro 500.
+ *  - sem listagem de pastas (uma pasta sem index não mostra o que tem dentro);
+ *  - acesso direto negado a: .env e outros arquivos de ponto (.git, .htpasswd, .DS_Store), wp-config.php (e o de exemplo), readme.html, license.txt,
+ *    xmlrpc.php (o site não usa XML-RPC; é alvo comum de ataque de força bruta) e arquivos de log, dump e cópia (.log, .sql, .bak, .old, .orig, .swp, .dist).
+ * Atenção: bloquear o xmlrpc.php desliga aplicativos que o usam (app do WordPress no celular com XML-RPC, Jetpack). docs/operacao/plugins.md.
+ */
+function ieadc_htaccess_seguranca(): string {
+	return <<<'HTACCESS'
+# Fase 4 (segurança): sem listagem de pastas e sem acesso direto a arquivos sensíveis
+<IfModule mod_autoindex.c>
+Options -Indexes
+</IfModule>
+<FilesMatch "(?i)(^\.env.*|^\.git.*|^\.htpasswd$|^\.ds_store$|^wp-config(-sample)?\.php$|^readme\.html$|^license\.txt$|^xmlrpc\.php$|\.(log|sql|bak|old|orig|swp|dist)$)">
+<IfModule mod_authz_core.c>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+</IfModule>
+</FilesMatch>
+
+HTACCESS;
+}
