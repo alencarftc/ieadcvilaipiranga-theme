@@ -2,12 +2,19 @@
 # Roda os testes do site.
 # Uso: ./bin/testar.sh [php|markup|visual|interacao] [pagina[,pagina…]]
 #   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
-# Pré-requisitos: site no ar em http://localhost:8080 (./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
+# Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
 # Node 20+ e Docker. O protótipo é servido sozinho em http://localhost:8090 durante os testes.
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail
 cd "$(dirname "$0")/.."
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /tests
+
+# Os testes abrem o site no endereço do .env (SITE_URL), igual ao que o celular usa na rede de casa.
+# Se o .env tem o IP da máquina, o HTML sai com esse endereço e o teste precisa saber disso. Sem .env: http://localhost:8080.
+if [ -z "${WP_URL:-}" ] && [ -f .env ]; then
+  WP_URL="$(sed -n 's/^SITE_URL=//p' .env | head -1 | tr -d '\r "'"'")"
+  [ -n "$WP_URL" ] && export WP_URL
+fi
 
 parte="${1:-tudo}"
 [ $# -ge 2 ] && export IEADC_PAGINAS="$2"

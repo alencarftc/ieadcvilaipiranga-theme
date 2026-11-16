@@ -33,6 +33,8 @@ cp .env.example .env        # troque as senhas e, se quiser abrir em outros apar
 
 No Windows, use `powershell -ExecutionPolicy Bypass -File bin\setup.ps1` (ou os comandos `./bin/...` no Git Bash ou no WSL).
 
+Testes (`./bin/testar.sh`): precisam de Node 20+ e, na primeira vez, do navegador do Playwright (`npx playwright install chromium`; se já existe um Chromium do Playwright de outra versão, `IEADC_CHROMIUM=<caminho do chrome ou headless_shell>`). O `.env` precisa de `IEADC_HOJE=2026-10-06`. Os testes abrem o site no `SITE_URL` do `.env`; se a variável `WP_URL` estiver definida, ela vale no lugar.
+
 Atalhos: `./bin/wp.sh <comando>` (wp-cli), `./bin/exportar.sh` (conteúdo para o git), `docker compose down` (desliga; os dados ficam).
 
 ## Plugins

@@ -1,6 +1,8 @@
-# Instala e configura o WordPress local do zero no Windows (PowerShell 5+ e Docker Desktop).
+﻿# Instala e configura o WordPress local do zero no Windows (PowerShell 5+ e Docker Desktop).
 # Pode rodar de novo sem estragar nada. Uso: powershell -ExecutionPolicy Bypass -File bin\setup.ps1
-$ErrorActionPreference = 'Stop'
+# 'Continue' de propósito: no PowerShell 5, com 'Stop', qualquer linha que o docker escreve em stderr (o progresso
+# "Container ... Running") vira erro fatal quando o comando leva 2>$null. Os erros de verdade são checados em $LASTEXITCODE.
+$ErrorActionPreference = 'Continue'
 Set-Location (Join-Path $PSScriptRoot '..')
 if (-not (Test-Path .env)) { Write-Host 'Crie o .env a partir do .env.example primeiro.'; exit 1 }
 
@@ -14,6 +16,7 @@ function WP { docker compose run --rm -T wpcli wp @args; if ($LASTEXITCODE -ne 0
 function WPTalvez { docker compose run --rm -T wpcli wp @args 2>$null; $global:LASTEXITCODE = 0 }
 
 docker compose up -d db wordpress mailpit
+if ($LASTEXITCODE -ne 0) { throw 'docker compose up falhou (o Docker Desktop está aberto?)' }
 Write-Host 'Esperando o WordPress subir...'
 for ($i = 0; $i -lt 60; $i++) {
   docker compose exec -T wordpress test -f /var/www/html/wp-config.php 2>$null

@@ -63,7 +63,10 @@ function pagina(string $slug, string $titulo, int $pai = 0, string $origem = '',
 	$conteudo = $conteudo ?: provisorio($titulo, $extra);
 
 	$forcar = getenv('IEADC_ATUALIZAR') === '1';
-	if ($p && !$forcar && !str_contains($p->post_content, '[Provisório: página em montagem')) {
+	// A política de privacidade que o WordPress cria na instalação (rascunho com o texto-modelo, mesmo endereço da nossa)
+	// ainda não foi editada por ninguém: o seed a assume e publica.
+	$modelo_wp = $p && $p->post_status === 'draft' && str_contains($p->post_content, 'privacy-policy-tutorial');
+	if ($p && !$forcar && !$modelo_wp && !str_contains($p->post_content, '[Provisório: página em montagem')) {
 		return $p->ID; // já editada no painel: não mexe
 	}
 	$dados = [
