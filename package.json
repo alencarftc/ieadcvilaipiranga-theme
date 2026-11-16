@@ -5,10 +5,14 @@
   "scripts": {
     "test:markup": "playwright test -c tests/visual markup",
     "test:visual": "playwright test -c tests/visual visual",
-    "test:interacao": "playwright test -c tests/visual interacao"
+    "test:interacao": "playwright test -c tests/visual interacao",
+    "test:a11y": "playwright test -c tests/visual a11y"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.63.0",
     "pixelmatch": "5.3.0",
     "pngjs": "7.0.0"

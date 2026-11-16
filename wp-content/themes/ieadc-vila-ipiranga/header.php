@@ -16,10 +16,10 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo_cor.webp';
 </head>
 <body <?php body_class(); ?> <?php echo blocksy_body_attr(); ?>>
 <?php wp_body_open(); ?>
-<a class="skip-link screen-reader-text" href="#main"><?php esc_html_e('Pular para o conteúdo', 'ieadc'); ?></a>
+<?php /* O link "Pular para o conteúdo" vem do Blocksy (wp_body_open); um segundo, aqui, ficaria repetido para quem usa teclado. */ ?>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gr-sol" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#FEB900"/><stop offset=".45" stop-color="#FE7D00"/><stop offset="1" stop-color="#EC4024"/></linearGradient></defs></svg>
 <div id="main-container">
-	<div class="topline ieadc-ui"><div class="wrap"><span class="frase"><?php echo esc_html(ieadc_dado('frase_topo')); ?></span>
+	<div class="topline ieadc-ui" role="region" aria-label="<?php esc_attr_e('Frase da igreja e redes sociais', 'ieadc'); ?>"><div class="wrap"><span class="frase"><?php echo esc_html(ieadc_dado('frase_topo')); ?></span>
 		<nav aria-label="<?php esc_attr_e('Redes sociais', 'ieadc'); ?>">
 			<?php foreach (['instagram' => 'Instagram', 'facebook' => 'Facebook', 'youtube' => 'YouTube'] as $chave => $rotulo) : $url = ieadc_dado($chave); if ($url) : ?>
 				<a href="<?php echo esc_url($url); ?>" rel="noopener"><?php echo esc_html($rotulo); ?></a>

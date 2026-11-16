@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Roda os testes do site.
-# Uso: ./bin/testar.sh [php|markup|visual|interacao] [pagina[,pagina…]]
+# Uso: ./bin/testar.sh [php|markup|visual|interacao|a11y] [pagina[,pagina…]]
 #   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
 # Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com o ambiente "local" do
 # WordPress (o docker-compose.yml já define), Node 20+ e Docker. O .env fica com IEADC_HOJE vazio: o site local mostra o dia real e os
 # testes fixam 06/10/2026 pelo cabeçalho X-Ieadc-Hoje (tests/visual/playwright.config.js). O protótipo é servido sozinho em http://localhost:8090 durante os testes.
+# a11y: axe (WCAG 2.1 AA) nas 28 páginas a 390, 900 e 1440 px, teclado e prefers-reduced-motion (tests/visual/a11y.spec.js).
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -19,7 +20,7 @@ fi
 
 parte="${1:-tudo}"
 [ $# -ge 2 ] && export IEADC_PAGINAS="$2"
-case "$parte" in tudo|php|markup|visual|interacao) ;; *) echo "Uso: $0 [php|markup|visual|interacao] [pagina]"; exit 2 ;; esac
+case "$parte" in tudo|php|markup|visual|interacao|a11y) ;; *) echo "Uso: $0 [php|markup|visual|interacao|a11y] [pagina]"; exit 2 ;; esac
 
 falhou=0
 passo() { echo; echo "=== $1 ==="; }
@@ -81,12 +82,13 @@ testes_playwright() {
 
 case "$parte" in
   php) roda testes_php ;;
-  markup|visual|interacao) roda testes_playwright "$parte" ;;
+  markup|visual|interacao|a11y) roda testes_playwright "$parte" ;;
   tudo)
     roda testes_php
     roda testes_playwright markup
     roda testes_playwright visual
     roda testes_playwright interacao
+    roda testes_playwright a11y
     ;;
 esac
 
