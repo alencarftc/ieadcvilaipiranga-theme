@@ -104,8 +104,8 @@ function ieadc_seo_descricao_evento(WP_Post $p): string {
 		$partes[] = wp_date('j \d\e F \d\e Y', $d->getTimestamp(), ieadc_agenda_fuso());
 	}
 	$hora = trim((string) get_post_meta($p->ID, 'evento_horario', true));
-	if ($hora !== '') {
-		$partes[] = 'às ' . $hora;
+	if ($hora !== '') { // "19h30" vira "às 19h30"; "19h30 às 21h" vira "das 19h30 às 21h"
+		$partes[] = (preg_match_all('/\d{1,2}h/u', $hora) > 1 ? 'das ' : 'às ') . $hora;
 	}
 	$local = trim((string) get_post_meta($p->ID, 'evento_local', true));
 	$txt = ieadc_seo_limpar(get_the_title($p)) . ($partes ? ': ' . implode(', ', $partes) : '') . ($local !== '' ? ' · ' . $local : '');
@@ -194,6 +194,8 @@ add_filter('wpseo_twitter_title', 'ieadc_seo_titulo_yoast');
 add_filter('wpseo_metadesc', fn($d) => ieadc_seo_descricao() ?: $d);
 add_filter('wpseo_opengraph_desc', fn($d) => ieadc_seo_descricao() ?: $d);
 add_filter('wpseo_twitter_description', fn($d) => ieadc_seo_descricao() ?: $d);
+/* Tipo Open Graph: "article" só nos artigos; páginas e eventos são "website" (o Yoast põe "article" em toda página interna). */
+add_filter('wpseo_opengraph_type', fn($t) => is_singular('post') ? 'article' : (is_singular() ? 'website' : $t));
 /* Foto do topo como imagem de compartilhamento, só quando ninguém escolheu outra (foto de destaque ou campo do Yoast). */
 add_filter('wpseo_add_opengraph_additional_images', function ($imagens) {
 	$img = ieadc_seo_imagem();

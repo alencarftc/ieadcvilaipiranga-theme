@@ -65,7 +65,7 @@ testes_php() {
 
   passo "testes PHP: funções comuns (dentro do WordPress)"
   local t
-  for t in tests/php/*/teste-helpers.php tests/php/*/teste-modelo-artigo.php; do
+  for t in tests/php/*/teste-helpers.php tests/php/*/teste-modelo-artigo.php tests/php/*/teste-seo.php; do
     [ -f "$t" ] || continue
     docker compose run --rm -T --no-deps -v "$PWD/tests:/tests:ro" --entrypoint php wpcli "/tests/${t#tests/}" || return 1
   done
