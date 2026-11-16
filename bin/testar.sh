@@ -2,7 +2,7 @@
 # Roda os testes do site.
 # Uso: ./bin/testar.sh [php|markup|visual|interacao] [pagina[,pagina…]]
 #   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
-# Pré-requisitos: site no ar em http://localhost:8080 (./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
+# Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com IEADC_HOJE=2026-10-06 no .env,
 # Node 20+ e Docker. O protótipo é servido sozinho em http://localhost:8090 durante os testes.
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
 set -uo pipefail

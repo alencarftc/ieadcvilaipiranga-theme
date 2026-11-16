@@ -16,6 +16,7 @@ function WP { docker compose run --rm -T wpcli wp @args; if ($LASTEXITCODE -ne 0
 function WPTalvez { docker compose run --rm -T wpcli wp @args 2>$null; $global:LASTEXITCODE = 0 }
 
 docker compose up -d db wordpress mailpit
+if ($LASTEXITCODE -ne 0) { throw 'docker compose up falhou (o Docker Desktop está aberto?)' }
 Write-Host 'Esperando o WordPress subir...'
 for ($i = 0; $i -lt 60; $i++) {
   docker compose exec -T wordpress test -f /var/www/html/wp-config.php 2>$null
