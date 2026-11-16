@@ -40,3 +40,9 @@ Escrito em 16/11/2026 (02h53) a pedido do Felipe: finalizar tudo o que foi pedid
 - **Pendente (depende do Felipe):** link de avaliação ou código do lugar, Perfil da Empresa verificado, Search Console (DNS), e-mail público, coordenadas (opcional): `pendencias-para-o-felipe.md`, bloco "SEO e Google".
 - **Armadilhas novas:** o Yoast põe `og:type` article em toda página (o tema força `website`); o recurso `llms.txt` do Yoast grava arquivo físico (o seed o desliga); o teste de SEO cria um evento e o apaga no fim (se interrompido, apagar "Culto de teste de SEO (apagar)"); o rodapé do protótipo e `prototipo/site.css` agora usam h2 (o gerador `prototipo/fonte/*.py` continua sem ser atualizado).
 - **Para o orquestrador:** a branch parte de `feat/site-p1` (último commit da fase 1: `a58379b`); se a PR #36 for mesclada antes, rebase com `git rebase --onto origin/main a58379b`. Não mesclado nem publicado em servidor.
+
+### Fase 3 (`feat/site-a11y-perf`), parada às 10h de 16/11/2026 (retomar daqui)
+- **Feito (commit WIP fa3d568, sem a bateria completa rodada):** `tests/visual/a11y.spec.js` (axe, WCAG 2.1 A/AA nas páginas do mapa), comando `./bin/testar.sh a11y`, `@axe-core/playwright` no `package.json`, primeiros ajustes de acessibilidade em `assets/js/site.js` e `header.php`.
+- **Falta:** rodar o axe e zerar as violações; favicon e ícones (`/favicon.ico` dá 404 na HML); desempenho (imagem do topo menor no celular, CSS que bloqueia e CSS do Blocksy sem uso, LCP 3,3 s no celular da HML); cabeçalhos de segurança (HSTS, X-Frame-Options, CSP); `bin/lighthouse.sh` (Lighthouse 12.8.2: a 13 exige Node 22.19); bateria completa; PR e revisão.
+- **Medido na HML (home, 16/11/2026, `lighthouse@12.8.2`):** celular desempenho 90, acessibilidade 98, boas práticas 96, SEO 66; computador 95, 98, 96, 66 (o SEO 66 é só o noindex da HML).
+- **Fase 4** (rastreamento GA4 com consentimento, Search Console, marketing, segurança) ainda não começou.
