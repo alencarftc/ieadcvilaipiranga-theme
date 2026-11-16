@@ -32,7 +32,14 @@ confere() { local n="$1"; shift; if "$@" > /dev/null 2>&1; then passa "$n"; else
 passo() { echo; echo "== $1"; }
 R() { "${COMPOSE[@]}" exec -T -u u123 -e HOME=/home/u123 servidor "$@"; }         # comando no servidor de teste, como o cliente (u123)
 wpr() { local p="$1"; shift; R wp --path="$p" "$@"; }                              # wp-cli numa pasta do servidor de teste
-opcao() { wpr "$1" option get "$2" 2> /dev/null | tr -d '\r'; }                    # opcao <pasta> <nome>
+opcao() {   # opcao <pasta> <nome>: tenta até 3 vezes (o docker exec pode falhar à toa quando a máquina está sem memória)
+  local v n
+  for n in 1 2 3; do
+    v="$(wpr "$1" option get "$2" 2> /dev/null | tr -d '\r')" && [ -n "$v" ] && break
+    [ "$n" -eq 3 ] || sleep 3
+  done
+  printf '%s' "$v"
+}
 http() { CURL_HOME="$CURLH" curl -s -o /dev/null -L --max-redirs 3 --max-time 30 -w '%{http_code}' "$1" 2> /dev/null || true; }
 saida_tem() { [[ "$SAIDA" == *"$1"* ]]; }
 rc0_e_saida_tem() { [ "$RC" -eq 0 ] && saida_tem "$1"; }
@@ -67,6 +74,7 @@ subir() {
   R sh -c 'mkdir -p /home/u123/domains/terceiro.com.br/public_html && echo "site de terceiro" > /home/u123/domains/terceiro.com.br/public_html/index.html'
   confere "WordPress da produção instalado (banco hospedagem)" wpr $SITE_PROD core is-installed
   confere "WordPress da hml instalado em outra pasta e em outro banco (hospedagem_hml)" test "$(wpr $SITE_HML config get DB_NAME | tr -d '\r')" = hospedagem_hml
+  [ "$ko" -eq 0 ]   # sem os dois WordPress não há o que provar: "tudo" para aqui (rode "parar" e tente de novo)
 }
 
 parar() {
