@@ -108,10 +108,10 @@ function ieadc_mapa_site(): string {
 	$grupos = '';
 	foreach ($arvore as $no) {
 		if (!$no['filhos']) {
-			$soltos .= '<h4>' . $link($no['item']) . '</h4>';
+			$soltos .= '<h2>' . $link($no['item']) . '</h2>';
 			continue;
 		}
-		$grupos .= '<div><h4>' . $link($no['item']) . '</h4><ul>';
+		$grupos .= '<div><h2>' . $link($no['item']) . '</h2><ul>';
 		foreach ($no['filhos'] as $f) {
 			$grupos .= '<li>' . $link($f['item']);
 			if ($f['filhos']) {

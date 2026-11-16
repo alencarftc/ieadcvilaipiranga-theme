@@ -187,3 +187,54 @@ function ieadc_secao_abre(array $a, string $padrao = 'sec'): string {
 function ieadc_secao_fecha(): string {
 	return '</section>';
 }
+
+/**
+ * Perguntas e respostas do bloco ieadc/perguntas (e do FAQPage dos dados estruturados): as do bloco, se houver,
+ * senão as padrão, montadas com os dados da igreja (Configurações > IEADC Vila Ipiranga) e com o que as páginas já dizem.
+ * Devolve [['pergunta' => texto, 'resposta' => HTML do texto rico], …].
+ */
+function ieadc_perguntas_itens(array $attrs = []): array {
+	$itens = [];
+	foreach ((array) ($attrs['itens'] ?? []) as $i) {
+		$p = trim((string) ($i['pergunta'] ?? ''));
+		$r = trim((string) ($i['resposta'] ?? ''));
+		if ($p !== '' && $r !== '') {
+			$itens[] = ['pergunta' => $p, 'resposta' => $r];
+		}
+	}
+	if ($itens) {
+		return $itens;
+	}
+	$nome = ieadc_dado('nome');
+	$endereco = ieadc_dado('endereco');
+	if ($endereco !== '') {
+		$itens[] = ['pergunta' => 'Onde fica a ' . $nome . '?',
+			'resposta' => 'A igreja fica na ' . esc_html($endereco) . '. <a href="' . esc_url(ieadc_google_maps_url()) . '">Veja no Google Maps</a>.'];
+	}
+	$cultos = array_filter(array_map('trim', preg_split('/\R/', (string) ieadc_dado('cultos'))));
+	if ($cultos) {
+		$itens[] = ['pergunta' => 'Quais são os horários dos cultos?',
+			'resposta' => 'Os cultos e encontros da semana são: ' . esc_html(implode('; ', array_map(fn($c) => str_replace(' · ', ', ', $c), $cultos))) . '.'];
+	}
+	$itens[] = ['pergunta' => 'Preciso avisar antes de visitar?',
+		'resposta' => 'Não. Você é bem-vindo em qualquer culto. Não precisa avisar antes: é só chegar.'];
+	foreach ($cultos as $c) { // linha "2º sábado · 19h30 · Ceia do Senhor"
+		if (preg_match('/^(\d+º\s+\p{L}+)\s*·\s*(\d{1,2}h(?:\d{2})?)\s*·\s*Ceia/iu', $c, $m)) {
+			$itens[] = ['pergunta' => 'Quando acontece a Ceia do Senhor?',
+				'resposta' => 'A Ceia do Senhor é celebrada todo ' . esc_html($m[1]) . ' do mês, às ' . esc_html($m[2]) . '.'];
+			break;
+		}
+	}
+	$contato = [];
+	if (ieadc_dado('telefone') !== '') {
+		$contato[] = 'pelo telefone <a href="tel:' . esc_attr(preg_replace('/[^0-9+]/', '', ieadc_dado('telefone'))) . '">' . esc_html(ieadc_dado('telefone')) . '</a>';
+	}
+	if (ieadc_dado('email') !== '') {
+		$contato[] = 'pelo e-mail <a href="mailto:' . esc_attr(antispambot(ieadc_dado('email'))) . '">' . esc_html(antispambot(ieadc_dado('email'))) . '</a>';
+	}
+	$itens[] = ['pergunta' => 'Como falar com a igreja?',
+		'resposta' => ($contato ? 'Fale conosco ' . implode(' ou ', $contato) . '. ' : '') . 'Você também pode enviar uma mensagem pela página <a href="' . esc_url(ieadc_link('contato')) . '">Fale conosco</a>.'];
+	$itens[] = ['pergunta' => 'Como enviar um pedido de oração?',
+		'resposta' => 'Pela página <a href="' . esc_url(ieadc_link('pedidos-de-oracao')) . '">Pedidos de oração</a>. O pedido chega apenas ao Círculo de Oração e nunca é publicado.'];
+	return $itens;
+}
