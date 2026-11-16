@@ -20,7 +20,8 @@ function ieadc_t_baixar(string $url): array {
 		return ['status' => 0, 'corpo' => '', 'tipo' => '', 'erro' => $r->get_error_message()];
 	}
 	return ['status' => (int) wp_remote_retrieve_response_code($r), 'corpo' => (string) wp_remote_retrieve_body($r),
-		'tipo' => (string) wp_remote_retrieve_header($r, 'content-type'), 'erro' => ''];
+		'tipo' => (string) wp_remote_retrieve_header($r, 'content-type'), 'erro' => '',
+		'cab' => array_change_key_case((array) wp_remote_retrieve_headers($r)->getAll(), CASE_LOWER)];
 }
 
 /** Monta DOM, XPath e os dados estruturados de uma página. */
@@ -509,5 +510,28 @@ foreach ([ieadc_info('endereco'), ieadc_info('telefone'), ieadc_info('email'), i
 }
 ieadc_ok($ok, 'llms.txt: endereço, telefone, e-mail, redes e cultos iguais aos de Configurações');
 ieadc_ok(!preg_match('/a confirmar|a definir|aggregateRating|nota |avalia[çc][õo]es/i', $llms['corpo']) && strlen($llms['corpo']) < 6000, 'llms.txt: curto, sem pendência e sem nota ou número de avaliações', strlen($llms['corpo']));
+
+/* ---------- Favicon, ícones e webmanifest (fase 3) ---------- */
+echo "favicon, ícones e webmanifest
+";
+$fav = ieadc_t_baixar($base . '/favicon.ico');
+ieadc_ok($fav['status'] === 200 && str_starts_with($fav['tipo'], 'image/') && substr($fav['corpo'], 1, 3) === 'PNG', '/favicon.ico responde 200 com imagem (nada de 404 no console)', [$fav['status'], $fav['tipo']]);
+$ini = ieadc_t_analisar($inicio_resp['corpo']);
+$links = [];
+foreach ($ini['xp']->query('//head/link[@rel]') as $l) {
+	$links[$l->getAttribute('rel')][] = $l->getAttribute('href');
+}
+ieadc_ok(!empty($links['icon']) && !empty($links['apple-touch-icon']) && !empty($links['manifest']), 'início: link rel icon, apple-touch-icon e manifest no head', array_keys($links));
+$ok = true;
+foreach ([32, 180, 192, 512] as $t) {
+	$im = ieadc_t_baixar($base . wp_parse_url(ieadc_icone_url($t), PHP_URL_PATH));
+	$ok = $ok && $im['status'] === 200 && substr($im['corpo'], 1, 3) === 'PNG' && (@getimagesizefromstring($im['corpo'])[0] ?? 0) === $t;
+}
+ieadc_ok($ok, 'ícones PNG 32, 180, 192 e 512 existem e têm o tamanho do nome');
+$man = ieadc_t_baixar($base . '/site.webmanifest');
+$mj = json_decode($man['corpo'], true) ?: [];
+ieadc_ok($man['status'] === 200 && str_contains($man['tipo'], 'manifest+json') && ($mj['name'] ?? '') === $nome && ($mj['theme_color'] ?? '') === '#071946'
+	&& count($mj['icons'] ?? []) === 2, 'site.webmanifest: nome de Configurações, theme_color igual ao das metatags e ícones 192 e 512', [$man['status'], $mj['name'] ?? null]);
+ieadc_ok(str_contains($ini['html'] ?? $inicio_resp['corpo'], '<meta name="theme-color" content="' . ($mj['theme_color'] ?? 'x') . '">'), 'theme_color do manifesto é o theme-color da página');
 
 ieadc_teste_fim();
