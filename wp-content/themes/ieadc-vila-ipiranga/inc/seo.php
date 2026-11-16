@@ -331,11 +331,7 @@ add_filter('wp_headers', function (array $h): array {
 	unset($h['X-Pingback']);
 	return $h;
 });
-add_action('send_headers', function () {
-	header('X-Content-Type-Options: nosniff');
-	header('Referrer-Policy: strict-origin-when-cross-origin');
-	header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()');
-});
+/* Cabeçalhos de segurança (nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options, COOP, HSTS e CSP): mu-plugins/ieadc-core/seguranca.php. */
 /* Não expõe a lista de usuários (e os logins dos administradores) para visitantes. */
 add_filter('rest_endpoints', function (array $e): array {
 	if (!is_user_logged_in()) {

@@ -543,4 +543,18 @@ ieadc_ok($man['status'] === 200 && str_contains($man['tipo'], 'manifest+json') &
 	&& count($mj['icons'] ?? []) === 2, 'site.webmanifest: nome de Configurações, theme_color igual ao das metatags e ícones 192 e 512', [$man['status'], $mj['name'] ?? null]);
 ieadc_ok(str_contains($ini['html'] ?? $inicio_resp['corpo'], '<meta name="theme-color" content="' . ($mj['theme_color'] ?? 'x') . '">'), 'theme_color do manifesto é o theme-color da página');
 
+/* ---------- Cabeçalhos de segurança (fase 3) ---------- */
+echo "cabeçalhos de segurança
+";
+$cab = $inicio_resp['cab'];
+ieadc_ok(($cab['x-frame-options'] ?? '') === 'SAMEORIGIN' && ($cab['cross-origin-opener-policy'] ?? '') === 'same-origin-allow-popups'
+	&& ($cab['x-content-type-options'] ?? '') === 'nosniff' && str_contains($cab['referrer-policy'] ?? '', 'strict-origin'), 'X-Frame-Options SAMEORIGIN, COOP same-origin-allow-popups, nosniff e Referrer-Policy', array_intersect_key($cab, array_flip(['x-frame-options', 'cross-origin-opener-policy'])));
+ieadc_ok(!isset($cab['strict-transport-security']) || str_starts_with($base, 'https'), 'HSTS só em https (o teste local é http)');
+$csp = $cab['content-security-policy-report-only'] ?? ($cab['content-security-policy'] ?? '');
+ieadc_ok($csp !== '' && str_contains($csp, "default-src 'self'") && str_contains($csp, "object-src 'none'") && !str_contains($csp, "script-src 'self' 'unsafe-inline'") && str_contains($csp, "frame-src 'none'"),
+	'CSP com default-src self, sem unsafe-inline em script, sem objetos nem quadros', $csp);
+ieadc_ok(isset($cab['content-security-policy-report-only']) === (get_option('ieadc_csp_modo', 'relatorio') === 'relatorio'), 'CSP começa em modo só-relatório (opção ieadc_csp_modo)');
+$login = ieadc_t_baixar($base . '/wp-login.php');
+ieadc_ok($login['status'] === 200 && !isset($login['cab']['content-security-policy-report-only']), 'tela de login responde 200 e sem a CSP do site (o painel não recebe CSP)', $login['status']);
+
 ieadc_teste_fim();
