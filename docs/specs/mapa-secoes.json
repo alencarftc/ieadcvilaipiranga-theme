@@ -36,7 +36,8 @@
  "contato": [
   "hero",
   "contato-lista",
-  "capa"
+  "capa",
+  "avaliacao-google"
  ],
  "culto-de-ensino": [
   "hero",
@@ -89,7 +90,9 @@
   "cultos-grade",
   "tabela-horarios",
   "faixa",
-  "local"
+  "local",
+  "perguntas",
+  "avaliacao-google"
  ],
  "inicio": [
   "hero-home",
@@ -101,7 +104,8 @@
   "artigos-grade",
   "ministerios-trilho",
   "galeria-faixa",
-  "local"
+  "local",
+  "avaliacao-google"
  ],
  "lideranca": [
   "hero",

@@ -1,6 +1,6 @@
 # Continuidade do projeto (para o Claude Code)
 
-Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main`; atualizado no fim da fase 1 do plano de melhorias (`docs/operacao/plano-melhorias.md`, branch `feat/site-p1`). Serve para quem retomar o trabalho sem o histórico das conversas.
+Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main`; atualizado no fim da fase 1 (`feat/site-p1`) e da fase 2 (`feat/site-seo`, SEO) do plano de melhorias (`docs/operacao/plano-melhorias.md`). Serve para quem retomar o trabalho sem o histórico das conversas.
 
 ## Links
 - Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme
@@ -14,9 +14,9 @@ Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main
 | M1 | Infra dos blocos (`inc/blocos.php`, `inc/helpers.php`, editor genérico) e testes (`bin/testar.sh`) | pronto |
 | M2 | Agenda calculada pelas regras da igreja (`mu-plugins/ieadc-core/agenda.php`) | pronto |
 | M3 | Tipos de conteúdo, categorias, metas de página e artigo, seeds 40 a 80 | pronto |
-| B1 a B4 | 37 blocos (topo, horários e agenda, listas e cartões, conteúdo longo) | prontos |
+| B1 a B4 | 37 blocos (topo, horários e agenda, listas e cartões, conteúdo longo) | prontos; a fase 2 acrescentou `avaliacao-google` e `perguntas` (39) |
 | P1 a P3 | As 28 páginas montadas só com blocos | prontas |
-| M6 | SEO, desempenho, acessibilidade e segurança (`inc/seo.php`, `docs/operacao/plugins.md`) | pronto; **Lighthouse e axe com o site no ar ainda não rodaram** |
+| M6 | SEO, desempenho, acessibilidade e segurança (`inc/seo.php`, `inc/seo-schema.php`, `docs/operacao/plugins.md`, `docs/operacao/seo-e-google.md`) | pronto (fase 2: dados estruturados, metatags, `llms.txt`, avaliação no Google); **Lighthouse e axe com o site no ar ainda não rodaram** |
 | M7 | Migração e lançamento | `bin/migrar.ps1` e roteiro prontos. **Ensaio local** (`bin/ensaio-local.ps1`, servidor de mentira no Docker) passa de ponta a ponta, inclusive o `-Lancar` e os testes de markup/visual contra o site migrado. **Ensaio de 28/11 na Hostinger e lançamento de 30/11 pendentes** (faltam acesso e o "pode lançar" do Felipe) |
 
 Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 30/11/2026. Hospedagem Hostinger (contratada por 4 anos). **Dois ambientes** (decisão do Felipe, 16/11/2026): a **homologação**, numa hospedagem alternativa, onde o pastor e a equipe validam o site (é o destino padrão do `bin/migrar.ps1`), e a **produção**, o domínio principal (só com `-Ambiente producao`). SSH: servidor, porta, usuário e endereço ficam no `.env` do Felipe (`HOMOLOG_*` e `HOSTINGER_*`, fora do git; o repositório é público); a senha só com ele.
@@ -29,7 +29,8 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 4. Configurar no painel (o que é automático e o que não é: `docs/operacao/plugins.md`): 2FA para os administradores, UpdraftPlus com cópia para o Google Drive da igreja (o agendamento semanal/diário, 4 cópias, já vem gravado), e-mails reais dos formulários (hoje vazios em *Configurações > IEADC Vila Ipiranga*).
 5. Conteúdo com `[a confirmar]` (classe `pend`): depende da liderança; não preencha por conta própria. Na fase 1 os 52 trechos amarelos foram revisados: 20 resolvidos sem dado novo e 32 encurtados; as perguntas, por página, estão em `docs/operacao/pendencias-para-o-felipe.md` e cada desvio do protótipo em `docs/specs/desvios-do-prototipo.md`.
 6. O rótulo de lista do editor mostra "CHAMADAS (2) (2)" (contador duplicado, no editor genérico de `blocos/_editor/`).
-7. Branches remotas antigas (feat/m1-*, feat/b1-*, fix/*, etc.) ficaram sem apagar porque o proxy da nuvem bloqueia; apague pelo GitHub.
+7. SEO (fase 2): faltam só os dados e contas do Felipe (link de avaliação do Perfil da Empresa, verificação do Search Console, e-mail público, coordenadas opcionais): `docs/operacao/seo-e-google.md` e o bloco "SEO e Google" de `pendencias-para-o-felipe.md`. Depois do lançamento: Teste de Resultados Avançados na página inicial e num evento, e Inspeção de URL no Search Console.
+8. Branches remotas antigas (feat/m1-*, feat/b1-*, fix/*, etc.) ficaram sem apagar porque o proxy da nuvem bloqueia; apague pelo GitHub.
 
 ## 3. Como o site é montado
 
@@ -38,6 +39,8 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 - **Dados da igreja**: *Configurações > IEADC Vila Ipiranga* (`ieadc_info()`); padrões em `mu-plugins/ieadc-core/info.php`.
 - **Eventos**: só vêm do módulo (tipo `evento` + `ieadc_agenda_*()`); o seed **não** cria evento de exemplo. A "Confraternização dos jovens" do protótipo existe só durante os testes (`tests/fixtures/evento-prototipo.php`, criada e apagada por `bin/testar.sh`). Evento que passou sai dos "próximos"; cadastrar, editar ou apagar limpa o cache de página.
 - **Plugins**: `ieadc-core/integracoes.php` (páginas com formulário nunca vão para o cache; páginas com agenda expiram à meia-noite; cabeçalho `X-Ieadc-Cache` para depurar) e `inc/seo.php` (título, descrição e imagem do tema chegam ao Yoast sem duplicar tag).
+- **SEO** (`inc/seo.php`, `inc/seo-schema.php`): título até 60 caracteres e descrição de 70 a 160 (campo "Resumo" da página; sem ele, o texto de abertura; 7 páginas têm resumo próprio pelo seed `95-seo.php`), foto de compartilhamento (a do topo, a de destaque ou a da página inicial), `og:type` article só nos artigos, `theme-color`, `rel=sitemap` e `/llms.txt` (gerado de Configurações, rota `parse_request`, sem arquivo). JSON-LD: um grafo por página; com o Yoast é o dele ajustado por `wpseo_schema_graph` (Organização e Pessoa dele saem, entra `Church`+`Organization` com `@id` `/#organization`); sem o Yoast, `ieadc_schema_base()` monta o mesmo. Tipos: Church, WebSite (sem SearchAction), WebPage (+FAQPage, ContactPage, AboutPage, CollectionPage), BreadcrumbList (migalha do tema; some na inicial), BlogPosting, Event. Sem hreflang (um só idioma). Sem `closes` nos horários e a sede como `parentOrganization` (decisões em `docs/specs/desvios-do-prototipo.md`).
+- **Avalie no Google / Perguntas**: blocos `ieadc/avaliacao-google` (link do campo `google_avaliacao`; vazio = busca no Google Maps por nome e endereço) e `ieadc/perguntas` (FAQ visível; `ieadc_perguntas_itens()` alimenta o bloco e o `FAQPage`). Estão na inicial, em Contato e em Horários e localização.
 - **Artigo novo**: Posts > Adicionar novo já abre com topo, corpo, parágrafo e "Continue lendo" (`ieadc_artigo_modelo()` em `inc/blocos.php`).
 - **Agenda** (cultos e eventos do mês): `ieadc_agenda*()`. Regras: Ceia no 2º sábado, consagração nos meses pares e vigília nos ímpares, etc. (`docs/specs/M2-agenda.md`). A data é a real (São Paulo). Os testes mandam o cabeçalho `X-Ieadc-Hoje: 2026-10-06` (`tests/visual/playwright.config.js`), aceito só quando `wp_get_environment_type() === 'local'`; a constante/variável `IEADC_HOJE` continua existindo (testes PHP e ensaios), mas o `.env` local a deixa vazia.
 - **Seed**: `scripts/seed.php` roda `scripts/seed/NN-*.php` em ordem; só troca conteúdo ainda não editado, a não ser com `IEADC_ATUALIZAR=1`.
@@ -47,7 +50,7 @@ Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 
 
 `./bin/testar.sh` sobe o protótipo em http://localhost:8090 e compara, para as 28 páginas:
 
-1. **php**: `php -l` em todos os arquivos e os testes da agenda (`tests/php/`).
+1. **php**: `php -l` em todos os arquivos, os testes da agenda e, dentro do WordPress, funções, integrações, modelo de artigo e SEO (`tests/php/seo/teste-seo.php`: JSON-LD, metatags, títulos, imagens, robots, sitemap e llms.txt das 28 páginas e de um evento de teste).
 2. **markup**: HTML de cada seção (`docs/specs/mapa-secoes.json`) do WordPress contra o do protótipo, sem JavaScript. Mostra o diff (`-` protótipo, `+` WordPress). Ignora só o que é funcional (action, nonce, honeypot, name, maxlength, avisos dos formulários).
 3. **visual**: captura da página inteira a 1440, 900 e 390 px e `pixelmatch`; limite 1,0% (1440 e 390) e 1,5% (900). Imagens em `tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png`. **Abra a imagem de diferença mesmo quando passa**: fonte, cor, recorte da foto e quebra de linha do título.
 4. **interação**: formulários (chega no Mailpit, http://localhost:8025), carrossel, menu e o selo "Próximo".
@@ -68,6 +71,7 @@ Para uma página: `./bin/testar.sh visual inicio` (ou `IEADC_PAGINAS=inicio,cont
 - `.env` com `SITE_URL` igual ao IP da máquina (para abrir pelo celular): o banco continua guardando `home`/`siteurl` com o endereço antigo e só a constante `WP_HOME` muda o endereço. O `testar.sh` já lê o `SITE_URL` (ou `WP_URL`); o `migrar.ps1` troca os dois endereços. O IP muda se o roteador reiniciar; reserve-o no roteador.
 - Playwright: o navegador não vem com o `npm ci` (`npx playwright install chromium`, ou `IEADC_CHROMIUM=<headless_shell.exe>` de uma versão já instalada; o 1161 deu 0,000% de diferença).
 - Arquivos `.ps1` precisam de BOM UTF-8 (o PowerShell 5.1 lê UTF-8 sem BOM como ANSI e quebra os acentos) e, no 5.1, `$ErrorActionPreference = 'Stop'` transforma o progresso do `docker` (stderr) em erro fatal. Valor vazio em argumento nativo também some (`ssh-keygen -N ""`: use `cmd /c`).
+- SEO: o Yoast marca toda página interna como `og:type` article (o tema força `website`, `article` só nos artigos) e tem um recurso `llms.txt` que grava arquivo físico (o seed o mantém desligado; o do tema vem do WordPress). O `teste-seo.php` cria e apaga um evento; se for interrompido, apague "Culto de teste de SEO (apagar)" em *Eventos*.
 - Lighthouse: a versão 13 exige Node 22.19+; com Node 22.16 use `npx lighthouse@12.8.2`.
 - Na nuvem, `wordpress.org` é bloqueado (plugins não instalam; Blocksy entra de cópia local pelo `docker-compose.override.yml`, não versionado) e o Docker Hub pode dar 429 (use `mirror.gcr.io/library/<imagem>` e `docker tag`).
 

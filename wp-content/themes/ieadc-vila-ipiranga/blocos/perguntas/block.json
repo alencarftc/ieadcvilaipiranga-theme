@@ -1,0 +1,84 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/perguntas",
+	"title": "Perguntas frequentes",
+	"category": "ieadc",
+	"icon": "editor-help",
+	"description": "Perguntas e respostas visíveis na página (e marcadas para o Google como FAQPage). Sem itens, usa as perguntas padrão com os dados da igreja.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Antes de nos visitar",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Perguntas frequentes",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "Respostas rápidas para quem vai nos visitar pela primeira vez.",
+			"ieadc": {
+				"rotulo": "Texto",
+				"campo": "texto-longo"
+			}
+		},
+		"itens": {
+			"type": "array",
+			"default": [],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Perguntas",
+				"ajuda": "Deixe vazio para usar as perguntas padrão (endereço, horários, Ceia, contato e pedido de oração), montadas com os dados de Configurações > IEADC Vila Ipiranga.",
+				"itens": {
+					"pergunta": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Pergunta"
+						}
+					},
+					"resposta": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Resposta",
+							"campo": "rico"
+						}
+					}
+				}
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

@@ -22,15 +22,15 @@ $cultos = array_filter(array_map('trim', explode("\n", ieadc_dado('cultos'))));
 					<?php endforeach; ?>
 				</div>
 			</div>
-			<div><h4>Cultos</h4><ul>
+			<div><h2>Cultos</h2><ul>
 				<?php foreach ($cultos as $c) : ?><li><?php echo esc_html($c); ?></li><?php endforeach; ?>
 			</ul></div>
-			<div><h4>Contato</h4><ul>
+			<div><h2>Contato</h2><ul>
 				<li><?php echo esc_html(ieadc_dado('endereco')); ?></li>
 				<li><a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', ieadc_dado('telefone'))); ?>"><?php echo esc_html(ieadc_dado('telefone')); ?></a></li>
 				<li><a href="mailto:<?php echo esc_attr(antispambot(ieadc_dado('email'))); ?>"><?php echo esc_html(antispambot(ieadc_dado('email'))); ?></a></li>
 			</ul></div>
-			<div><h4>Outros links</h4><ul>
+			<div><h2>Outros links</h2><ul>
 				<li><a href="<?php echo esc_url(ieadc_dado('site_sede')); ?>">Site da IEADC</a></li>
 				<?php foreach ($redes as $chave => $rotulo) : $url = ieadc_dado($chave); if (!$url) { continue; } ?>
 					<li><a href="<?php echo esc_url($url); ?>" rel="noopener"><?php echo esc_html($rotulo); ?></a></li>

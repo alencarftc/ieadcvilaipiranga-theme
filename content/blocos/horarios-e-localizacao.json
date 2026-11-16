@@ -40,5 +40,13 @@
  {
   "bloco": "ieadc/local",
   "attrs": {}
+ },
+ {
+  "bloco": "ieadc/perguntas",
+  "attrs": {}
+ },
+ {
+  "bloco": "ieadc/avaliacao-google",
+  "attrs": {}
  }
 ]

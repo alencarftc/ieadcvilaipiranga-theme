@@ -134,5 +134,9 @@
     }
    ]
   }
+ },
+ {
+  "bloco": "ieadc/avaliacao-google",
+  "attrs": {}
  }
 ]

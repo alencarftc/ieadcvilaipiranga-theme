@@ -26,6 +26,10 @@ function ieadc_info_padrao(): array {
 		// Destinatário dos pedidos de oração e do formulário de contato.
 		'email_pedidos' => '',
 		'email_contato' => '',
+		// Link para avaliar a igreja no Google (vazio = o botão leva à igreja no Google Maps). Coordenadas: opcionais, ajudam o Google.
+		'google_avaliacao' => '',
+		'latitude'   => '',
+		'longitude'  => '',
 	];
 }
 
@@ -53,6 +57,8 @@ add_action('admin_init', function () {
 					continue;
 				}
 				$limpo[$k] = match (true) {
+					$k === 'google_avaliacao' => ieadc_google_avaliacao_limpar((string) $v[$k]),
+					in_array($k, ['latitude', 'longitude'], true) => ieadc_coordenada_limpar((string) $v[$k], $k === 'latitude' ? 90 : 180),
 					in_array($k, ['instagram', 'facebook', 'youtube', 'site_sede'], true) => esc_url_raw($v[$k]),
 					str_starts_with($k, 'email') => sanitize_email($v[$k]),
 					$k === 'cultos' => sanitize_textarea_field($v[$k]),
@@ -71,6 +77,12 @@ function ieadc_info_tela(): void {
 		'site_sede' => 'Site da IEADC', 'sede' => 'Linha da Igreja Sede (rodapé)', 'tema_ano' => 'Tema do ano (rodapé)',
 		'cultos' => 'Cultos no rodapé (um por linha)', 'email_pedidos' => 'E-mail que recebe os pedidos de oração',
 		'email_contato' => 'E-mail que recebe o Fale conosco',
+		'google_avaliacao' => 'Link para avaliar no Google', 'latitude' => 'Latitude (opcional)', 'longitude' => 'Longitude (opcional)',
+	];
+	$ajuda = [
+		'google_avaliacao' => 'Cole o link de avaliação do Perfil da Empresa no Google (ou search.google.com/local/writereview?placeid=…; vale também só o código do lugar, que começa com ChIJ). Vazio: o botão "Avaliar no Google" abre a igreja no Google Maps.',
+		'latitude' => 'Opcional. Ajuda o Google a achar a igreja no mapa (exemplo: -00.0000). Deixe vazio se não souber.',
+		'longitude' => 'Opcional (exemplo: -00.0000). Só vale se a latitude também estiver preenchida.',
 	];
 	$v = ieadc_info();
 	echo '<div class="wrap"><h1>IEADC Vila Ipiranga</h1><p>Dados usados no cabeçalho, no rodapé e nos formulários. A fonte é a aba Informações gerais da documentação da Comunicação.</p><form method="post" action="options.php">';
@@ -84,9 +96,47 @@ function ieadc_info_tela(): void {
 		} else {
 			echo '<input class="regular-text" id="ieadc-' . esc_attr($k) . '" name="' . esc_attr($nome) . '" value="' . esc_attr($v[$k]) . '">';
 		}
+		if (isset($ajuda[$k])) {
+			echo '<p class="description">' . esc_html($ajuda[$k]) . '</p>';
+		}
 		echo '</td></tr>';
 	}
 	echo '</table>';
 	submit_button();
 	echo '</form></div>';
+}
+
+/** Link de avaliação: aceita o endereço completo (https) ou só o código do lugar (ChIJ…), que vira o link de avaliação. */
+function ieadc_google_avaliacao_limpar(string $valor): string {
+	$valor = trim($valor);
+	if (preg_match('/^ChIJ[\w-]{10,}$/', $valor)) {
+		return 'https://search.google.com/local/writereview?placeid=' . $valor;
+	}
+	// Só endereços do Google (o campo é de texto livre): perfil/avaliação, Maps e encurtadores oficiais; nada de // nem de outros domínios.
+	$url = esc_url_raw($valor, ['https']);
+	$host = strtolower((string) wp_parse_url($url, PHP_URL_HOST));
+	$permitidos = ['google.com', 'g.page', 'goo.gl', 'maps.app.goo.gl', 'g.co', 'share.google'];
+	foreach ($permitidos as $d) {
+		if ($host === $d || str_ends_with($host, '.' . $d)) {
+			return $url;
+		}
+	}
+	return '';
+}
+
+/** Coordenada decimal dentro do limite (90 ou 180), ou vazio. */
+function ieadc_coordenada_limpar(string $valor, int $limite): string {
+	$valor = str_replace(',', '.', trim($valor));
+	return (is_numeric($valor) && abs((float) $valor) <= $limite) ? (string) (float) $valor : '';
+}
+
+/** A igreja no Google Maps (nome e endereço): link do botão de avaliação quando não há link próprio, e `hasMap` dos dados estruturados. */
+function ieadc_google_maps_url(): string {
+	return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'));
+}
+
+/** Link do botão "Avaliar no Google": o de Configurações > IEADC Vila Ipiranga; sem ele, a igreja no Google Maps. */
+function ieadc_google_avaliacao_url(): string {
+	$link = trim((string) ieadc_info('google_avaliacao'));
+	return $link !== '' ? $link : ieadc_google_maps_url();
 }

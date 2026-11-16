@@ -42,5 +42,11 @@
   "attrs": {
    "foto": "f_contato_hero.webp"
   }
+ },
+ {
+  "bloco": "ieadc/avaliacao-google",
+  "attrs": {
+   "secaoEstilo": "padding-top:0"
+  }
  }
 ]
