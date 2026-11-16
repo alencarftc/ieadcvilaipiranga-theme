@@ -1,0 +1,4 @@
+# Quem precisa aprovar mudanças nos arquivos que mexem em servidores e credenciais (exige "Require review from Code
+# Owners" no ruleset da main; veja docs/operacao/ci-cd.md).
+/.github/ @alencarftc
+/bin/ @alencarftc

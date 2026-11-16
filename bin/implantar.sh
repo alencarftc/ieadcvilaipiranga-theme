@@ -4,7 +4,8 @@
 # Subcomandos (as etapas são separadas porque a produção recebe o MESMO pacote que a homologação recebeu):
 #   empacotar            monta o pacote .tgz a partir do site local no ar (docker compose): banco sem usuários, fotos,
 #                        tema, mu-plugins e os scripts remotos. Saída em PACOTE_SAIDA.
-#   enviar [pacote.tgz]  envia um pacote pronto, instala no servidor, grava a opção ieadc_deploy e roda a fumaça.
+#   enviar [pacote.tgz]  envia um pacote pronto, instala no servidor, roda a fumaça e, SÓ SE ela passar, grava a opção
+#                        ieadc_deploy (resultado "ok"). Se a fumaça falhar, a opção fica marcada com resultado "falhou".
 #   fumaca               só os testes de fumaça por HTTP (e a conferência das opções do site, por SSH).
 #   ler-deploy           imprime a opção ieadc_deploy (JSON) do servidor; é a única coisa que sai na saída padrão.
 #
@@ -12,19 +13,26 @@
 #   ALVO_SERVIDOR, ALVO_PORTA, ALVO_USUARIO   dados do SSH (hPanel > Avançado > SSH)
 #   ALVO_CHAVE        arquivo da chave privada SSH (sem senha, só para este fim)
 #   ALVO_IMPRESSAO    impressão digital SHA256 da chave do servidor (SHA256:...). Se não bater, recusa e não conecta.
-#   ALVO_URL          endereço final do site (https://...)
-#   ALVO_DESTINO      pasta do site no servidor (padrão: domains/<endereço do site>/public_html)
+#   ALVO_URL          endereço final do site (http(s)://domínio, sem pasta)
+#   ALVO_DESTINO      pasta do site no servidor. Opcional, e só é aceita se for EXATAMENTE a padrão:
+#                     domains/<domínio do site>/public_html (a da produção é sempre domains/ieadcvilaipiranga.com.br/public_html).
 #   ALVO_EMAIL_ADMIN  e-mail do administrador do site (padrão: não mexe)
+#   AMBIENTE          homologacao | producao (padrão na carga completa: deduzido do MODO; obrigatório na carga "codigo").
+#                     A homologação nunca aceita o domínio da produção; a produção só aceita o domínio da produção.
 #   CARGA             completo (padrão: código + banco, bin/migrar-remoto.sh) | codigo (só tema e mu-plugins, bin/atualizar-remoto.sh)
-#   MODO              só na carga completa: homologacao | homologacao-fechada | ensaio | lancar (veja migrar-remoto.sh)
-#   AMBIENTE          homologacao | producao (padrão: deduzido do MODO; obrigatório na carga "codigo")
-#   CONFIRMACAO       só no ambiente producao: CARGA-INICIAL (carga completa) ou PRODUCAO (carga "codigo")
+#   MODO              só na carga completa. homologacao | homologacao-fechada (ambiente homologacao);
+#                     ensaio | lancar (ambiente producao). Qualquer outra combinação é recusada.
+#   CONFIRMACAO       só no ambiente producao: PRODUCAO (carga "codigo") ou CARGA-INICIAL (carga completa). Se a produção
+#                     já recebeu uma carga (opção ieadc_deploy ou ieadc_site_fechado), a carga completa só passa com
+#                     SUBSTITUIR-CONTEUDO (apaga o que a equipe editou no painel).
 #   PACOTE_SAIDA      onde o "empacotar" grava o .tgz (padrão: content/backup/migracao/ieadc-<data>.tgz)
 #   DEPLOY_SHA, DEPLOY_VERSAO, DEPLOY_RUN_ID   o que vai para a opção ieadc_deploy (padrões: SHA do pacote, "-", GITHUB_RUN_ID)
 #   ESPERADO          aberto | fechado: força o que a fumaça espera (padrão: deduzido do MODO ou lido do servidor)
+#   DOMINIO_PRODUCAO  só para ensaiar contra uma hospedagem de mentira (padrão: ieadcvilaipiranga.com.br); os workflows não o definem
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /content/backup/...
+DOMINIO_PRODUCAO="${DOMINIO_PRODUCAO:-ieadcvilaipiranga.com.br}"
 
 # Mensagens vão para a saída de erro; a saída padrão fica livre para dados (ler-deploy).
 info() { echo "$*" >&2; }
@@ -129,15 +137,75 @@ preparar_ssh() {
 ssh_alvo() { ssh -p "$ALVO_PORTA" "${SSH_OPTS[@]}" "$ALVO_USUARIO@$ALVO_SERVIDOR" "$@"; }
 scp_alvo() { scp -P "$ALVO_PORTA" "${SSH_OPTS[@]}" "$@"; }
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Trava de domínio e de pasta. Na mesma conta SSH moram a homologação, a produção e sites de terceiros (outras pastas em
+# domains/): o endereço precisa ser o do ambiente e a pasta só pode ser a padrão desse endereço, nunca outra.
 definir_destino() {
-  exigir ALVO_URL
+  exigir ALVO_URL AMBIENTE
+  case "$AMBIENTE" in homologacao|producao) ;; *) erro "AMBIENTE deve ser homologacao ou producao." ;; esac
   URL="${ALVO_URL%/}"
-  local host="${URL#*://}"; host="${host%%/*}"; host="${host%%:*}"
-  DESTINO="${ALVO_DESTINO:-domains/$host/public_html}"
+  [[ "$URL" =~ ^https?://([A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*)(:[0-9]+)?$ ]] || erro "ALVO_URL deve ter o formato http(s)://domínio, sem pasta, espaços nem caracteres especiais."
+  HOST="$(printf '%s' "${BASH_REMATCH[1]}" | tr '[:upper:]' '[:lower:]')"
+  local principal=nao pasta_host="$HOST" esperada
+  if [ "$HOST" = "$DOMINIO_PRODUCAO" ] || [ "$HOST" = "www.$DOMINIO_PRODUCAO" ]; then principal=sim; fi
+  if [ "$AMBIENTE" = producao ]; then
+    [ "$principal" = sim ] || erro "na produção o endereço deve ser o do domínio principal ($DOMINIO_PRODUCAO ou www.$DOMINIO_PRODUCAO)."
+    pasta_host="$DOMINIO_PRODUCAO"
+  elif [ "$principal" = sim ]; then
+    erro "a homologação não pode apontar para o domínio da produção ($DOMINIO_PRODUCAO). Confira o endereço da homologação."
+  fi
+  esperada="domains/$pasta_host/public_html"
+  DESTINO="${ALVO_DESTINO:-$esperada}"
+  case "$DESTINO" in
+    /*|*..*|*//*|*\\*|*[[:space:]]*|*~*) erro "a pasta do site é inválida: não pode começar com /, ter .., // ou espaços." ;;
+  esac
+  [ "$DESTINO" = "$esperada" ] || erro "a pasta do site deve ser exatamente $esperada (nenhuma outra pasta da conta é tocada). Nada foi enviado."
   seguro URL; seguro DESTINO
 }
-# Lê uma opção do WordPress no servidor (vazio se não existir).
-opcao_remota() { ssh_alvo "wp --path=\"\$HOME/$DESTINO\" option get $1 2>/dev/null || true" | tr -d '\r[:space:]'; }
+
+# Carga e modo precisam combinar com o ambiente: homologação só abre ou fecha a homologação; a produção só ensaia ou lança.
+validar_carga_modo() {
+  CARGA="${CARGA:-completo}"
+  case "$CARGA" in
+    completo)
+      exigir MODO
+      case "$MODO" in homologacao|homologacao-fechada|ensaio|lancar) ;; *) erro "MODO deve ser homologacao, homologacao-fechada, ensaio ou lancar." ;; esac
+      if [ -z "${AMBIENTE:-}" ]; then
+        case "$MODO" in homologacao*) AMBIENTE=homologacao ;; *) AMBIENTE=producao ;; esac
+      fi
+      case "$AMBIENTE:$MODO" in
+        homologacao:homologacao|homologacao:homologacao-fechada|producao:ensaio|producao:lancar) ;;
+        *) erro "o modo $MODO não combina com o ambiente $AMBIENTE (homologação: homologacao ou homologacao-fechada; produção: ensaio ou lancar)." ;;
+      esac ;;
+    codigo) exigir AMBIENTE ;;
+    *) erro "CARGA deve ser completo ou codigo." ;;
+  esac
+  case "$AMBIENTE" in homologacao|producao) ;; *) erro "AMBIENTE deve ser homologacao ou producao." ;; esac
+}
+
+# Na produção o comando só passa com a confirmação certa (o workflow Produção pede ao Felipe que a digite).
+validar_confirmacao() {
+  [ "$AMBIENTE" = producao ] || return 0
+  if [ "$CARGA" = codigo ]; then
+    [ "${CONFIRMACAO:-}" = "PRODUCAO" ] || erro "para a produção (carga codigo) a CONFIRMACAO deve ser PRODUCAO."
+  else
+    case "${CONFIRMACAO:-}" in
+      CARGA-INICIAL|SUBSTITUIR-CONTEUDO) ;;
+      *) erro "para a produção (carga completa) a CONFIRMACAO deve ser CARGA-INICIAL (primeira carga) ou SUBSTITUIR-CONTEUDO." ;;
+    esac
+  fi
+}
+
+json_deploy() {
+  printf '{"sha":"%s","ambiente":"%s","versao":"%s","quando":"%s","run_id":"%s","carga":"%s","pacote":"%s","resultado":"%s"}' \
+    "$(limpo "$DEPLOY_SHA")" "$AMBIENTE" "$(limpo "${DEPLOY_VERSAO:--}")" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    "$(limpo "${DEPLOY_RUN_ID:-${GITHUB_RUN_ID:-local}}")" "$CARGA" "$PACOTE_HASH" "$1"
+}
+# Grava a opção ieadc_deploy no servidor. resultado: ok (fumaça passou) ou falhou.
+registrar_deploy() {
+  ssh_alvo "wp --path=\"\$HOME/$DESTINO\" option update ieadc_deploy '$(json_deploy "$1")' --autoload=no" >&2
+}
 
 cmd_ler_deploy() {
   definir_destino; preparar_ssh
@@ -145,23 +213,34 @@ cmd_ler_deploy() {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Devolve 0 se tudo passou e 1 se alguma verificação falhou (quem chama decide o que fazer com o ieadc_deploy).
 cmd_fumaca() {
   definir_destino
-  local base="$URL" falhas=0 esperado="${ESPERADO:-}" fechado="" publico="" estado
-  if [ -z "$esperado" ] && { [ "${CARGA:-completo}" = "completo" ] && [ -n "${MODO:-}" ]; }; then
+  local base="$URL" falhas=0 esperado="${ESPERADO:-}" fechado="" publico="" opcoes estado cod
+  if [ -z "$esperado" ] && [ "${CARGA:-completo}" = "completo" ] && [ -n "${MODO:-}" ]; then
     case "$MODO" in homologacao|lancar) esperado=aberto ;; *) esperado=fechado ;; esac
   fi
   if [ -n "${ALVO_CHAVE:-}" ] && [ -n "${ALVO_IMPRESSAO:-}" ]; then
     [ "${#SSH_OPTS[@]}" -gt 0 ] || preparar_ssh
-    fechado="$(opcao_remota ieadc_site_fechado)"; publico="$(opcao_remota blog_public)"
+    opcoes="$(ssh_alvo "w=\"\$HOME/$DESTINO\"; echo \"fechado=\$(wp --path=\"\$w\" option get ieadc_site_fechado 2>/dev/null)\"; echo \"publico=\$(wp --path=\"\$w\" option get blog_public 2>/dev/null)\"")" \
+      || { info "ERRO: não consegui consultar as opções do site por SSH."; return 1; }
+    fechado="$(printf '%s\n' "$opcoes" | sed -n 's/^fechado=//p' | tr -d '\r[:space:]')"
+    publico="$(printf '%s\n' "$opcoes" | sed -n 's/^publico=//p' | tr -d '\r[:space:]')"
     info "Opções no servidor: ieadc_site_fechado=${fechado:-0} blog_public=${publico:-?}"
-    if [ -z "$esperado" ]; then [ "${fechado:-0}" = "1" ] && esperado=fechado || esperado=aberto; fi
+    if [ -z "$esperado" ]; then
+      if [ "${fechado:-0}" = "1" ]; then esperado=fechado; else esperado=aberto; fi
+    fi
     if [ "${CARGA:-completo}" = "completo" ] && [ -n "${MODO:-}" ]; then
+      local f_ok p_ok
       case "$MODO" in
-        lancar) { [ "${fechado:-0}" = "0" ] && [ "$publico" = "1" ]; } || { info "  FALHOU modo lancar: ieadc_site_fechado=${fechado:-0} e blog_public=$publico (esperado 0 e 1)"; falhas=$((falhas + 1)); } ;;
-        homologacao) { [ "${fechado:-0}" = "0" ] && [ "$publico" = "0" ]; } || { info "  FALHOU modo homologacao: ieadc_site_fechado=${fechado:-0} e blog_public=$publico (esperado 0 e 0)"; falhas=$((falhas + 1)); } ;;
-        *) { [ "${fechado:-0}" = "1" ] && [ "$publico" = "0" ]; } || { info "  FALHOU modo $MODO: ieadc_site_fechado=${fechado:-0} e blog_public=$publico (esperado 1 e 0)"; falhas=$((falhas + 1)); } ;;
+        lancar) f_ok=0 p_ok=1 ;;
+        homologacao) f_ok=0 p_ok=0 ;;
+        *) f_ok=1 p_ok=0 ;;
       esac
+      if [ "${fechado:-0}" != "$f_ok" ] || [ "$publico" != "$p_ok" ]; then
+        info "  FALHOU  modo $MODO: ieadc_site_fechado=${fechado:-0} e blog_public=${publico:-?} (esperado $f_ok e $p_ok)"
+        falhas=$((falhas + 1))
+      fi
     fi
   fi
   [ -n "$esperado" ] || erro "não sei se o site deve estar aberto ou fechado: informe MODO, ESPERADO ou a chave SSH."
@@ -183,35 +262,21 @@ cmd_fumaca() {
   checar /wp-login.php 200   # o painel abre mesmo com o site fechado
   if [ "$esperado" = "aberto" ]; then
     # O Yoast serve o /sitemap_index.xml mesmo com blog_public=0 (homologação); sem o Yoast vale o /wp-sitemap.xml do WordPress.
-    local cod
     cod="$(http "$base/sitemap_index.xml")"
     [ "$cod" = 200 ] || cod="$(http "$base/wp-sitemap.xml")"
     if [ "$cod" = 200 ]; then info "  ok      200 sitemap"; else info "  FALHOU  sitemap: nem /sitemap_index.xml nem /wp-sitemap.xml deram 200"; falhas=$((falhas + 1)); fi
   fi
-  [ "$falhas" -eq 0 ] || erro "$falhas verificação(ões) da fumaça falharam em $base."
+  if [ "$falhas" -ne 0 ]; then info "ERRO: $falhas verificação(ões) da fumaça falharam em $base."; return 1; fi
   info "Fumaça aprovada."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 cmd_enviar() {
-  local pacote="${1:-${PACOTE_SAIDA:-}}" prefixo origens sha_pacote hash json quando remoto email
+  local pacote="${1:-${PACOTE_SAIDA:-}}" prefixo origens sha_pacote remoto email carga_previa
   [ -n "$pacote" ] && [ -f "$pacote" ] || erro "informe o pacote .tgz (bin/implantar.sh enviar <pacote.tgz>)."
-  CARGA="${CARGA:-completo}"
-  case "$CARGA" in
-    completo) exigir MODO
-      case "$MODO" in homologacao|homologacao-fechada|ensaio|lancar) ;; *) erro "MODO deve ser homologacao, homologacao-fechada, ensaio ou lancar." ;; esac
-      AMBIENTE="${AMBIENTE:-$(case "$MODO" in homologacao*) echo homologacao ;; *) echo producao ;; esac)}" ;;
-    codigo) exigir AMBIENTE ;;
-    *) erro "CARGA deve ser completo ou codigo." ;;
-  esac
-  case "$AMBIENTE" in homologacao|producao) ;; *) erro "AMBIENTE deve ser homologacao ou producao." ;; esac
-  # Na produção, o comando só passa com a confirmação certa (o workflow de release pede ao Felipe que a digite).
-  if [ "$AMBIENTE" = producao ]; then
-    local certa="PRODUCAO"
-    if [ "$CARGA" = completo ]; then certa="CARGA-INICIAL"; fi
-    [ "${CONFIRMACAO:-}" = "$certa" ] || erro "para a produção (carga $CARGA) a CONFIRMACAO deve ser $certa."
-  fi
+  validar_carga_modo
   definir_destino
+  validar_confirmacao
 
   prefixo="$(meta "$pacote" PACOTE_PREFIXO)"; origens="$(meta "$pacote" PACOTE_ORIGENS)"; sha_pacote="$(meta "$pacote" PACOTE_SHA)"
   [ -n "$prefixo" ] && [ -n "$origens" ] || erro "o pacote não tem pacote.env (foi feito por bin/implantar.sh empacotar?)."
@@ -221,10 +286,19 @@ cmd_enviar() {
   if [ -n "$sha_pacote" ] && [ "$sha_pacote" != "desconhecido" ] && [ "$DEPLOY_SHA" != "$sha_pacote" ]; then
     erro "o pacote foi feito do commit $sha_pacote, mas a implantação é do commit $DEPLOY_SHA."
   fi
-  hash="$(sha256sum "$pacote" | cut -d' ' -f1)"
+  PACOTE_HASH="$(sha256sum "$pacote" | cut -d' ' -f1)"
 
   preparar_ssh
-  info "Implantação: ambiente $AMBIENTE, carga $CARGA${MODO:+, modo $MODO}, commit ${DEPLOY_SHA:0:7}, pacote ${hash:0:12}"
+  # A carga completa troca TODO o conteúdo. Na produção que já recebeu uma carga (inclusive pelo caminho manual, que deixa
+  # a opção ieadc_site_fechado), isso apagaria o que a equipe editou no painel: só com a confirmação explícita.
+  if [ "$AMBIENTE" = producao ] && [ "$CARGA" = completo ] && [ "${CONFIRMACAO:-}" != "SUBSTITUIR-CONTEUDO" ]; then
+    carga_previa="$(ssh_alvo "w=\"\$HOME/$DESTINO\"; for o in ieadc_deploy ieadc_site_fechado; do wp --path=\"\$w\" option get \$o >/dev/null 2>&1 && echo \$o; done; true")" \
+      || erro "não consegui consultar a produção por SSH."
+    [ -z "$(printf '%s' "$carga_previa" | tr -d '[:space:]')" ] \
+      || erro "a produção já recebeu uma carga completa antes. Repetir apaga o que a equipe editou no painel. Para usar só o código, escolha o modo codigo; para substituir o conteúdo de propósito, a confirmação é SUBSTITUIR-CONTEUDO."
+  fi
+
+  info "Implantação: ambiente $AMBIENTE, carga $CARGA${MODO:+, modo $MODO}, commit ${DEPLOY_SHA:0:7}, pacote ${PACOTE_HASH:0:12}"
   info "» 1/4 Envio do pacote"
   scp_alvo "$pacote" "$ALVO_USUARIO@$ALVO_SERVIDOR:ieadc-pacote.tgz" >&2 || erro "o envio falhou (a chave está autorizada no hPanel?)."
 
@@ -235,15 +309,20 @@ cmd_enviar() {
   else
     remoto="$remoto && bash ~/ieadc-migracao/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
   fi
-  ssh_alvo "$remoto" >&2 || erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
+  if ! ssh_alvo "$remoto" >&2; then
+    registrar_deploy falhou > /dev/null 2>&1 || true
+    erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
+  fi
 
-  info "» 3/4 Registro da implantação (opção ieadc_deploy)"
-  quando="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  json="{\"sha\":\"$(limpo "$DEPLOY_SHA")\",\"ambiente\":\"$AMBIENTE\",\"versao\":\"$(limpo "${DEPLOY_VERSAO:--}")\",\"quando\":\"$quando\",\"run_id\":\"$(limpo "${DEPLOY_RUN_ID:-${GITHUB_RUN_ID:-local}}")\",\"carga\":\"$CARGA\",\"pacote\":\"$hash\"}"
-  ssh_alvo "wp --path=\"\$HOME/$DESTINO\" option update ieadc_deploy '$json' --autoload=no" >&2 || erro "não consegui gravar a opção ieadc_deploy."
+  # O ieadc_deploy só diz "ok" depois da fumaça: é ele que libera a produção. Se a fumaça falhar, fica marcado "falhou".
+  info "» 3/4 Testes de fumaça"
+  if ! cmd_fumaca; then
+    registrar_deploy falhou > /dev/null 2>&1 || true
+    erro "a fumaça falhou; a opção ieadc_deploy ficou marcada como falha e a produção não aceitará este commit."
+  fi
 
-  info "» 4/4 Testes de fumaça"
-  cmd_fumaca
+  info "» 4/4 Registro da implantação (opção ieadc_deploy)"
+  registrar_deploy ok || erro "não consegui gravar a opção ieadc_deploy."
   info "Implantação concluída: $URL"
 }
 
@@ -251,7 +330,7 @@ cmd_enviar() {
 case "${1:-}" in
   empacotar) cmd_empacotar ;;
   enviar) shift; cmd_enviar "$@" ;;
-  fumaca) cmd_fumaca ;;
+  fumaca) cmd_fumaca || exit 1 ;;
   ler-deploy) cmd_ler_deploy ;;
-  *) sed -n '2,25p' "$0" >&2; exit 2 ;;
+  *) sed -n '2,/^set -euo/p' "$0" | sed '$d' >&2; exit 2 ;;
 esac

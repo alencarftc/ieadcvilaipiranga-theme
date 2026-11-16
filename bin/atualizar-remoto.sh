@@ -10,9 +10,27 @@ DEST="$1"; URL="${2%/}"; PREFIXO="$3"
 PACOTE="$(cd "$(dirname "$0")" && pwd)"
 SITE="$HOME/$DEST"
 
-[ -f "$SITE/wp-config.php" ] || { echo "ERRO: não achei o WordPress em $SITE. Confira a pasta do site no hPanel."; exit 1; }
+# Trava de pasta (a mesma do bin/implantar.sh): a conta de hospedagem tem outras pastas em domains/ que nunca podem ser
+# tocadas. A pasta tem de ser exatamente domains/<domínio da URL>/public_html (sem www.), sem .., // nem / inicial.
+HOST="${URL#*://}"; HOST="${HOST%%/*}"; HOST="${HOST%%:*}"; HOST="$(printf '%s' "$HOST" | tr '[:upper:]' '[:lower:]')"
+case "$DEST" in
+  /*|*..*|*//*|*\\*|*[[:space:]]*|*~*) echo "ERRO: a pasta do site é inválida (não pode começar com /, ter .., // ou espaços). Nada foi alterado."; exit 1 ;;
+esac
+[[ "$HOST" =~ ^[a-z0-9-]+(\.[a-z0-9-]+)*$ ]] || { echo "ERRO: o endereço do site é inválido. Nada foi alterado."; exit 1; }
+if [ "$DEST" != "domains/$HOST/public_html" ] && [ "$DEST" != "domains/${HOST#www.}/public_html" ]; then
+  echo "ERRO: a pasta do site não corresponde ao endereço $HOST (esperado domains/${HOST#www.}/public_html). Nada foi alterado."; exit 1
+fi
+
+[ -f "$SITE/wp-config.php" ] || { echo "ERRO: não achei o WordPress em ~/$DEST. Confira a pasta do site no hPanel."; exit 1; }
 cd "$SITE"
-WP="wp --path=$SITE"
+# Hospedagens como a da Hostinger desativam proc_open() no PHP de linha de comando; o -d religa só para este processo
+# (mesmo cuidado do bin/migrar-remoto.sh).
+WPBIN="$(command -v wp)" || { echo "ERRO: não achei o wp-cli neste servidor."; exit 1; }
+if php -r 'exit(function_exists("proc_open") ? 0 : 1);'; then
+  WP="$WPBIN --path=$SITE"
+else
+  WP="php -d disable_functions= $WPBIN --path=$SITE"
+fi
 
 atual="$($WP config get table_prefix)"
 [ "$atual" = "$PREFIXO" ] || { echo "ERRO: o prefixo das tabelas aqui é '$atual' e o do pacote é '$PREFIXO'. Nada foi alterado."; exit 1; }
@@ -24,7 +42,7 @@ LISTA=()
 [ -d wp-content/mu-plugins ] && LISTA+=(mu-plugins)
 if [ "${#LISTA[@]}" -gt 0 ]; then
   tar -czf "$BACKUP" -C wp-content "${LISTA[@]}"
-  echo "    guardada em $BACKUP"
+  echo "    guardada em ~/${BACKUP#"$HOME"/}"
 fi
 # Guarda só as 5 cópias de código mais recentes (cada uma tem cerca de 1 MB).
 # shellcheck disable=SC2012
