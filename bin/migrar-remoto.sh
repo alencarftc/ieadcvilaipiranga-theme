@@ -79,6 +79,12 @@ echo "8/8 Finalização ($MODO)"
 # toda página que não é a inicial dá 404. As funções do painel e o filtro got_rewrite fazem o WordPress gravá-las.
 $WP eval 'require_once ABSPATH . "wp-admin/includes/file.php"; require_once ABSPATH . "wp-admin/includes/misc.php"; add_filter("got_rewrite", "__return_true"); flush_rewrite_rules(true);'
 grep -q RewriteRule "$SITE/.htaccess" 2>/dev/null || echo "AVISO: o .htaccess ficou sem as regras dos links limpos; abra Configurações > Links permanentes no painel e salve."
+# /favicon.ico físico na raiz: a hospedagem (LiteSpeed) responde esse caminho antes do PHP e dava 404 (o rewrite do tema nunca era chamado).
+# Copia o PNG de 32 px do tema (o navegador aceita PNG em .ico); só sobrescreve se for diferente. Falha aqui não derruba a implantação.
+ICONE="$SITE/wp-content/themes/ieadc-vila-ipiranga/assets/img/icones/icone-32.png"
+if [ -f "$ICONE" ] && ! cmp -s "$ICONE" "$SITE/favicon.ico" 2>/dev/null; then
+  cp "$ICONE" "$SITE/favicon.ico" && echo "    favicon.ico copiado para a raiz do site" || echo "AVISO: não consegui copiar o favicon.ico para a raiz do site."
+fi
 $WP cache flush || true
 $WP litespeed-purge all 2>/dev/null || true
 $WP maintenance-mode deactivate || true

@@ -102,6 +102,12 @@ O **Fale conosco** funciona diferente: a mensagem vai só por e-mail, para o end
 
 **Configurações > IEADC Vila Ipiranga**: nome, frase do topo, endereço, telefone, e-mail público, Instagram, Facebook, YouTube, linha da Igreja Sede, tema do ano, lista de cultos do rodapé (um por linha) e os dois e-mails que recebem os formulários. A fonte da verdade é a aba *Informações gerais* da documentação da Comunicação: mudou lá, mude aqui. Clique em **Salvar alterações**.
 
+### Estado do site e medição (administradores)
+
+- **Estado do site** (caixa no alto da tela): dois interruptores, *Site aberto ao público* e *Permitir que o Google indexe o site*. Mostra "Hoje: fechado", "Hoje: aberto, fora do Google" ou "Hoje: no ar e indexável". Fechado nunca é indexado. Os três estados e quando usar cada um: `docs/operacao/lancamento.md`, seção "Estado do site". Ao salvar, o cache do LiteSpeed é esvaziado.
+- **WhatsApp:** o botão flutuante e os links de WhatsApp usam o telefone do site (confirmado como WhatsApp). Para usar outro número, preencha *WhatsApp da igreja (com DDD)*; telefone fixo não vira WhatsApp.
+- **Medição e verificação:** *ID do Google Tag Manager*, *ID de medição do Google Analytics 4*, *Código do Google Search Console*, *Código do Bing Webmaster Tools*, *ID do Microsoft Clarity* e *ID do Meta Pixel* (todos vazios por padrão; vazio = recurso desligado). Com um ID de medição o site mostra o aviso de cookies. Passo a passo e eventos: `docs/operacao/rastreamento.md`.
+
 ## 7. Backup e restauração
 
 O site tem **duas camadas** de proteção:

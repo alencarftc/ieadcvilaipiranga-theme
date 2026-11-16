@@ -79,4 +79,6 @@ if ($v !== '') {
 	echo '<blockquote class="versiculo">' . ieadc_kses_rico($v) . ($ref !== '' ? '<cite>' . ieadc_pend($ref) . '</cite>' : '') . '</blockquote>';
 }
 echo $corpo;
-echo '</article></div>' . ieadc_secao_fecha();
+// Compartilhar (fase 4): só na página do artigo (post), não nas prévias; links sem script de terceiros (inc/marketing.php).
+$compartilhar = ($post->post_type === 'post' && is_singular('post') && function_exists('ieadc_compartilhar_html')) ? ieadc_compartilhar_html($post) : '';
+echo '</article>' . $compartilhar . '</div>' . ieadc_secao_fecha();

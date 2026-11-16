@@ -176,6 +176,8 @@ jobs:
           DEPLOY_SHA: ${{ needs.trava-hml.outputs.sha }}
           DEPLOY_VERSAO: ${{ inputs.versao }}
           DEPLOY_RUN_ID: ${{ github.run_id }}
+          GTM_ID: ${{ vars.GTM_ID }}
+          CLARITY_ID: ${{ vars.CLARITY_ID }}
         run: ./bin/implantar.sh enviar "pacote/ieadc-$DEPLOY_SHA.tgz"
 
       - name: Resumo

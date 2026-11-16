@@ -95,3 +95,63 @@ html body{background:var(--branco)} /* o Blocksy imprime body{background-color:#
 @media (max-width:900px){.cel.hoje .n{color:#B85700}}
 /* O fim claro (#39A7F0) do degradê azul do título da página inicial e de "Venha nos visitar." dava 2,5:1 sobre o fundo claro (texto grande pede 3:1): vai a #2B8ADB (3,4:1). O axe não mede texto em degradê. */
 .h1-home .nome,.hero .script.script-home{background-image:linear-gradient(90deg,#0A4F98 0%,#0567B7 45%,#2B8ADB 100%)}
+
+/* === Fase 4 (T1, CLS): fontes de reserva com as medidas das reais === */
+/* Na hospedagem real a troca de fonte (font-display: swap) empurrava o texto do topo (CLS 0,08 no celular e 0,03 no computador): o Arial é mais largo que o
+   Roboto Condensed e o texto quebrava em linhas diferentes. As faces "... Fallback" (fontes.css) copiam largura e altura de linha das reais e entram como 2ª opção.
+   Depois que a fonte certa carrega, nada muda de aparência (só o que aparece enquanto ela não chega). O prototipo.css não foi tocado: a variável é redefinida aqui. */
+:root{--f-tit:'Roboto Condensed','Roboto Condensed Fallback',Arial,sans-serif;--f-txt:'Roboto','Roboto Fallback',Arial,sans-serif;--theme-font-family:'Roboto','Roboto Fallback',Arial,sans-serif}
+.hero .script.script-home{font-family:'Dancing Script','Dancing Script Fallback',cursive}
+
+/* === Fase 4 (T3, LGPD): aviso de cookies (só existe se houver ID de medição em Configurações; inc/medicao.php) === */
+/* Barra fixa no rodapé da tela. "Aceitar" e "Recusar" têm o mesmo botão (mesmo tamanho, cor e peso). Enquanto aberta, a página ganha um respiro embaixo
+   (--ieadc-cookies-h, medido pelo JavaScript) para o aviso não cobrir o fim do conteúdo; o aviso fixo não desloca nada (CLS). */
+.ieadc-cookies.ieadc-ui{padding:0;position:fixed;left:0;right:0;bottom:0;z-index:150;background:var(--marinho);color:#fff;box-shadow:0 -8px 28px rgba(7,25,70,.28)}
+.ieadc-cookies[hidden]{display:none}
+.ieadc-cookies__in{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);padding-block:var(--s3)}
+.ieadc-cookies__txt{max-width:900px}
+.ieadc-cookies .ieadc-cookies__t{font:700 18px/26px var(--f-txt);color:#fff;margin-bottom:4px}
+.ieadc-cookies p{font:400 15px/22px var(--f-txt);color:#fff}
+.ieadc-cookies a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.ieadc-cookies__bt{display:flex;gap:var(--s2);flex:none}
+.ieadc-cookies__b{min-width:136px;min-height:48px;padding:0 var(--s3);border:2px solid #fff;border-radius:8px;background:#fff;color:var(--marinho);font:700 15px/1 var(--f-tit);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.ieadc-cookies__b:hover{background:var(--gelo,#EFF7FD)}
+.ieadc-cookies :focus-visible{outline:3px solid var(--claro);outline-offset:3px}
+html.ieadc-cookies-aberto body{padding-bottom:var(--ieadc-cookies-h,0)}
+.ieadc-cookies:focus{outline:none}
+main:focus{outline:none}
+@media (max-width:760px){
+	.ieadc-cookies__in{flex-direction:column;align-items:stretch;gap:var(--s2);padding-block:var(--s2)}
+	.ieadc-cookies .ieadc-cookies__t{font-size:17px;line-height:24px}
+	.ieadc-cookies p{font-size:14px;line-height:20px}
+	.ieadc-cookies__b{flex:1}
+}
+/* Botão que parece link (política de privacidade: "Mudar minha escolha de cookies"). */
+.ieadc-linkbtn{all:unset;box-sizing:border-box;cursor:pointer;color:var(--azul);text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.ieadc-linkbtn:focus-visible{outline:2px solid var(--azul);outline-offset:3px;border-radius:2px}
+
+/* === Fase 4 (T4, WhatsApp): botão flutuante (inc/marketing.php), fora do <main>, abaixo do aviso de cookies === */
+.ieadc-whats{position:fixed;right:16px;bottom:calc(16px + var(--ieadc-cookies-h,0px));z-index:140;transition:opacity .2s,transform .2s}
+.ieadc-whats a{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#168A4A;color:#fff;border:2px solid #fff;box-shadow:0 6px 18px rgba(7,25,70,.3)}
+.ieadc-whats a:hover{background:#127A41;transform:translateY(-2px)}
+.ieadc-whats a:focus-visible{outline:3px solid var(--azul);outline-offset:3px}
+.ieadc-whats svg{width:30px;height:30px;fill:currentColor}
+/* Perto do rodapé o botão sai de cena (JavaScript, site.js): não cobre o telefone e o endereço. */
+.ieadc-whats.ieadc-whats--fim{opacity:0;pointer-events:none;visibility:hidden}
+@media (max-width:760px){.ieadc-whats{right:12px;bottom:calc(12px + var(--ieadc-cookies-h,0px))}.ieadc-whats a{width:52px;height:52px}}
+@media (prefers-reduced-motion:reduce){.ieadc-whats,.ieadc-whats a{transition:none}}
+
+/* === Fase 4 (T4): compartilhar artigo, "Adicionar ao calendário" e 404 (fora do protótipo v3; ver docs/specs/desvios-do-prototipo.md) === */
+/* Compartilhar: no fim do artigo, na largura do texto (760 px), com os botões vazados (.btn.out) do protótipo. */
+.compartilhar{max-width:760px;margin:var(--s5) auto 0;padding-top:var(--s3);border-top:1px solid var(--borda);display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2)}
+.compartilhar__t{font:700 13px/21px var(--f-txt);letter-spacing:.16em;text-transform:uppercase;color:var(--azul);margin-right:var(--s1)}
+.compartilhar .btn{min-height:44px}
+.compartilhar__ok{font:700 15px/22px var(--f-txt);color:var(--profundo)}
+.compartilhar__ok:empty{display:none}
+/* Página do evento cadastrado: links do calendário abaixo do texto. */
+.ieadc-agenda-add{margin-top:var(--s4)}
+.ieadc-agenda-add__t{font:700 18px/26px var(--f-txt);color:var(--marinho)}
+.ieadc-agenda-add .btns{margin-top:var(--s2)}
+/* 404: links para as páginas principais. */
+.nf-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s2);margin-top:var(--s4)}
+.nf-links .btn{justify-content:space-between}

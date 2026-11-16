@@ -325,6 +325,8 @@ ieadc_igual(array_values(array_filter([ieadc_info('instagram'), ieadc_info('face
 ieadc_ok(($ig['parentOrganization']['url'] ?? '') === ieadc_info('site_sede'), 'Church: parentOrganization = igreja sede (site da IEADC)', $ig['parentOrganization'] ?? null);
 ieadc_ok(str_starts_with($ig['hasMap'] ?? '', 'https://www.google.com/maps/search/?api=1&query='), 'Church: hasMap = igreja no Google Maps');
 ieadc_ok(!isset($ig['geo']) || (ieadc_info('latitude') !== '' && ieadc_info('longitude') !== ''), 'Church: sem coordenadas inventadas (geo só se Configurações tiver latitude e longitude)');
+ieadc_ok(isset($ig['geo']) && abs((float) $ig['geo']['latitude'] - (float) ieadc_info('latitude')) < 1e-9 && abs((float) $ig['geo']['longitude'] - (float) ieadc_info('longitude')) < 1e-9 && $ig['geo']['latitude'] < 0 && $ig['geo']['longitude'] < 0, 'Church: geo com as coordenadas de Configurações (padrão informado pelo Felipe)', $ig['geo'] ?? null);
+ieadc_igual('ieadcvilaipiranga@gmail.com', $ig['email'] ?? null, 'Church: e-mail público da igreja');
 $horas = $ig['openingHoursSpecification'] ?? [];
 ieadc_igual(6, count($horas), 'Church: 6 horários (seg, qua, qui, sex e dois no domingo); "2º sábado" fica só na descrição');
 ieadc_ok(!array_filter($horas, fn($h) => !in_array($h['dayOfWeek'] ?? '', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], true) || !preg_match('/^\d{2}:\d{2}$/', $h['opens'] ?? '') || isset($h['closes']) || ($h['@type'] ?? '') !== 'OpeningHoursSpecification'), 'Church: horários com dia e hora de início, sem "closes" inventado', $horas);
@@ -488,7 +490,12 @@ ieadc_igual(['', ''], [ieadc_coordenada_limpar('95', 90), ieadc_coordenada_limpa
 $mapa = ieadc_google_maps_url();
 ieadc_ok(str_starts_with($mapa, 'https://www.google.com/maps/search/?api=1&query=') && str_contains($mapa, rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'))), 'sem link próprio, o botão leva à igreja no Google Maps (nome e endereço codificados)', $mapa);
 $html = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
-ieadc_ok(str_contains($html, 'href="' . esc_url($mapa) . '"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: botão abre em nova aba com rel="noopener" (sem campo preenchido, vai ao Maps)');
+ieadc_ok(str_contains($html, 'href="https://share.google/U5EOVkegYKa2UcT7o"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: com o link padrão do Felipe, o botão abre a avaliação em nova aba com rel="noopener"');
+$vazio = fn($d) => array_merge($d, ['google_avaliacao' => '']);
+add_filter('ieadc_info', $vazio);
+$html_vazio = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
+remove_filter('ieadc_info', $vazio);
+ieadc_ok(str_contains($html_vazio, 'href="' . esc_url($mapa) . '"') && str_contains($html_vazio, 'target="_blank"') && str_contains($html_vazio, 'rel="noopener"'), 'bloco: com o campo vazio, o botão vai ao Maps e abre em nova aba com rel="noopener"');
 ieadc_ok(substr_count($html, 'class="estrela"') === 5 && str_contains($html, '<div class="estrelas" aria-hidden="true">') && str_contains($html, '>Avaliar no Google<'), 'bloco: 5 estrelas decorativas e botão com texto visível "Avaliar no Google"');
 ieadc_ok(!preg_match('/\d+([,.]\d+)?\s*(estrelas|avalia)|nota\s+\d/iu', wp_strip_all_tags($html)), 'bloco: sem nota nem número de avaliações no texto', wp_strip_all_tags($html));
 $troca = fn($d) => array_merge($d, ['google_avaliacao' => 'https://g.page/r/abc123/review']);
