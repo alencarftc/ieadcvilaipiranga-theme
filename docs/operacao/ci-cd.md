@@ -98,6 +98,9 @@ No GitHub: Settings > Environments > New environment, com os nomes `homologacao`
 
 Variável do **repositório** `HML_ATIVA=true`: liga a publicação automática da homologação (sem ela, o workflow Homologação fica de fora, sem falhar; o disparo manual vale sempre). O script `bin/cadastrar-segredos-github.sh` cadastra os segredos e define essa variável.
 
+Variável do **repositório** (opcional) `GTM_ID`: o ID público do Google Tag Manager (`GTM-XXXXXXX`). Se existir, o passo de envio do workflow de produção passa `GTM_ID` ao `bin/implantar.sh`, que valida o formato (`^GTM-[A-Z0-9]{4,12}$`) e grava o campo `gtm_id` de Configurações no servidor logo depois da instalação e antes da fumaça: é assim que a medição (Google Tag Manager e aviso de cookies) liga na produção. Não é segredo (o ID aparece no código da página) e **a homologação nunca recebe**: o `implantar.sh` recusa o `GTM_ID` fora da produção para que as visitas de teste da equipe não entrem nas estatísticas. Sem a variável, nada muda. Detalhes: `docs/operacao/rastreamento.md`.
+
+
 Variável (não é segredo) opcional no environment `homologacao`: `HML_MODO` = `homologacao` (padrão: aberta para quem tem o link e fora do Google) ou `homologacao-fechada` (só quem tem login). Qualquer outro valor (como `lancar`) é recusado.
 
 Não cadastre nenhum `PROD_*` como segredo do repositório nem no environment `homologacao`.

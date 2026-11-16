@@ -71,3 +71,17 @@ O passo a passo, em linguagem simples, está em `docs/operacao/seo-e-google.md`.
 | Search Console | Quem administra o DNS do domínio (Registro.br ou hospedagem) para colar o registro TXT de verificação? | nome de quem faz | Enviar o `sitemap_index.xml` e acompanhar a indexação |
 | E-mail público | (já listado em Contato) qual é o e-mail público? | `nome@dominio` | Também atualiza os dados da igreja para o Google e o `/llms.txt` (hoje usam o e-mail do rodapé) |
 | Coordenadas (opcional) | Latitude e longitude da igreja (no Google Maps: clicar com o botão direito no ponto da igreja e copiar os números) | dois números, ex.: `-00.0000` e `-00.0000` (os números reais, com sinal) | *Configurações > IEADC Vila Ipiranga > Latitude e Longitude*: o Google localiza a igreja no mapa com mais precisão |
+
+## Medição e marketing (fase 4)
+
+Todos estes campos ficam em *Configurações > IEADC Vila Ipiranga* e **começam vazios: vazio = o recurso fica desligado e invisível**. Passo a passo: `docs/operacao/rastreamento.md`.
+
+| Assunto | Pergunta | Formato da resposta | Destrava |
+|---|---|---|---|
+| ~~WhatsApp~~ | **Resolvido (16/11/2026):** o telefone do site é WhatsApp. O botão flutuante e os links usam o telefone de Configurações; o campo *WhatsApp da igreja (com DDD)* só serve para trocar por outro número. | (nada a responder) | Botão flutuante "Falar no WhatsApp" em todas as páginas |
+| Google Tag Manager | O container já existe (ID `GTM-XXXXXXX`, que só o Felipe tem). Cadastrar na produção como variável de repositório `GTM_ID` no GitHub (ou no campo *ID do Google Tag Manager*). | `GTM-XXXXXXX` | Aviso de cookies e medição na produção (só depois do "Aceitar") |
+| Google Analytics 4 | Qual é o **ID de medição** (`G-XXXXXXXXXX`) da propriedade? Entra na tag do Google **dentro do Tag Manager** (o campo *ID de medição do Google Analytics 4* só serve sem o GTM) | `G-XXXXXXXXXX` | Estatísticas de acesso e de cliques (telefone, WhatsApp, Como chegar, formulários) |
+| Search Console | Código de verificação do método "Tag HTML" (ou a meta tag inteira): mais fácil que o registro TXT no DNS | o código | Campo *Código do Google Search Console*; depois enviar o `sitemap_index.xml` |
+| Bing Webmaster Tools (opcional) | Código de verificação, se quiser aparecer no Bing | 32 letras e números | Campo *Código do Bing Webmaster Tools* |
+| Link de avaliação (continua) | Link de avaliação do Perfil da Empresa (ver "SEO e Google") | link ou código `ChIJ…` | Botão "Avaliar no Google" abre direto a janela de avaliação |
+| Clarity e Meta Pixel (opcionais) | Só se quiser mapas de calor ou medir anúncios; mudam a política de privacidade | ID do serviço | Campos *Microsoft Clarity* e *Meta Pixel* |
