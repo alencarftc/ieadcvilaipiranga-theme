@@ -1,9 +1,12 @@
 # Prompt para retomar o projeto no Claude Code
 
-Abra o Claude Code na pasta do repositório (`ieadcvilaipiranga-theme`) e cole o texto abaixo.
+Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme
+Protótipo navegável: https://claude.ai/artifact/7QAdRxoBGfwJKPNq7hMSkp (privado do Felipe; cópia versionada em `prototipo/`).
+
+Abra o Claude Code na pasta do repositório (`ieadcvilaipiranga-theme`; se ainda não tem, `git clone https://github.com/alencarftc/ieadcvilaipiranga-theme.git`) e cole o texto abaixo.
 
 ```
-Você vai continuar o site da IEADC Vila Ipiranga (WordPress, tema filho do Blocksy), que já está construído e passa em todos os testes de fidelidade ao protótipo. Responda sempre em português do Brasil.
+Você vai continuar o site da IEADC Vila Ipiranga (WordPress, tema filho do Blocksy; repositório https://github.com/alencarftc/ieadcvilaipiranga-theme; protótipo de referência https://claude.ai/artifact/7QAdRxoBGfwJKPNq7hMSkp, com cópia em prototipo/), que já está construído e passa em todos os testes de fidelidade ao protótipo. Responda sempre em português do Brasil.
 
 1. Leia CLAUDE.md, docs/operacao/continuidade.md e docs/operacao/lancamento.md. Em seguida, docs/specs/revisao.md e docs/specs/00-convencoes.md.
 2. Confirme o ambiente: o .env existe com IEADC_HOJE=2026-10-06 e o site local responde em http://localhost:8080 (se não, rode bin\setup.ps1 no Windows). Rode ./bin/testar.sh e informe o resultado; o esperado é php 40, markup 28, visual 84 e interação 8 passando.
