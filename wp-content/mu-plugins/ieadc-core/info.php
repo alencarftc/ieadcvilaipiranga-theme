@@ -58,32 +58,36 @@ add_action('admin_menu', function () {
 add_action('admin_init', function () {
 	register_setting('ieadc_info', 'ieadc_info', [
 		'type'              => 'array',
-		'sanitize_callback' => function ($v) {
-			$limpo = [];
-			foreach (ieadc_info_padrao() as $k => $_) {
-				if (!isset($v[$k])) {
-					continue;
-				}
-				$limpo[$k] = match (true) {
-					$k === 'google_avaliacao' => ieadc_google_avaliacao_limpar((string) $v[$k]),
-					in_array($k, ['latitude', 'longitude'], true) => ieadc_coordenada_limpar((string) $v[$k], $k === 'latitude' ? 90 : 180),
-					$k === 'whatsapp' => ieadc_whatsapp_limpar((string) $v[$k]),
-					$k === 'gtm_id' => ieadc_medicao_id_limpar('gtm', (string) $v[$k]),
-					$k === 'ga4_id' => ieadc_medicao_id_limpar('ga4', (string) $v[$k]),
-					$k === 'clarity_id' => ieadc_medicao_id_limpar('clarity', (string) $v[$k]),
-					$k === 'meta_pixel_id' => ieadc_medicao_id_limpar('pixel', (string) $v[$k]),
-					$k === 'search_console' => ieadc_medicao_verificacao_limpar('google', (string) $v[$k]),
-					$k === 'bing_verificacao' => ieadc_medicao_verificacao_limpar('bing', (string) $v[$k]),
-					in_array($k, ['instagram', 'facebook', 'youtube', 'site_sede'], true) => esc_url_raw($v[$k]),
-					str_starts_with($k, 'email') => sanitize_email($v[$k]),
-					$k === 'cultos' => sanitize_textarea_field($v[$k]),
-					default => sanitize_text_field($v[$k]),
-				};
-			}
-			return $limpo;
-		},
+		'sanitize_callback' => 'ieadc_info_sanitizar',
 	]);
 });
+
+/** Limpa e valida os campos de Configurações antes de gravar (formato dos IDs, links, e-mails, coordenadas). Campo fora do formato vira vazio. */
+function ieadc_info_sanitizar($v): array {
+	$v = is_array($v) ? $v : [];
+	$limpo = [];
+	foreach (ieadc_info_padrao() as $k => $_) {
+		if (!isset($v[$k])) {
+			continue;
+		}
+		$limpo[$k] = match (true) {
+			$k === 'google_avaliacao' => ieadc_google_avaliacao_limpar((string) $v[$k]),
+			in_array($k, ['latitude', 'longitude'], true) => ieadc_coordenada_limpar((string) $v[$k], $k === 'latitude' ? 90 : 180),
+			$k === 'whatsapp' => ieadc_whatsapp_limpar((string) $v[$k]),
+			$k === 'gtm_id' => ieadc_medicao_id_limpar('gtm', (string) $v[$k]),
+			$k === 'ga4_id' => ieadc_medicao_id_limpar('ga4', (string) $v[$k]),
+			$k === 'clarity_id' => ieadc_medicao_id_limpar('clarity', (string) $v[$k]),
+			$k === 'meta_pixel_id' => ieadc_medicao_id_limpar('pixel', (string) $v[$k]),
+			$k === 'search_console' => ieadc_medicao_verificacao_limpar('google', (string) $v[$k]),
+			$k === 'bing_verificacao' => ieadc_medicao_verificacao_limpar('bing', (string) $v[$k]),
+			in_array($k, ['instagram', 'facebook', 'youtube', 'site_sede'], true) => esc_url_raw($v[$k]),
+			str_starts_with($k, 'email') => sanitize_email($v[$k]),
+			$k === 'cultos' => sanitize_textarea_field($v[$k]),
+			default => sanitize_text_field($v[$k]),
+		};
+	}
+	return $limpo;
+}
 
 function ieadc_info_tela(): void {
 	$rotulos = [
@@ -111,7 +115,7 @@ function ieadc_info_tela(): void {
 	];
 	$v = ieadc_info();
 	echo '<div class="wrap"><h1>IEADC Vila Ipiranga</h1>';
-	ieadc_site_aberto_caixa();
+	ieadc_site_estado_caixa();
 	echo '<p>Dados usados no cabeçalho, no rodapé e nos formulários. A fonte é a aba Informações gerais da documentação da Comunicação.</p><form method="post" action="options.php">';
 	settings_fields('ieadc_info');
 	echo '<table class="form-table">';
@@ -204,67 +208,75 @@ function ieadc_whatsapp_url(): string {
 	return $n !== '' ? 'https://wa.me/' . $n : '';
 }
 
-/* ---------- Interruptor "Site aberto ao público" (fase 4) ---------- */
+/* ---------- Interruptores "Site aberto ao público" e "Permitir que o Google indexe" (fase 4) ---------- */
 /**
- * Estado do site, em uma palavra: 'fechado' (visitantes veem "em preparação" e o Google não indexa), 'aberto' (no ar e liberado para o Google) ou
- * 'aberto-sem-google' (no ar, mas com o pedido para o Google não indexar ligado: é o estado da homologação). Lê as duas opções de verdade.
+ * Estado do site, em uma palavra, lendo as duas opções de verdade:
+ *  'fechado'           visitantes veem "em preparação" (ieadc_site_fechado = 1); o Google nunca indexa um site fechado;
+ *  'aberto-sem-google' no ar para quem tem o link, mas com o pedido de não indexar ligado (blog_public = 0): é o estado da homologação e serve para testar com
+ *                      ferramentas externas (PageSpeed, Teste de Resultados Rich, prévia do WhatsApp e do Facebook);
+ *  'no-ar'             no ar e indexável (lançado).
  */
 function ieadc_site_estado(): string {
 	if ((bool) get_option('ieadc_site_fechado')) {
 		return 'fechado';
 	}
-	return (bool) get_option('blog_public') ? 'aberto' : 'aberto-sem-google';
+	return (bool) get_option('blog_public') ? 'no-ar' : 'aberto-sem-google';
 }
 
 /**
- * Abre ou fecha o site para o público: grava `ieadc_site_fechado` (aberto = 0, fechado = 1) e `blog_public` (aberto = 1, fechado = 0) juntos.
- * Só quem pode gerenciar opções (administrador) consegue; devolve false (e não muda nada) para os outros. Quem tem login continua vendo o site fechado.
- * As cargas de código (bin/implantar.sh, CARGA=codigo) não tocam nestas opções: o interruptor não é desfeito por uma atualização.
+ * Define o estado do site: grava `ieadc_site_fechado` (aberto = 0, fechado = 1) e `blog_public` (indexável = 1). Regra: fechado nunca é indexável
+ * (com $aberto falso, $indexavel vira falso). Só quem pode gerenciar opções (administrador) muda; os outros recebem false e nada muda.
+ * Depois esvazia o cache de página do LiteSpeed (se existir): páginas e robots.txt em cache mostrariam o estado antigo.
+ * As cargas de código (bin/implantar.sh, CARGA=codigo) não tocam nestas opções: uma atualização não desfaz o interruptor.
  */
-function ieadc_site_definir_aberto(bool $aberto): bool {
+function ieadc_site_definir(bool $aberto, bool $indexavel): bool {
 	if (!current_user_can('manage_options')) {
 		return false;
 	}
+	$indexavel = $aberto && $indexavel;
 	update_option('ieadc_site_fechado', $aberto ? 0 : 1);
-	update_option('blog_public', $aberto ? 1 : 0);
-	do_action('litespeed_purge_all'); // o cache de página não pode guardar a página "em preparação" nem o site aberto por engano
+	update_option('blog_public', $indexavel ? 1 : 0);
+	do_action('litespeed_purge_all'); // sem o plugin, ninguém escuta e nada acontece
 	return true;
 }
 
-add_action('admin_post_ieadc_site_aberto', function () {
+add_action('admin_post_ieadc_site_estado', function () {
 	if (!current_user_can('manage_options')) {
-		wp_die('Você não tem permissão para abrir ou fechar o site.', 'Sem permissão', ['response' => 403]);
+		wp_die('Você não tem permissão para mudar o estado do site.', 'Sem permissão', ['response' => 403]);
 	}
-	check_admin_referer('ieadc_site_aberto');
-	$aberto = !empty($_POST['aberto']);
-	ieadc_site_definir_aberto($aberto);
-	wp_safe_redirect(add_query_arg(['page' => 'ieadc-info', 'ieadc_site' => $aberto ? 'aberto' : 'fechado'], admin_url('options-general.php')));
+	check_admin_referer('ieadc_site_estado');
+	ieadc_site_definir(!empty($_POST['aberto']), !empty($_POST['indexavel']));
+	wp_safe_redirect(add_query_arg(['page' => 'ieadc-info', 'ieadc_site' => ieadc_site_estado()], admin_url('options-general.php')));
 	exit;
 });
 
-/** Caixa no alto da tela de Configurações: estado de hoje em palavras e o interruptor. Só para administradores. */
-function ieadc_site_aberto_caixa(): void {
+/** Caixa no alto da tela de Configurações: estado de hoje em palavras e os dois interruptores. Só para administradores. */
+function ieadc_site_estado_caixa(): void {
 	if (!current_user_can('manage_options')) {
 		return;
 	}
 	$estado = ieadc_site_estado();
 	$hoje = [
-		'fechado'           => 'Hoje: FECHADO. Visitantes veem a página "em preparação" e o Google não indexa. Quem tem login vê o site normalmente.',
-		'aberto'            => 'Hoje: ABERTO ao público e liberado para o Google.',
-		'aberto-sem-google' => 'Hoje: ABERTO ao público, mas o Google ainda não indexa (o pedido de não indexar está ligado). Marcar a caixa abaixo e salvar libera o Google.',
-	][$estado];
+		'fechado'           => 'Hoje: fechado. Visitantes veem a página "em preparação" e o Google não indexa; quem tem login vê o site normalmente.',
+		'aberto-sem-google' => 'Hoje: aberto, fora do Google. O site está no ar para quem tem o link, mas o Google ainda não indexa (bom para testar com ferramentas externas).',
+		'no-ar'             => 'Hoje: no ar e indexável. O site está aberto ao público e liberado para o Google.',
+	];
 	$feito = isset($_GET['ieadc_site']) ? sanitize_key((string) $_GET['ieadc_site']) : '';
-	if ($feito === 'aberto' || $feito === 'fechado') {
-		echo '<div class="notice notice-success is-dismissible"><p>Estado do site atualizado: ' . ($feito === 'aberto' ? 'aberto ao público.' : 'fechado.') . '</p></div>';
+	if (isset($hoje[$feito])) {
+		echo '<div class="notice notice-success is-dismissible"><p>Estado do site atualizado. ' . esc_html($hoje[$feito]) . '</p></div>';
 	}
-	echo '<div class="card" style="max-width:none;margin:16px 0"><h2 style="margin-top:0">Site aberto ao público</h2>'
-		. '<p id="ieadc-site-hoje" role="status"><strong>' . esc_html($hoje) . '</strong></p>'
+	echo '<div class="card" style="max-width:none;margin:16px 0"><h2 style="margin-top:0">Estado do site</h2>'
+		. '<p id="ieadc-site-hoje" role="status"><strong>' . esc_html($hoje[$estado]) . '</strong></p>'
 		. '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">'
-		. '<input type="hidden" name="action" value="ieadc_site_aberto">';
-	wp_nonce_field('ieadc_site_aberto');
-	echo '<p><label><input type="checkbox" name="aberto" value="1"' . checked($estado !== 'fechado', true, false) . '> Site aberto ao público</label></p>'
-		. '<p class="description">Desmarcado = visitantes veem a página "em preparação" e o Google não indexa. Marcado = no ar e liberado para o Google. '
-		. 'Quem tem login vê o site em qualquer dos dois estados (é assim que a equipe confere tudo antes de abrir). Uma atualização do código do site não muda este interruptor.</p>';
+		. '<input type="hidden" name="action" value="ieadc_site_estado">';
+	wp_nonce_field('ieadc_site_estado');
+	echo '<p><label><input type="checkbox" id="ieadc-aberto" name="aberto" value="1"' . checked($estado !== 'fechado', true, false) . '> <strong>Site aberto ao público</strong></label></p>'
+		. '<p class="description">Desmarcado: visitantes veem a página "em preparação" (quem tem login vê o site) e o Google não indexa. Marcado: o site está no ar para quem tiver o link.</p>'
+		. '<p><label><input type="checkbox" id="ieadc-indexavel" name="indexavel" value="1"' . checked($estado === 'no-ar', true, false) . disabled($estado === 'fechado', true, false) . '> <strong>Permitir que o Google indexe o site</strong></label></p>'
+		. '<p class="description">Só vale com o site aberto (fechado nunca é indexado). Aberto e sem esta marca: o site fica no ar, mas "fora do Google" (para testar com PageSpeed, Teste de Resultados Rich e a prévia do WhatsApp e do Facebook). Aberto e com esta marca: lançado.</p>';
 	submit_button('Salvar estado do site', 'secondary', 'submit', false);
-	echo '</form></div>';
+	echo '</form>'
+		. '<script>(function(){var a=document.getElementById("ieadc-aberto"),i=document.getElementById("ieadc-indexavel");if(!a||!i)return;'
+		. 'function s(){if(!a.checked){i.checked=false;i.disabled=true;}else{i.disabled=false;}}a.addEventListener("change",s);})();</script>'
+		. '</div>';
 }
