@@ -52,7 +52,7 @@ add_action('parse_request', function ($wp) {
 		status_header(200);
 		header('Content-Type: image/png');
 		header('X-Content-Type-Options: nosniff');
-		header('Cache-Control: public, max-age=604800');
+		header('Cache-Control: public, max-age=2592000');
 		header('Content-Length: ' . filesize($arq));
 		readfile($arq);
 		exit;

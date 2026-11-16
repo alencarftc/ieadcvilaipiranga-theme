@@ -51,7 +51,7 @@ add_action('send_headers', function () {
 	header('X-Frame-Options: SAMEORIGIN');
 	header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
 	if (is_ssl()) {
-		header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+		header('Strict-Transport-Security: max-age=2592000'); // 30 dias, sem includeSubDomains nem preload: fácil de desfazer; aumentar depois de um tempo estável
 	}
 
 	// CSP: nunca no painel, no login, nas telas de edição nem para quem está logado (a barra de administração usa script e estilo inline).

@@ -63,7 +63,7 @@ add_action('wp_head', function () {
  */
 /** A página atual usa o modelo do protótipo (todas as 28 páginas e os artigos)? */
 function ieadc_pagina_do_prototipo(): bool {
-	return is_singular() && is_page_template('page-templates/larga.php');
+	return is_singular() && !is_customize_preview() && is_page_template('page-templates/larga.php');
 }
 
 /* Estilos globais, do editor de blocos e "clássicos" do WordPress (WP 6.9+ os joga no <head> por um buffer de saída, com placeholders): fora. */
@@ -178,13 +178,13 @@ function ieadc_css_pacote(): string {
 			$css .= str_replace('url(../fonts/', 'url(' . $fontes, (string) file_get_contents($dir . $a)) . "\n";
 		}
 		$css = ieadc_css_minificar($css);
-		$tmp = $arq . '.' . getmypid() . '.tmp';
-		if (file_put_contents($tmp, $css) === false || !@rename($tmp, $arq)) {
+		$tmp = $arq . '.' . uniqid('', true) . '.tmp';
+		if (@file_put_contents($tmp, $css) === false || !@rename($tmp, $arq)) {
 			@unlink($tmp);
 			return $url;
 		}
 		foreach ((array) glob($pasta . '/tema-*.css') as $velho) { // versões antigas
-			if ($velho !== $arq) {
+			if ($velho !== $arq && @filemtime($velho) < time() - 7 * DAY_IN_SECONDS) { // o HTML em cache pode apontar para a versão anterior
 				@unlink($velho);
 			}
 		}
@@ -211,13 +211,13 @@ ExpiresByType text/css "access plus 1 year"
 ExpiresByType text/javascript "access plus 1 year"
 ExpiresByType application/javascript "access plus 1 year"
 ExpiresByType font/woff2 "access plus 1 year"
-ExpiresByType image/webp "access plus 1 year"
-ExpiresByType image/png "access plus 1 year"
-ExpiresByType image/jpeg "access plus 1 year"
-ExpiresByType image/gif "access plus 1 year"
-ExpiresByType image/svg+xml "access plus 1 year"
-ExpiresByType image/x-icon "access plus 1 year"
-ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+ExpiresByType image/webp "access plus 30 days"
+ExpiresByType image/png "access plus 30 days"
+ExpiresByType image/jpeg "access plus 30 days"
+ExpiresByType image/gif "access plus 30 days"
+ExpiresByType image/svg+xml "access plus 30 days"
+ExpiresByType image/x-icon "access plus 30 days"
+ExpiresByType image/vnd.microsoft.icon "access plus 30 days"
 </IfModule>
 
 HTACCESS;
