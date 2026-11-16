@@ -2,6 +2,10 @@
 
 Leia primeiro: `docs/operacao/continuidade.md` (estado, como trabalhar, fidelidade e revisão) e `docs/specs/00-convencoes.md` (convenções dos blocos). Responda sempre em português do Brasil.
 
+## Links
+- Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme
+- Protótipo navegável (referência visual, v3 aprovado): https://claude.ai/artifact/7QAdRxoBGfwJKPNq7hMSkp (publicado como página privada do Felipe; para outras pessoas, ele a compartilha). A cópia versionada, com os mesmos HTMLs usados nos testes, está em `prototipo/` (abra `prototipo/inicio.html` no navegador).
+
 ## O que é
 Site ieadcvilaipiranga.com.br em WordPress: tema pai **Blocksy**, tema filho `wp-content/themes/ieadc-vila-ipiranga/` (37 blocos dinâmicos `ieadc/*` em `blocos/`), mu-plugin `wp-content/mu-plugins/ieadc-core/` (dados da igreja, Eventos, Mensagens, Pedidos de oração, agenda, formulários). A referência é o **protótipo v3** em `prototipo/`: o objetivo é ficar o mais parecido possível com ele.
 

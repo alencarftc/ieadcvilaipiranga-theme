@@ -13,6 +13,8 @@ WordPress do site **ieadcvilaipiranga.com.br**. Tema pai: [Blocksy](https://crea
 | `content/export/` | Exportação do conteúdo (gerada por `bin/exportar.sh`) |
 | `docker-compose.yml`, `bin/` | Ambiente local e atalhos |
 
+Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme · Protótipo navegável: https://claude.ai/artifact/7QAdRxoBGfwJKPNq7hMSkp (privado do Felipe; cópia em `prototipo/`).
+
 Plano de construção e specs: [`docs/`](docs/README.md). Referência visual: [`prototipo/`](prototipo/) (protótipo v3) (Roboto + Roboto Condensed, marinho `#071946`, azul `#0567B7`, degradê amarelo→vermelho, fotos coloridas sem repetir).
 
 ## Rodar na rede de casa

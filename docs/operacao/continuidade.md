@@ -2,6 +2,10 @@
 
 Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main`. Serve para quem retomar o trabalho sem o histórico das conversas.
 
+## Links
+- Repositório: https://github.com/alencarftc/ieadcvilaipiranga-theme
+- Protótipo navegável (referência visual, v3 aprovado): https://claude.ai/artifact/7QAdRxoBGfwJKPNq7hMSkp (publicado como página privada do Felipe; para outras pessoas, ele a compartilha). A cópia versionada, com os mesmos HTMLs usados nos testes, está em `prototipo/` (abra `prototipo/inicio.html` no navegador).
+
 ## 1. Estado
 
 | Módulo | O que é | Estado |
