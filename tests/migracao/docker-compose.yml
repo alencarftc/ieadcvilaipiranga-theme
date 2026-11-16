@@ -1,0 +1,33 @@
+# "Hostinger de mentira" para ensaiar a migração (bin\ensaio-local.ps1). Nada daqui toca no servidor real.
+# SSH em 127.0.0.1:2222 (usuário u123, só com chave) e o site migrado em http://localhost:8081.
+name: ieadc-hospedagem-teste
+
+services:
+  banco:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: hospedagem
+      MARIADB_USER: hospedagem
+      MARIADB_PASSWORD: hospedagem
+      MARIADB_ROOT_PASSWORD: hospedagem-raiz
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 30
+
+  servidor:
+    build: .
+    depends_on:
+      banco: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:2222:22"
+      - "127.0.0.1:8081:80"
+    environment:
+      WORDPRESS_DB_HOST: banco
+      WORDPRESS_DB_NAME: hospedagem
+      WORDPRESS_DB_USER: hospedagem
+      WORDPRESS_DB_PASSWORD: hospedagem
+      WORDPRESS_TABLE_PREFIX: wp_
+    volumes:
+      # Chave só de ensaio, gerada por bin\ensaio-local.ps1 (content/backup não vai para o git).
+      - ../../content/backup/ensaio-hospedagem:/chave:ro
