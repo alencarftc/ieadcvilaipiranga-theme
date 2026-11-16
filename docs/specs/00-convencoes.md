@@ -78,7 +78,7 @@ Rótulo do campo: `"ieadc": {"rotulo": "Texto do botão"}`. Ajuda: `"ajuda": "�
 
 1. O HTML gerado é **igual** ao da referência (`docs/specs/referencias/<nome>.html`): mesmas tags, classes, ordem e estilos inline. Espaços e quebras de linha não importam.
 2. Escape tudo: `esc_html`, `esc_attr`, `esc_url`; campos `"rico"` passam por `ieadc_kses_rico()`.
-3. Texto com `[...]` vira `<mark class="pend">[...]</mark>` por `ieadc_pend()` (M1). Nunca escreva o `<mark>` à mão.
+3. `ieadc_pend()` (M1) só escapa o texto. Desde a fase 5B ela não marca mais `[...]` em amarelo e nenhum bloco gera `<mark class="pend">`: o site não mostra texto pendente.
 4. Imagem de fundo: `style="background-image:url(<?php echo esc_url(ieadc_img($id)); ?>)"`, com `background-position` quando o atributo `foco` estiver preenchido.
 5. Ícone: `ieadc_icone('nome')`. Se o ícone não existir em `inc/icones.php`, peça ao M0 (os nomes estão no `I = {…}` de `prototipo/fonte/gen.py`).
 6. Links internos com `ieadc_link('caminho')`, nunca URL fixa.
@@ -97,5 +97,6 @@ O M1 entrega `tests/visual/markup.spec.js`: renderiza a página do WordPress e c
 ## Textos e dados
 
 - Textos vêm da referência (que já tem os textos aprovados da Copies). Não reescreva.
-- `[a confirmar]` continua `[a confirmar]` até o dado chegar.
+- Falta um dado? Escreva um texto geral que não afirme nada (sem colchetes, sem amarelo, sem aviso de revisão) e registre a pergunta em `docs/operacao/perguntas-ao-pastor-robson.md`.
+- Cargos abreviados com inicial maiúscula e ponto: Pb., Pr., Ev., Dc., Coop.
 - Fotos: só as de `content/media/`, na mesma posição do protótipo. Nada de foto repetida entre páginas.

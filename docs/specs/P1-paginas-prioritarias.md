@@ -20,7 +20,7 @@ Na Início, o `hero-home` substitui o título da página; o título do WordPress
 ## Como montar uma página
 
 1. O conteúdo de cada página fica em `content/blocos/<pagina>.json`: lista ordenada de `{"bloco": "ieadc/<nome>", "attrs": {…}}`. Imagens pelo nome do arquivo (`"foto": "f_hero.webp"`); o seed troca pelo ID da mídia. Links internos pelo caminho (`"link": "horarios-e-localizacao"`).
-2. Copie **todos** os textos da referência (`docs/specs/referencias/<bloco>.html`, procure a seção da página) para os atributos. Não reescreva nada; `[a confirmar]` continua igual.
+2. Copie **todos** os textos da referência (`docs/specs/referencias/<bloco>.html`, procure a seção da página) para os atributos. Não reescreva nada (na fase 5B os `[a confirmar]` saíram do conteúdo).
 3. O seed `scripts/seed/20-paginas-p1.php` chama `ieadc_seed_pagina_blocos($caminho, $json)` (fornecida pelo M0), que gera o conteúdo com os comentários de bloco, aplica o modelo `larga` e só sobrescreve página que ainda tem o conteúdo de transição (ou com `IEADC_ATUALIZAR=1`).
 4. Rode `./bin/testar.sh markup <pagina>` e `./bin/testar.sh visual <pagina>` até passarem.
 5. No PR, anexe os 3 prints (1440, 900, 390) de cada página e a imagem de diferença.
