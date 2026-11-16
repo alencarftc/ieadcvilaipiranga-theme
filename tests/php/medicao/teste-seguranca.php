@@ -80,4 +80,47 @@ ieadc_ok($st === 200 && preg_match("/<meta name=.robots. content=.index, follow/
 [$st, $map] = ieadc_s_status('/sitemap_index.xml');
 ieadc_ok($st === 200 && !str_contains($map, 'category-sitemap') && str_contains($map, 'post-sitemap'), 'o mapa do site não lista as categorias, só artigos e páginas');
 
+/* ---------- Site fechado: o mapa do site também (fase 4) ---------- */
+echo "site fechado: mapas do site
+";
+$fechado_orig = get_option('ieadc_site_fechado', null);
+$admin = get_users(['role' => 'administrator', 'number' => 1, 'fields' => 'ID']);
+$admin = (int) ($admin[0] ?? 0);
+$expira = time() + 3600;
+$token = $admin ? WP_Session_Tokens::get_instance($admin)->create($expira) : ''; // o login precisa de uma sessão válida (apagada no fim)
+// O nome do cookie leva o hash do endereço do site; o servidor responde pelo endereço do pedido ($base), o wp-cli pelo do .env: vai o cookie dos dois.
+$valor = $admin ? wp_generate_auth_cookie($admin, $expira, 'logged_in', $token) : '';
+$cookie = $admin ? LOGGED_IN_COOKIE . '=' . $valor . '; wordpress_logged_in_' . md5($base) . '=' . $valor : '';
+/** Pede o endereço como visitante (sem cookie) ou como administrador (com o cookie de login). */
+$pedir = function (string $caminho, bool $logado) use ($base, $cookie): int {
+	$args = ['timeout' => 30, 'redirection' => 0];
+	if ($logado) {
+		$args['headers'] = ['Cookie' => $cookie];
+	}
+	$r = wp_remote_get($base . $caminho, $args);
+	return is_wp_error($r) ? 0 : (int) wp_remote_retrieve_response_code($r);
+};
+$mapas = ['/sitemap_index.xml', '/post-sitemap.xml', '/page-sitemap.xml', '/main-sitemap.xsl', '/wp-sitemap.xml'];
+try {
+	update_option('ieadc_site_fechado', 0);
+	foreach ($mapas as $m) {
+		$st = $pedir($m, false);
+		ieadc_ok($st !== 503 && $st !== 0, "aberto: $m não responde 503 ao visitante", $st);
+	}
+	ieadc_ok($pedir('/sitemap_index.xml', false) === 200, 'aberto: /sitemap_index.xml responde 200 ao visitante');
+	update_option('ieadc_site_fechado', 1);
+	foreach ($mapas as $m) {
+		ieadc_igual(503, $pedir($m, false), "fechado: $m responde 503 ao visitante");
+	}
+	ieadc_igual(503, $pedir('/robots.txt', false), 'fechado: /robots.txt continua 503');
+	ieadc_igual(503, $pedir('/wp-json/', false), 'fechado: /wp-json/ continua 503');
+	ieadc_ok($admin > 0 && $pedir('/sitemap_index.xml', true) === 200, 'fechado: quem tem login recebe 200 em /sitemap_index.xml');
+	ieadc_ok($pedir('/post-sitemap.xml', true) === 200, 'fechado: quem tem login recebe 200 em /post-sitemap.xml');
+} finally {
+	$fechado_orig === null ? delete_option('ieadc_site_fechado') : update_option('ieadc_site_fechado', $fechado_orig);
+	if ($admin && $token !== '') {
+		WP_Session_Tokens::get_instance($admin)->destroy($token);
+	}
+}
+
 ieadc_teste_fim();
