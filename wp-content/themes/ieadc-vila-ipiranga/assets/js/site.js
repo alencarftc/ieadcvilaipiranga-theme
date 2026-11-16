@@ -58,3 +58,15 @@
 	tag.className = 'tag'; tag.textContent = 'Próximo';
 	cartao.insertBefore(tag, cartao.firstChild);
 })();
+
+/* Fotos de fundo abaixo da primeira seção: carregam quando a seção chega perto da tela (regra em ajustes.css, "Fase 3"). */
+(function () {
+	var secoes = document.querySelectorAll('.ieadc-pagina > section:not(:first-child)');
+	if (!secoes.length) return;
+	function mostra(s) { s.classList.add('ieadc-visivel'); }
+	if (!('IntersectionObserver' in window)) { secoes.forEach(mostra); return; }
+	var io = new IntersectionObserver(function (itens) {
+		itens.forEach(function (i) { if (i.isIntersecting) { mostra(i.target); io.unobserve(i.target); } });
+	}, { rootMargin: '0px 0px 900px 0px' });
+	secoes.forEach(function (s) { io.observe(s); });
+})();

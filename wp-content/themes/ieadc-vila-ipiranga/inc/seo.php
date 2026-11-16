@@ -309,13 +309,7 @@ add_action('parse_request', function ($wp) {
 require_once __DIR__ . '/seo-schema.php';
 
 /* ---------- Desempenho ---------- */
-/* A foto do topo é o LCP: preload só dela, com prioridade alta (fundos CSS não aceitam loading="lazy" nem fetchpriority). */
-add_action('wp_head', function () {
-	$img = is_singular() ? ieadc_seo_imagem() : '';
-	if ($img !== '' && !empty(ieadc_seo_hero()['foto']) && (ieadc_seo_hero()['variante'] ?? 'pagina') !== 'sem-foto') {
-		echo '<link rel="preload" as="image" href="' . esc_url($img) . '" fetchpriority="high">' . "\n";
-	}
-}, 2);
+/* A foto do topo (LCP): preload com prioridade alta e versão menor no celular, em inc/desempenho.php. */
 
 /* Sem emojis, embeds e links extras do WordPress no cabeçalho. */
 add_action('init', function () {

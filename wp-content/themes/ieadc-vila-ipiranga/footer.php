@@ -5,7 +5,7 @@
 defined('ABSPATH') || exit;
 blocksy_after_current_template();
 do_action('blocksy:content:bottom');
-$logo   = get_stylesheet_directory_uri() . '/assets/img/logo_cor.webp';
+$logo   = get_stylesheet_directory_uri() . '/assets/img/logo_cor-300.webp';
 $redes  = ['instagram' => 'Instagram', 'facebook' => 'Facebook', 'youtube' => 'YouTube'];
 $cultos = array_filter(array_map('trim', explode("\n", ieadc_dado('cultos'))));
 ?>
@@ -14,7 +14,7 @@ $cultos = array_filter(array_map('trim', explode("\n", ieadc_dado('cultos'))));
 	<footer class="rodape ieadc-ui"><div class="wrap">
 		<div class="cols topo-rod">
 			<div>
-				<span class="logo-b"><img src="<?php echo esc_url($logo); ?>" alt="Assembleia de Deus em Curitiba" width="120" height="40" loading="lazy"></span>
+				<span class="logo-b"><img src="<?php echo esc_url($logo); ?>" alt="Assembleia de Deus em Curitiba" width="134" height="40" loading="lazy" decoding="async"></span>
 				<p style="margin-top:21px"><b style="color:#fff"><?php echo esc_html(ieadc_dado('nome')); ?></b><br><?php echo esc_html(ieadc_dado('nome_longo')); ?></p>
 				<div class="redes">
 					<?php foreach ($redes as $chave => $rotulo) : $url = ieadc_dado($chave); if (!$url) { continue; } ?>

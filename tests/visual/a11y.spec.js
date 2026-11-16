@@ -15,6 +15,15 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'];
 async function abrir(page, url) {
   const resp = await page.goto(url, { waitUntil: 'load' });
   if (!resp || resp.status() !== 200) throw new Error(`${url} respondeu ${resp && resp.status()}`);
+  // Rola a página como uma pessoa faria: as fotos de fundo abaixo da primeira seção só carregam perto da tela (ajustes.css, "Fase 3").
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight / 2) {
+      window.scrollTo({ top: y, behavior: 'instant' }); // o html tem scroll-behavior:smooth: 'instant' evita rolagem pela metade
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+  await page.waitForLoadState('networkidle');
   await page.evaluate(async () => {
     await document.fonts.ready;
     await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; }))));
@@ -60,11 +69,10 @@ test.describe('teclado', () => {
     await page.keyboard.press('Tab');
     const pular = page.locator('a.skip-link');
     await expect(pular).toBeFocused();
+    // aparece com uma transição curta: espera ele chegar dentro da tela
+    await expect.poll(async () => { const c = await pular.boundingBox(); return c ? Math.min(c.x, c.y) : -999; }, { message: 'o link de pular precisa aparecer na tela ao receber o foco' }).toBeGreaterThanOrEqual(0);
     const caixa = await pular.boundingBox();
-    expect(caixa, 'o link de pular precisa aparecer ao receber o foco').not.toBeNull();
     expect(caixa.width).toBeGreaterThan(20);
-    expect(caixa.x).toBeGreaterThanOrEqual(0);
-    expect(caixa.y).toBeGreaterThanOrEqual(0);
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#main$/);
     const alvo = await page.evaluate(() => { const m = document.getElementById('main'); return m ? m.tagName : null; });

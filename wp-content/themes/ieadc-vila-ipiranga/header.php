@@ -4,7 +4,7 @@
  * para os modelos do tema pai continuarem funcionando.
  */
 defined('ABSPATH') || exit;
-$logo = get_stylesheet_directory_uri() . '/assets/img/logo_cor.webp';
+$logo = get_stylesheet_directory_uri() . '/assets/img/logo_cor-300.webp'; // 300 px (2x do exibido); o original de 3015 px pesa 59 KB
 ?><!doctype html>
 <html <?php language_attributes(); ?><?php echo blocksy_html_attr(); ?>>
 <head>
@@ -27,7 +27,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo_cor.webp';
 		</nav></div></div>
 	<header class="header ieadc-ui"><div class="wrap">
 		<a class="marca" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php esc_attr_e('Página inicial', 'ieadc'); ?>">
-			<img src="<?php echo esc_url($logo); ?>" alt="Assembleia de Deus em Curitiba" width="132" height="44"><span>VILA<br>IPIRANGA</span>
+			<img src="<?php echo esc_url($logo); ?>" alt="Assembleia de Deus em Curitiba" width="147" height="44" decoding="async"><span>VILA<br>IPIRANGA</span>
 		</a>
 		<button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">MENU</button>
 		<nav class="nav" id="nav" aria-label="<?php esc_attr_e('Menu principal', 'ieadc'); ?>">

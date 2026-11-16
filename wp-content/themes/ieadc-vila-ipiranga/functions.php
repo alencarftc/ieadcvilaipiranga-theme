@@ -12,7 +12,7 @@ define('IEADC_TEMA_VERSAO', wp_get_theme()->get('Version'));
 require __DIR__ . '/inc/icones.php';
 require __DIR__ . '/inc/menu.php';
 // M1: helpers antes de blocos (carregados só quando existirem).
-foreach (['helpers', 'blocos', 'seo', 'identidade'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
+foreach (['helpers', 'blocos', 'seo', 'identidade', 'desempenho'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
 
 add_action('after_setup_theme', function () {
 	register_nav_menus([
@@ -24,10 +24,18 @@ add_action('after_setup_theme', function () {
 
 add_action('wp_enqueue_scripts', function () {
 	$base = get_stylesheet_directory_uri() . '/assets';
-	wp_enqueue_style('ieadc-fontes', $base . '/css/fontes.css', [], IEADC_TEMA_VERSAO);
-	wp_enqueue_style('ieadc-prototipo', $base . '/css/prototipo.css', ['ieadc-fontes'], IEADC_TEMA_VERSAO);
-	wp_enqueue_style('ieadc-ajustes', $base . '/css/ajustes.css', ['ieadc-prototipo'], IEADC_TEMA_VERSAO);
-	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], IEADC_TEMA_VERSAO, ['in_footer' => true, 'strategy' => 'defer']);
+	$dir  = get_stylesheet_directory() . '/assets';
+	$ver  = fn(string $arq): string => IEADC_TEMA_VERSAO . '.' . (is_file("$dir/$arq") ? filemtime("$dir/$arq") : 0); // muda quando o arquivo muda
+	// Fontes + protótipo + ajustes: um arquivo minificado (inc/desempenho.php); se não der para gravá-lo, os três originais.
+	$pacote = function_exists('ieadc_css_pacote') ? ieadc_css_pacote() : '';
+	if ($pacote !== '') {
+		wp_enqueue_style('ieadc-tema', $pacote, [], null);
+	} else {
+		wp_enqueue_style('ieadc-fontes', $base . '/css/fontes.css', [], $ver('css/fontes.css'));
+		wp_enqueue_style('ieadc-prototipo', $base . '/css/prototipo.css', ['ieadc-fontes'], $ver('css/prototipo.css'));
+		wp_enqueue_style('ieadc-ajustes', $base . '/css/ajustes.css', ['ieadc-prototipo'], $ver('css/ajustes.css'));
+	}
+	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], $ver('js/site.js'), ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
 /* Pré-carrega as duas fontes mais usadas para o texto não "pular". */

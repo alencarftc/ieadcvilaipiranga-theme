@@ -246,7 +246,16 @@ ieadc_t_todas($paginas, 'toda <img> tem alt, width e height; as do rodapé são 
 });
 $ini = $paginas[$home_path];
 $pre = $ini['xp']->query('//link[@rel="preload"][@as="image"]');
-ieadc_ok($pre->length === 1 && $pre->item(0)->getAttribute('fetchpriority') === 'high', 'foto do topo da página inicial pré-carregada com fetchpriority=high');
+$medias = [];
+$altas = true;
+foreach ($pre as $l) {
+	$medias[] = $l->getAttribute('media');
+	$altas = $altas && $l->getAttribute('fetchpriority') === 'high';
+}
+// celular (768 px) e computador (original): dois preloads com media complementar, só um dos dois baixa; ou um só, sem media, se não houver versão menor
+ieadc_ok($altas && (($pre->length === 1 && $medias[0] === '') || ($pre->length === 2 && str_contains($medias[0], 'max-width') && str_contains($medias[1], 'min-width'))), 'foto do topo da página inicial pré-carregada com fetchpriority=high (uma versão por tamanho de tela)', $medias);
+$estilo_topo = $ini['xp']->query('//style[@id="ieadc-topo-celular"]');
+ieadc_ok($pre->length !== 2 || ($estilo_topo->length === 1 && str_contains($estilo_topo->item(0)->textContent, '-768x')), 'foto do topo: no celular o fundo troca para a versão de 768 px');
 
 /* ---------- Dados estruturados ---------- */
 echo "dados estruturados (JSON-LD)\n";

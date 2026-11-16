@@ -74,3 +74,12 @@ html body{background:var(--branco)} /* o Blocksy imprime body{background-color:#
 .faq-item a{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
 @media (max-width:900px){.faq{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:600px){.avalie{border-radius:21px;padding:var(--s4) var(--s3)}.avalie .estrela{width:20px;height:20px}}
+
+/* === Fase 3 (desempenho): fotos de fundo abaixo da primeira seção só carregam perto da tela === */
+/* As fotos das seções são `background-image` no atributo style (o HTML segue igual ao do protótipo) e o navegador as baixa todas de uma vez:
+   2,4 MB na página inicial, disputando banda com a foto do topo (o LCP). Com JavaScript ligado (@media (scripting:enabled): sem JS, ou em navegador
+   antigo, a regra não vale e tudo carrega como antes), a foto fica escondida até assets/js/site.js marcar a seção com .ieadc-visivel (900 px antes de aparecer). */
+@media (scripting:enabled){
+	.ieadc-pagina>section:not(:first-child):not(.ieadc-visivel)[style*="background-image"],
+	.ieadc-pagina>section:not(:first-child):not(.ieadc-visivel) [style*="background-image"]{background-image:none!important}
+}
