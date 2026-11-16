@@ -1,42 +1,62 @@
-# Envia o site local para a Hostinger. Rode no Windows, na pasta do repositório, com o site local funcionando.
-# Ensaio (site continua em manutenção e fora do Google):
-#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1
-# Lançamento (tira da manutenção e libera para o Google):
-#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Lancar
+﻿# Envia o site local para a Hostinger. Rode no Windows, na pasta do repositório, com o site local funcionando.
+# Dois ambientes. O padrão é a HOMOLOGAÇÃO; a produção só com -Ambiente producao (nunca por engano):
+#   homologacao  hospedagem alternativa, onde o pastor e a equipe validam o site. Fica aberta para quem tem o link e
+#                fora do Google. No .env: HOMOLOG_SERVIDOR, HOMOLOG_PORTA, HOMOLOG_USUARIO e HOMOLOG_URL.
+#   producao     o domínio principal (https://ieadcvilaipiranga.com.br). No .env: HOSTINGER_SERVIDOR, HOSTINGER_PORTA e
+#                HOSTINGER_USUARIO (e PRODUCAO_URL, se o endereço for outro).
+# Uso:
+#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1                              # homologação: aberta e fora do Google
+#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Fechado                     # homologação só para quem tem login
+#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Ambiente producao           # produção em ensaio: fechada e fora do Google
+#   powershell -ExecutionPolicy Bypass -File bin\migrar.ps1 -Ambiente producao -Lancar   # produção NO AR e liberada para o Google
 # A senha do SSH é pedida duas vezes (envio e execução) e só é digitada aqui, no seu terminal.
 param(
+  [ValidateSet('homologacao', 'producao')][string]$Ambiente = 'homologacao',
   [string]$Servidor = '',
   [int]$Porta = 0,
   [string]$Usuario = '',
-  [string]$Destino = 'domains/ieadcvilaipiranga.com.br/public_html',
-  [string]$Url = 'https://ieadcvilaipiranga.com.br',
+  [string]$Destino = '',   # padrão: domains/<endereço do site>/public_html (ou HOMOLOG_DESTINO / HOSTINGER_DESTINO no .env)
+  [string]$Url = '',       # padrão: HOMOLOG_URL (homologação) ou https://ieadcvilaipiranga.com.br (produção)
   [string]$EmailAdmin = '-',
-  [switch]$Lancar
+  [switch]$Conferir,       # só mostra o destino e testa a porta do SSH; não envia nada nem pede senha
+  [switch]$Fechado,        # homologação: deixa o site só para quem tem login
+  [switch]$Lancar          # produção: coloca no ar e libera para o Google
 )
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 
-# Servidor, porta e usuário do SSH ficam no .env (que não vai para o git), não neste arquivo:
-#   HOSTINGER_SERVIDOR=...   HOSTINGER_PORTA=...   HOSTINGER_USUARIO=...
+if ($Lancar -and $Ambiente -ne 'producao') { throw 'O -Lancar é só da produção (-Ambiente producao). A homologação já fica aberta para quem tem o link.' }
+if ($Fechado -and $Ambiente -ne 'homologacao') { throw 'O -Fechado é só da homologação; a produção em ensaio já fica fechada.' }
+
+# Servidor, porta e usuário do SSH ficam no .env (que não vai para o git), não neste arquivo.
 $env_ = @{}
 if (Test-Path .env) {
   foreach ($linha in (Get-Content .env -Encoding UTF8)) {
-    if ($linha -match '^\s*(HOSTINGER_[A-Z_]+)\s*=\s*(.*?)\s*$') { $env_[$Matches[1]] = $Matches[2].Trim('"', "'") }
+    if ($linha -match '^\s*([A-Z_]+)\s*=\s*(.*?)\s*$') { $env_[$Matches[1]] = $Matches[2].Trim('"', "'") }
   }
 }
-if (-not $Servidor) { $Servidor = [string]$env_['HOSTINGER_SERVIDOR'] }
-if (-not $Usuario)  { $Usuario  = [string]$env_['HOSTINGER_USUARIO'] }
+$pre = if ($Ambiente -eq 'homologacao') { 'HOMOLOG' } else { 'HOSTINGER' }
+if (-not $Servidor) { $Servidor = [string]$env_["${pre}_SERVIDOR"] }
+if (-not $Usuario)  { $Usuario  = [string]$env_["${pre}_USUARIO"] }
 if (-not $Porta) {
   $p = 0
-  if (-not [int]::TryParse([string]$env_['HOSTINGER_PORTA'], [ref]$p)) { $p = 0 }
+  if (-not [int]::TryParse([string]$env_["${pre}_PORTA"], [ref]$p)) { $p = 0 }
   $Porta = $p
 }
-if (-not $Servidor -or -not $Porta -or -not $Usuario) { throw 'Faltam HOSTINGER_SERVIDOR, HOSTINGER_PORTA e HOSTINGER_USUARIO no .env (veja o hPanel > Avançado > SSH), ou passe -Servidor, -Porta e -Usuario.' }
+if (-not $Servidor -or -not $Porta -or -not $Usuario) { throw "Faltam ${pre}_SERVIDOR, ${pre}_PORTA e ${pre}_USUARIO no .env (veja o hPanel > Avançado > SSH), ou passe -Servidor, -Porta e -Usuario." }
+if (-not $Url) {
+  $Url = if ($Ambiente -eq 'homologacao') { [string]$env_['HOMOLOG_URL'] } else { [string]$env_['PRODUCAO_URL'] }
+  if (-not $Url -and $Ambiente -eq 'producao') { $Url = 'https://ieadcvilaipiranga.com.br' }
+}
+if (-not $Url) { throw 'Falta HOMOLOG_URL no .env (o endereço da hospedagem de homologação) ou o parâmetro -Url.' }
+$Url = $Url.TrimEnd('/')
+if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
+if (-not $Destino) { $Destino = 'domains/' + ([uri]$Url).Host + '/public_html' }
 
 foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
   if (-not (Get-Command $c -ErrorAction SilentlyContinue)) { throw "Não achei o comando '$c'. Ele vem com o Docker Desktop e o Windows 10/11 (Recursos opcionais > Cliente OpenSSH)." }
 }
-$modo = if ($Lancar) { 'lancar' } else { 'ensaio' }
+$modo = if ($Ambiente -eq 'homologacao') { if ($Fechado) { 'homologacao-fechada' } else { 'homologacao' } } elseif ($Lancar) { 'lancar' } else { 'ensaio' }
 # Atenção: a função não pode se chamar "Docker" (o PowerShell não diferencia maiúsculas e ela chamaria a si mesma).
 function Compose {
   $ErrorActionPreference = 'Continue'  # o docker escreve o progresso em stderr; no PowerShell 5 isso não pode virar erro
@@ -44,7 +64,16 @@ function Compose {
   if ($LASTEXITCODE -ne 0) { throw "docker compose $args falhou" }
 }
 
-Write-Host "Modo: $modo   Destino: ${Usuario}@${Servidor}:$Destino   Endereço final: $Url"
+Write-Host "Ambiente: $Ambiente   Modo: $modo   Destino: ${Usuario}@${Servidor}:$Destino   Endereço final: $Url"
+if ($Conferir) {
+  $responde = (Test-NetConnection -ComputerName $Servidor -Port $Porta -WarningAction SilentlyContinue).TcpTestSucceeded
+  Write-Host ('Porta SSH {0}:{1} {2}. Nada foi enviado.' -f $Servidor, $Porta, $(if ($responde) { 'responde' } else { 'NÃO responde' }))
+  exit 0
+}
+if ($Ambiente -eq 'producao') {
+  $r = Read-Host "Isto envia o site para a PRODUÇÃO ($Url). Digite PRODUCAO para continuar"
+  if ($r -ne 'PRODUCAO') { Write-Host 'Cancelado.'; exit 0 }
+}
 if ($Lancar) {
   $r = Read-Host 'Isto coloca o site NO AR e libera para o Google. Digite SIM para continuar'
   if ($r -ne 'SIM') { Write-Host 'Cancelado.'; exit 0 }
@@ -56,8 +85,12 @@ $prefixo = ([string](Compose run --rm -T wpcli wp config get table_prefix 2>$nul
 if (-not $prefixo) { throw 'Não consegui ler o prefixo das tabelas; o site local está funcionando?' }
 $origem = ([string](Compose run --rm -T wpcli wp option get home 2>$null | Select-Object -Last 1)).Trim().TrimEnd('/')
 if (-not $origem) { throw 'Não consegui ler o endereço do site local.' }
+# O banco pode guardar um endereço (ex.: http://localhost:8080) e o .env outro (WP_HOME, ex.: o IP da máquina para abrir
+# pelo celular). O "wp option get home" devolve o do .env; troca os dois, senão o site novo apontaria para o endereço antigo.
+$guardados = @(Compose run --rm -T wpcli wp db query "SELECT option_value FROM ${prefixo}options WHERE option_name IN ('home','siteurl')" --skip-column-names 2>$null | ForEach-Object { "$_".Trim().TrimEnd('/') } | Where-Object { $_ -match '^https?://' })
+$origens = ((@($origem) + $guardados) | Select-Object -Unique) -join ','
 
-$data = Get-Date -Format 'yyyy-MM-dd-HHmm'
+$data = Get-Date -Format 'yyyy-MM-dd-HHmmss'   # com segundos: uma segunda tentativa no mesmo minuto não pode cair na pasta da anterior
 $pasta = Join-Path 'content\backup\migracao' $data
 New-Item -ItemType Directory -Force -Path "$pasta\wp-content\themes", "$pasta\wp-content\mu-plugins" | Out-Null
 
@@ -78,7 +111,7 @@ scp -P $Porta $pacote "${Usuario}@${Servidor}:ieadc-pacote.tgz"
 if ($LASTEXITCODE -ne 0) { throw 'scp falhou (o SSH está habilitado no hPanel? usuário e porta corretos?)' }
 
 Write-Host '5/5 Instalação no servidor (digite a senha do SSH de novo)'
-$remoto = "rm -rf ~/ieadc-migracao && mkdir ~/ieadc-migracao && tar -xzf ~/ieadc-pacote.tgz -C ~/ieadc-migracao && bash ~/ieadc-migracao/migrar-remoto.sh '$Destino' '$Url' '$prefixo' '$EmailAdmin' '$modo' '$origem'"
+$remoto = "rm -rf ~/ieadc-migracao && mkdir ~/ieadc-migracao && tar -xzf ~/ieadc-pacote.tgz -C ~/ieadc-migracao && bash ~/ieadc-migracao/migrar-remoto.sh '$Destino' '$Url' '$prefixo' '$EmailAdmin' '$modo' '$origens'"
 ssh -p $Porta "${Usuario}@${Servidor}" $remoto
 if ($LASTEXITCODE -ne 0) { throw 'A instalação no servidor falhou. Leia a mensagem acima; o banco anterior ficou guardado em ~/backup-antes-da-migracao-*.sql no servidor.' }
 Write-Host "Pronto. Confira: $Url"

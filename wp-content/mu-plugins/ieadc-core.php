@@ -14,6 +14,7 @@ require IEADC_CORE_DIR . '/info.php';
 require IEADC_CORE_DIR . '/tipos.php';
 require IEADC_CORE_DIR . '/pedidos.php';
 require IEADC_CORE_DIR . '/agenda.php';
+require IEADC_CORE_DIR . '/fechado.php';
 
 /* Só no ambiente local (Docker): os e-mails vão para o Mailpit, em http://localhost:8025. */
 if (wp_get_environment_type() === 'local') {

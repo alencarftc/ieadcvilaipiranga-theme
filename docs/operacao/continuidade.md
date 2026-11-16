@@ -17,14 +17,14 @@ Escrito em 16/11/2026, quando todos os módulos de construção estavam no `main
 | B1 a B4 | 37 blocos (topo, horários e agenda, listas e cartões, conteúdo longo) | prontos |
 | P1 a P3 | As 28 páginas montadas só com blocos | prontas |
 | M6 | SEO, desempenho, acessibilidade e segurança (`inc/seo.php`, `docs/operacao/plugins.md`) | pronto; **Lighthouse e axe com o site no ar ainda não rodaram** |
-| M7 | Migração e lançamento | `bin/migrar.ps1` e roteiro prontos, **ensaio de 28/11 e lançamento de 30/11 pendentes**; falta `docs/operacao/manutencao.md` |
+| M7 | Migração e lançamento | `bin/migrar.ps1` e roteiro prontos. **Ensaio local** (`bin/ensaio-local.ps1`, servidor de mentira no Docker) passa de ponta a ponta, inclusive o `-Lancar` e os testes de markup/visual contra o site migrado. **Ensaio de 28/11 na Hostinger e lançamento de 30/11 pendentes** (faltam acesso e o "pode lançar" do Felipe) |
 
-Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 30/11/2026. Hospedagem Hostinger (contratada por 4 anos); SSH: servidor, porta e usuário ficam no `.env` do Felipe (`HOSTINGER_*`, fora do git; o repositório é público); a senha só com ele.
+Fotos do site, pastor João e sedes: ver as regras em `CLAUDE.md`. Lançamento: 30/11/2026. Hospedagem Hostinger (contratada por 4 anos). **Dois ambientes** (decisão do Felipe, 16/11/2026): a **homologação**, numa hospedagem alternativa, onde o pastor e a equipe validam o site (é o destino padrão do `bin/migrar.ps1`), e a **produção**, o domínio principal (só com `-Ambiente producao`). SSH: servidor, porta, usuário e endereço ficam no `.env` do Felipe (`HOMOLOG_*` e `HOSTINGER_*`, fora do git; o repositório é público); a senha só com ele.
 
 ## 2. Pendências conhecidas
 
-1. Ensaio de migração (28/11) e lançamento (30/11): `docs/operacao/lancamento.md`. O `bin/migrar.ps1` **nunca rodou de verdade** (nem no Windows nem na Hostinger); corrija o que quebrar.
-2. `docs/operacao/manutencao.md` (como publicar artigo e evento, trocar foto, ler pedidos de oração, backup e restauração com UpdraftPlus).
+1. Migração: `docs/operacao/lancamento.md`. O `bin/migrar.ps1` já rodou inteiro contra o servidor de mentira (`bin\ensaio-local.ps1`) nos três modos (homologação, ensaio da produção e `-Lancar`) e os defeitos que apareceram foram corrigidos (endereço de origem, `.htaccess`, fechamento do site, pasta do mesmo minuto, acentos no PowerShell 5.1). **Ainda não rodou em hospedagem de verdade.** O destino da homologação já está no `.env` (`HOMOLOG_*`; a porta SSH responde e `migrar.ps1 -Conferir` mostra o destino resolvido); falta a **senha do SSH**, que só o Felipe digita no terminal dele, e conferir que o WordPress está instalado nessa hospedagem (prefixo `wp_`). Produção (28/11 ensaio, 30/11 lançamento): faltam `HOSTINGER_*` no `.env`; o `-Lancar` só depois do "pode lançar" dele.
+2. `docs/operacao/manutencao.md` (como publicar artigo e evento, trocar foto, ler pedidos de oração, backup e restauração com UpdraftPlus): escrito no PR de manutenção; falta alguém da Comunicação percorrer os passos no painel.
 3. Lighthouse e axe no domínio; decidir o corte de CSS do Blocksy (Coverage do Chrome).
 4. Configurar no painel: 2FA para os administradores, UpdraftPlus com cópia para o Google Drive da igreja, e-mails reais dos formulários (hoje vazios em *Configurações > IEADC Vila Ipiranga*).
 5. Conteúdo com `[a confirmar]` (classe `pend`): depende da liderança; não preencha por conta própria.
@@ -58,6 +58,12 @@ Para uma página: `./bin/testar.sh visual inicio` (ou `IEADC_PAGINAS=inicio,cont
 - `wptexturize` desligado (aspas e travessões iguais ao protótipo).
 - Depois de apagar e recriar `wp-content/mu-plugins`, o container fica com o mount velho: `docker compose up -d --force-recreate wordpress`.
 - Limite de 5 envios por hora no formulário: rodar `testar.sh` várias vezes seguidas faz os testes de envio falharem; apague o transient (`wp transient delete --all`).
+- O wp-cli **não grava o `.htaccess`** (`wp rewrite flush --hard` só avisa "requires special configuration"): sem as regras toda página que não é a inicial dá 404. O seed e o `migrar-remoto.sh` gravam com `flush_rewrite_rules(true)` depois de carregar `wp-admin/includes/{file,misc}.php` e ligar o filtro `got_rewrite` (o nome é esse, não `got_mod_rewrite`).
+- O modo manutenção do WordPress (`.maintenance`) **expira sozinho em 10 minutos** e bloqueia também o `wp-login.php`; o site fechado de verdade é a opção `ieadc_site_fechado` (`ieadc-core/fechado.php`): visitantes veem 503, quem tem login vê tudo.
+- `.env` com `SITE_URL` igual ao IP da máquina (para abrir pelo celular): o banco continua guardando `home`/`siteurl` com o endereço antigo e só a constante `WP_HOME` muda o endereço. O `testar.sh` já lê o `SITE_URL` (ou `WP_URL`); o `migrar.ps1` troca os dois endereços. O IP muda se o roteador reiniciar; reserve-o no roteador.
+- Playwright: o navegador não vem com o `npm ci` (`npx playwright install chromium`, ou `IEADC_CHROMIUM=<headless_shell.exe>` de uma versão já instalada; o 1161 deu 0,000% de diferença).
+- Arquivos `.ps1` precisam de BOM UTF-8 (o PowerShell 5.1 lê UTF-8 sem BOM como ANSI e quebra os acentos) e, no 5.1, `$ErrorActionPreference = 'Stop'` transforma o progresso do `docker` (stderr) em erro fatal. Valor vazio em argumento nativo também some (`ssh-keygen -N ""`: use `cmd /c`).
+- Lighthouse: a versão 13 exige Node 22.19+; com Node 22.16 use `npx lighthouse@12.8.2`.
 - Na nuvem, `wordpress.org` é bloqueado (plugins não instalam; Blocksy entra de cópia local pelo `docker-compose.override.yml`, não versionado) e o Docker Hub pode dar 429 (use `mirror.gcr.io/library/<imagem>` e `docker tag`).
 
 ## 5. Processo de revisão
