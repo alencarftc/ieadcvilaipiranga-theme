@@ -1,0 +1,43 @@
+# "Hostinger de mentira" com a homologação ANINHADA, como o staging da Hostinger: o WordPress da produção em
+# domains/ieadcvilaipiranga.com.br/public_html e um SEGUNDO WordPress (outro banco no mesmo MariaDB) em public_html/hml.
+# Usado por tests/migracao/aninhado/provar.sh (projeto ieadc-ci-teste). Nada daqui toca em servidor real.
+# SSH em 127.0.0.1:2223 (usuário u123, só com chave descartável) e a web em http://localhost:8082 (os endereços de teste,
+# como hml.ieadcvilaipiranga.com.br:8082, são resolvidos para 127.0.0.1 pelo curl; veja o provar.sh).
+# Portas e nomes diferentes dos de tests/migracao (2222, 8081, ieadc-hospedagem-teste): os dois podem existir juntos.
+name: ieadc-ci-teste
+
+services:
+  banco:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: hospedagem
+      MARIADB_USER: hospedagem
+      MARIADB_PASSWORD: hospedagem
+      MARIADB_ROOT_PASSWORD: hospedagem-raiz
+    volumes:
+      # O segundo banco, da homologação aninhada (a produção usa "hospedagem").
+      - ./initdb.sql:/docker-entrypoint-initdb.d/10-hml.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 30
+
+  servidor:
+    build:
+      context: ..
+    depends_on:
+      banco: { condition: service_healthy }
+    ports:
+      - "127.0.0.1:2223:22"
+      - "127.0.0.1:8082:80"
+    environment:
+      WORDPRESS_DB_HOST: banco
+      WORDPRESS_DB_NAME: hospedagem
+      WORDPRESS_DB_USER: hospedagem
+      WORDPRESS_DB_PASSWORD: hospedagem
+      WORDPRESS_TABLE_PREFIX: wp_
+    volumes:
+      # Chave descartável, gerada por provar.sh (content/backup não vai para o git).
+      - ../../../content/backup/ci-teste-chave:/chave:ro
+      # O subdomínio hml aponta para a subpasta public_html/hml (como o staging da Hostinger).
+      - ./hml.conf:/etc/apache2/sites-enabled/010-hml.conf:ro
