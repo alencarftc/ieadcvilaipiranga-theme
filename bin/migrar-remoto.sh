@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Roda NO SERVIDOR da Hostinger (chamado por bin/migrar.ps1). Não rode no computador local.
-# Uso: migrar-remoto.sh <pasta-do-site> <url> <prefixo-das-tabelas> <email-admin|-> <ensaio|lancar>
+# Uso: migrar-remoto.sh <pasta-do-site> <url> <prefixo-das-tabelas> <email-admin|-> <ensaio|lancar> <url-local>
 set -euo pipefail
 
-DEST="$1"; URL="${2%/}"; PREFIXO="$3"; EMAIL="$4"; MODO="$5"
+DEST="$1"; URL="${2%/}"; PREFIXO="$3"; EMAIL="$4"; MODO="$5"; ORIGEM="${6:-http://localhost:8080}"; ORIGEM="${ORIGEM%/}"
 PACOTE="$(cd "$(dirname "$0")" && pwd)"
 SITE="$HOME/$DEST"
 
@@ -33,8 +33,10 @@ cp -a "$PACOTE/wp-content/uploads/." wp-content/uploads/
 echo "4/8 Banco (sem usuários: a conta de administrador daqui continua a mesma)"
 $WP db import "$PACOTE/banco.sql"
 
-echo "5/8 Endereços: localhost -> $URL"
-$WP search-replace "http://localhost:8080" "$URL" --all-tables --skip-columns=guid --report-changed-only
+echo "5/8 Endereços: $ORIGEM -> $URL"
+$WP search-replace "$ORIGEM" "$URL" --all-tables --skip-columns=guid --report-changed-only
+# versão com barras escapadas (JSON dentro dos blocos do editor)
+$WP search-replace "${ORIGEM//\//\\/}" "${URL//\//\\/}" --all-tables --skip-columns=guid --report-changed-only
 
 echo "6/8 Limpeza do que é de teste e autoria dos conteúdos"
 ids="$($WP post list --post_type=pedido_oracao --post_status=any --format=ids)"

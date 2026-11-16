@@ -27,7 +27,7 @@ Pede para digitar SIM. Tira da manutenção e libera para o Google. Para trocar 
 ## O que o script faz e não faz
 
 - Substitui o conteúdo (páginas, artigos, eventos, configurações, fotos, tema e mu-plugin) pelo do computador. **Não leva os usuários locais**: a conta de administrador da Hostinger continua a mesma.
-- Remove pedidos de oração de teste e troca `http://localhost:8080` pelo endereço final.
+- Remove pedidos de oração de teste e troca o endereço local pelo endereço final.
 - Guarda o banco anterior em `~/backup-antes-da-migracao-*.sql` no servidor (para voltar atrás: `wp db import` desse arquivo).
 - Instala Blocksy e os plugins (SEO, 2FA, limite de login, LiteSpeed Cache, UpdraftPlus). Configure 2FA, UpdraftPlus (cópia para o Google Drive da igreja) e os e-mails dos formulários no painel depois.
 - Na primeira vez que roda, uma pasta temporária fica em `content\backup\migracao` (fora do git).
