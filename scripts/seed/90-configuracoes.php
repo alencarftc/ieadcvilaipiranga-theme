@@ -62,4 +62,19 @@ if (getenv('IEADC_2FA') === '1') {
 	}
 	WP_CLI::log('Two Factor por e-mail ligado para os administradores.');
 }
+// UpdraftPlus (backup): arquivos toda semana, banco todo dia, guardando 4 cópias de cada. SEM armazenamento remoto: o
+// destino (Google Drive da igreja) exige entrar com a conta Google e fica por conta do administrador no painel
+// (Configurações > UpdraftPlus Backups > Configurações). Só se o plugin está instalado; não desfaz o que o administrador
+// já escolheu (só preenche o que está em branco ou em "manual"), a não ser com IEADC_ATUALIZAR=1.
+if (is_dir(WP_PLUGIN_DIR . '/updraftplus')) {
+	$forcar = getenv('IEADC_ATUALIZAR') === '1';
+	$agenda = ['updraft_interval' => 'weekly', 'updraft_interval_database' => 'daily', 'updraft_retain' => 4, 'updraft_retain_db' => 4];
+	foreach ($agenda as $opcao => $valor) {
+		$atual = get_option($opcao, null);
+		if ($forcar || in_array($atual, [null, false, '', 'manual'], true)) {
+			update_option($opcao, $valor);
+		}
+	}
+	WP_CLI::log('UpdraftPlus: arquivos semanais, banco diário, 4 cópias de cada (sem armazenamento remoto).');
+}
 WP_CLI::log('Configurações de SEO e segurança aplicadas.');

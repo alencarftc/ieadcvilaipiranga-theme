@@ -38,6 +38,10 @@ function ieadc_form_msgs(string $form, string $ok): string {
 }
 
 function ieadc_form_abre(string $acao, string $id): string {
+	// O nonce do formulário vence em poucas horas: a página nunca pode ir para o cache (integracoes.php).
+	if (function_exists('ieadc_nao_cachear')) {
+		ieadc_nao_cachear('formulario ieadc');
+	}
 	return '<form class="form ieadc-ui" id="' . esc_attr($id) . '" method="post" action="' . esc_url(admin_url('admin-post.php')) . '">'
 		. '<input type="hidden" name="action" value="' . esc_attr($acao) . '">'
 		. '<input type="hidden" name="volta" value="' . esc_url(get_permalink()) . '">'
