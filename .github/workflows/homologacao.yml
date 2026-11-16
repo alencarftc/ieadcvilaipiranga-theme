@@ -1,0 +1,143 @@
+name: Homologação
+
+# Publica sozinho na HOMOLOGAÇÃO tudo o que entra na main e passa no workflow "Testes" (docs/operacao/ci-cd.md).
+# A produção NÃO é publicada aqui: ela só recebe um commit que já esteja na homologação, pelo workflow "Produção".
+# Os segredos HML_* ficam no environment "homologacao"; nenhuma credencial da produção existe neste arquivo.
+on:
+  workflow_run:
+    workflows: [Testes]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+# Uma implantação por vez. Quem espera na fila é substituído pelo mais novo (a homologação sempre termina no último commit).
+concurrency:
+  group: homologacao
+  cancel-in-progress: false
+
+jobs:
+  conferir:
+    name: Conferir o commit
+    # Só push na main deste repositório, com os testes verdes (nunca pull request nem fork), ou disparo manual.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.conferir.outputs.sha }}
+      implantar: ${{ steps.conferir.outputs.implantar }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - name: Testes verdes e commit ainda é a ponta da main
+        id: conferir
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; then
+            echo "::error::A homologação só recebe a main. Rode este workflow na branch main."; exit 1
+          fi
+          verdes="$(gh run list -R "$GITHUB_REPOSITORY" -w Testes -c "$SHA" -b main -e push -s success --json databaseId --jq length)"
+          if [ "$verdes" -lt 1 ]; then
+            echo "::error::O workflow Testes não passou no commit $SHA. Nada vai para a homologação sem os testes verdes."; exit 1
+          fi
+          ponta="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          if [ "$ponta" = "$SHA" ]; then
+            echo "implantar=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "implantar=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::O commit $SHA já não é a ponta da main ($ponta). Ele fica de fora; o commit mais novo terá a própria implantação."
+          fi
+
+  implantar:
+    name: Implantar na homologação
+    needs: conferir
+    if: needs.conferir.outputs.implantar == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: homologacao
+    env:
+      SHA: ${{ needs.conferir.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.conferir.outputs.sha }}
+          persist-credentials: false
+
+      # Como no workflow Testes, mas SEM a data congelada: a homologação mostra a agenda com a data real.
+      - name: Configurar o ambiente
+        run: |
+          cp .env.example .env
+          sed -i 's/^SITE_INTERFACE=.*/SITE_INTERFACE=127.0.0.1/' .env
+
+      - name: Subir o WordPress e rodar o setup
+        run: ./bin/setup.sh
+
+      - name: Empacotar
+        env:
+          PACOTE_SAIDA: pacote/ieadc-${{ needs.conferir.outputs.sha }}.tgz
+        run: ./bin/implantar.sh empacotar
+
+      # A produção recebe EXATAMENTE este arquivo (workflow "Produção"), por isso ele fica guardado.
+      - name: Guardar o pacote
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacote-hml-${{ needs.conferir.outputs.sha }}
+          path: |
+            pacote/ieadc-*.tgz
+            pacote/ieadc-*.tgz.sha256
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: true
+
+      - name: Preparar a chave SSH
+        env:
+          CHAVE: ${{ secrets.HML_SSH_CHAVE }}
+        run: |
+          umask 077
+          printf '%s\n' "$CHAVE" | tr -d '\r' > "$RUNNER_TEMP/chave-ssh"
+          echo "ALVO_CHAVE=$RUNNER_TEMP/chave-ssh" >> "$GITHUB_ENV"
+
+      - name: Enviar, registrar a implantação e rodar a fumaça
+        env:
+          ALVO_SERVIDOR: ${{ secrets.HML_SERVIDOR }}
+          ALVO_PORTA: ${{ secrets.HML_PORTA }}
+          ALVO_USUARIO: ${{ secrets.HML_USUARIO }}
+          ALVO_URL: ${{ secrets.HML_URL }}
+          ALVO_IMPRESSAO: ${{ secrets.HML_IMPRESSAO }}
+          ALVO_DESTINO: ${{ secrets.HML_DESTINO }}
+          ALVO_EMAIL_ADMIN: ${{ secrets.HML_EMAIL_ADMIN }}
+          MODO: ${{ vars.HML_MODO || 'homologacao' }}
+          CARGA: completo
+          AMBIENTE: homologacao
+          DEPLOY_SHA: ${{ needs.conferir.outputs.sha }}
+          DEPLOY_RUN_ID: ${{ github.run_id }}
+        run: |
+          export DEPLOY_VERSAO="hml-${DEPLOY_SHA:0:7}"
+          ./bin/implantar.sh enviar "pacote/ieadc-$DEPLOY_SHA.tgz"
+
+      - name: Resumo
+        run: |
+          {
+            echo "### Homologação atualizada"
+            echo "- Commit: \`${SHA:0:7}\` (testes verdes)"
+            echo "- Pacote guardado como artifact \`pacote-hml-$SHA\` (30 dias); a produção usa este mesmo arquivo."
+            echo "- Para lançar: Actions > Produção > Run workflow."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Apagar a chave SSH
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave-ssh"
+
+      - name: Logs do WordPress (se falhou)
+        if: failure()
+        run: docker compose logs --tail=100 wordpress db
