@@ -91,4 +91,13 @@ ieadc_igual(false, ieadc_site_fechado_bloqueia(), 'opção 0: aberto');
 $fechado_restaurar();
 wp_set_current_user($usuario_antes);
 
+echo "ieadc_site_fechado_html (página 'em preparação')
+";
+$fechada = ieadc_site_fechado_html();
+ieadc_ok(str_contains($fechada, '<img class="logo"') && str_contains($fechada, '/assets/img/logo-branca.png'), 'tem o logo branco acima do título');
+ieadc_ok(strpos($fechada, '<img class="logo"') < strpos($fechada, '<h1>'), 'o logo vem antes do título');
+ieadc_ok(str_contains($fechada, 'alt=""'), 'logo decorativo (alt vazio; o nome já está no título)');
+ieadc_ok(str_contains($fechada, 'noindex'), 'página fechada não é indexada');
+ieadc_ok(is_file(get_theme_root() . '/ieadc-vila-ipiranga/assets/img/logo-branca.png'), 'o arquivo do logo existe no tema');
+
 ieadc_teste_fim();

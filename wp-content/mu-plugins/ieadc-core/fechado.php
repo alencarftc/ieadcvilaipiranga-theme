@@ -16,23 +16,31 @@ function ieadc_site_fechado_bloqueia(): bool {
 	return (bool) get_option('ieadc_site_fechado') && !is_user_logged_in();
 }
 
+/** A página que os visitantes veem enquanto o site está fechado (o logo é decorativo: o nome da igreja já está no título). */
+function ieadc_site_fechado_html(): string {
+	$nome = esc_html((string) ieadc_info('nome'));
+	$logo = esc_url(get_stylesheet_directory_uri() . '/assets/img/logo-branca.png');
+	return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+		. '<meta name="viewport" content="width=device-width,initial-scale=1">'
+		. '<meta name="robots" content="noindex,nofollow">'
+		. '<title>' . $nome . ' · em preparação</title>'
+		. '<style>html,body{margin:0;height:100%}body{display:grid;place-items:center;background:#071946;color:#fff;font-family:Roboto,system-ui,sans-serif;text-align:center;padding:24px;box-sizing:border-box}'
+		. '.logo{display:block;width:120px;height:120px;margin:0 auto 20px}'
+		. 'h1{font-size:clamp(28px,6vw,44px);margin:0 0 12px}p{margin:0;font-size:18px;opacity:.85}</style></head>'
+		. '<body><main><img class="logo" src="' . $logo . '" alt="" width="120" height="120">'
+		. '<h1>' . $nome . '</h1><p>Nosso site novo está sendo preparado. Volte em breve.</p></main></body></html>';
+}
+
 add_action('template_redirect', function () {
 	if (!ieadc_site_fechado_bloqueia()) {
 		return;
 	}
-	$nome = esc_html((string) ieadc_info('nome'));
 	nocache_headers();
 	status_header(503);
 	header('Retry-After: 3600');
 	header('X-Robots-Tag: noindex, nofollow');
 	header('Content-Type: text/html; charset=utf-8');
-	echo '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
-		. '<meta name="viewport" content="width=device-width,initial-scale=1">'
-		. '<meta name="robots" content="noindex,nofollow">'
-		. '<title>' . $nome . ' · em preparação</title>'
-		. '<style>html,body{margin:0;height:100%}body{display:grid;place-items:center;background:#071946;color:#fff;font-family:Roboto,system-ui,sans-serif;text-align:center;padding:24px;box-sizing:border-box}'
-		. 'h1{font-size:clamp(28px,6vw,44px);margin:0 0 12px}p{margin:0;font-size:18px;opacity:.85}</style></head>'
-		. '<body><main><h1>' . $nome . '</h1><p>Nosso site novo está sendo preparado. Volte em breve.</p></main></body></html>';
+	echo ieadc_site_fechado_html();
 	exit;
 }, 0);
 
