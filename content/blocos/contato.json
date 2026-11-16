@@ -27,7 +27,7 @@
     {
      "icone": "pin",
      "titulo": "Endereço",
-     "texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR"
+     "texto": "Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR<br/><a href=\"{maps}\">Google Maps</a> · <a href=\"{waze}\">Waze</a>"
     },
     {
      "icone": "instagram",

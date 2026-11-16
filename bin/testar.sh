@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Roda os testes do site.
-# Uso: ./bin/testar.sh [ci|php|markup|visual|interacao|a11y] [pagina[,pagina…]]
+# Uso: ./bin/testar.sh [ci|php|markup|visual|interacao|a11y|consentimento] [pagina[,pagina…]]
 #   sem argumentos: tudo. Exemplo: ./bin/testar.sh visual inicio
 # Pré-requisitos: site no ar no endereço do SITE_URL do .env (padrão http://localhost:8080; ./bin/setup.sh) com o ambiente "local" do
 # WordPress (o docker-compose.yml já define), Node 20+ e Docker. O .env fica com IEADC_HOJE vazio: o site local mostra o dia real e os
 # testes fixam 06/10/2026 pelo cabeçalho X-Ieadc-Hoje (tests/visual/playwright.config.js). O protótipo é servido sozinho em http://localhost:8090 durante os testes.
+# consentimento: aviso de cookies e medição com o ID de teste GTM-TESTE0000 (grava e desfaz a opção; tests/visual/consentimento.spec.js).
 # a11y: axe (WCAG 2.1 e 2.2 AA) nas 28 páginas a 390, 900 e 1440 px e na agenda com outras datas, teclado e prefers-reduced-motion (tests/visual/a11y.spec.js).
 # ci: as travas de destino do pipeline de implantação (tests/ci/guardas.sh), sem site, sem docker e sem rede; roda também no "tudo".
 # Imagens de diferença do teste visual: tests/visual/saida/<pagina>-<largura>-{wp,proto,diff}.png
@@ -21,7 +22,7 @@ fi
 
 parte="${1:-tudo}"
 [ $# -ge 2 ] && export IEADC_PAGINAS="$2"
-case "$parte" in tudo|ci|php|markup|visual|interacao|a11y) ;; *) echo "Uso: $0 [ci|php|markup|visual|interacao|a11y] [pagina]"; exit 2 ;; esac
+case "$parte" in tudo|ci|php|markup|visual|interacao|a11y|consentimento) ;; *) echo "Uso: $0 [ci|php|markup|visual|interacao|a11y|consentimento] [pagina]"; exit 2 ;; esac
 
 falhou=0
 passo() { echo; echo "=== $1 ==="; }
@@ -73,7 +74,7 @@ testes_php() {
 
   passo "testes PHP: funções comuns (dentro do WordPress)"
   local t
-  for t in tests/php/*/teste-helpers.php tests/php/*/teste-modelo-artigo.php tests/php/*/teste-seo.php; do
+  for t in tests/php/*/teste-helpers.php tests/php/*/teste-modelo-artigo.php tests/php/*/teste-seo.php tests/php/*/teste-medicao.php tests/php/*/teste-marketing.php tests/php/*/teste-seguranca.php; do
     [ -f "$t" ] || continue
     docker compose run --rm -T --no-deps -v "$PWD/tests:/tests:ro" --entrypoint php wpcli "/tests/${t#tests/}" || return 1
   done
@@ -90,7 +91,7 @@ testes_playwright() {
 case "$parte" in
   ci) roda testes_ci ;;
   php) roda testes_php ;;
-  markup|visual|interacao|a11y) roda testes_playwright "$parte" ;;
+  markup|visual|interacao|a11y|consentimento) roda testes_playwright "$parte" ;;
   tudo)
     roda testes_ci
     roda testes_php
@@ -98,6 +99,7 @@ case "$parte" in
     roda testes_playwright visual
     roda testes_playwright interacao
     roda testes_playwright a11y
+    roda testes_playwright consentimento
     ;;
 esac
 

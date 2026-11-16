@@ -70,3 +70,21 @@
 	}, { rootMargin: '0px 0px 900px 0px' });
 	secoes.forEach(function (s) { io.observe(s); });
 })();
+
+/* Fase 4: botão flutuante de WhatsApp sai de cena quando o rodapé (com telefone e endereço) está na tela; "Copiar link" do compartilhar. */
+(function () {
+	var w = document.querySelector('.ieadc-whats'), rodape = document.querySelector('.rodape');
+	if (w && rodape && 'IntersectionObserver' in window) {
+		new IntersectionObserver(function (itens) {
+			w.classList.toggle('ieadc-whats--fim', itens[0].isIntersecting);
+		}).observe(rodape);
+	}
+	document.addEventListener('click', function (e) {
+		var b = e.target.closest && e.target.closest('[data-ieadc-copiar]');
+		if (!b) return;
+		var url = b.getAttribute('data-url') || location.href, aviso = b.parentElement.querySelector('.compartilhar__ok');
+		function ok() { if (aviso) { aviso.textContent = 'Link copiado.'; setTimeout(function () { aviso.textContent = ''; }, 4000); } }
+		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, function () { window.prompt('Copie o link:', url); });
+		else window.prompt('Copie o link:', url);
+	});
+})();

@@ -4,10 +4,22 @@
 // Funções ieadc_seed_*: 40-ministerios.php.
 
 $categorias = ['mensagem' => 'Mensagem', 'estudo' => 'Estudo', 'reflexao' => 'Reflexão', 'noticia' => 'Notícia'];
+// Descrição própria de cada categoria (fase 4): curta, sem fato novo. Vira a meta description e a prévia ao compartilhar o arquivo da categoria.
+// Só preenche se a descrição estiver vazia: o que a equipe escrever no painel (Artigos > Categorias) não é sobrescrito.
+$descricoes = [
+	'mensagem' => 'Mensagens em texto da IEADC Vila Ipiranga: palavras de ensino e de ânimo para a vida com Deus, para ler em casa ou no celular.',
+	'estudo'   => 'Estudos bíblicos da IEADC Vila Ipiranga para ler com calma e aplicar no dia a dia, com os textos da Palavra à vista.',
+	'reflexao' => 'Reflexões curtas da IEADC Vila Ipiranga sobre a fé, a oração e a vida em comunidade, para meditar com a Bíblia.',
+	'noticia'  => 'Notícias e avisos da IEADC Vila Ipiranga, igreja no Capão Raso, em Curitiba: o que acontece na vida da congregação.',
+];
 foreach ($categorias as $slug => $nome) {
-	if (!get_term_by('slug', $slug, 'category')) {
-		$t = wp_insert_term($nome, 'category', ['slug' => $slug]);
+	$t = get_term_by('slug', $slug, 'category');
+	if (!$t) {
+		$t = wp_insert_term($nome, 'category', ['slug' => $slug, 'description' => $descricoes[$slug]]);
 		is_wp_error($t) ? WP_CLI::warning("Categoria {$nome}: " . $t->get_error_message()) : WP_CLI::log("Categoria criada: {$nome}");
+	} elseif (trim((string) $t->description) === '') {
+		wp_update_term($t->term_id, 'category', ['description' => $descricoes[$slug]]);
+		WP_CLI::log("Descrição da categoria {$nome} gravada.");
 	}
 }
 

@@ -114,6 +114,11 @@
 					"texto": "Abrir no Google Maps",
 					"link": "https://share.google/9UqZuK0EVcGxwFH63",
 					"icone": "pin"
+				},
+				{
+					"texto": "Abrir no Waze",
+					"link": "{waze}",
+					"icone": "pin"
 				}
 			],
 			"ieadc": {

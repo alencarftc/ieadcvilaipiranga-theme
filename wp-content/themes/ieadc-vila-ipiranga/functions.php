@@ -12,7 +12,7 @@ define('IEADC_TEMA_VERSAO', wp_get_theme()->get('Version'));
 require __DIR__ . '/inc/icones.php';
 require __DIR__ . '/inc/menu.php';
 // M1: helpers antes de blocos (carregados só quando existirem).
-foreach (['helpers', 'blocos', 'seo', 'identidade', 'desempenho'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
+foreach (['helpers', 'blocos', 'seo', 'identidade', 'desempenho', 'medicao', 'marketing'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
 
 add_action('after_setup_theme', function () {
 	register_nav_menus([
@@ -38,11 +38,13 @@ add_action('wp_enqueue_scripts', function () {
 	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], $ver('js/site.js'), ['in_footer' => true, 'strategy' => 'defer']);
 }, 20);
 
-/* Pré-carrega as duas fontes mais usadas para o texto não "pular". */
+/* Pré-carrega as duas fontes mais usadas, com prioridade BAIXA (fase 4). Com prioridade alta, os 93 KB disputavam a banda com o CSS (que bloqueia a renderização) no
+   celular com rede lenta; como as fontes de reserva têm as medidas das reais (fontes.css, "... Fallback"), a troca de fonte não desloca nada e elas podem chegar depois.
+   Medido (Lighthouse, 4G lenta): sem preload o desempenho local cai de 98 para 96 (as fontes passam a ser pedidas só depois do CSS); com prioridade baixa fica em 98. */
 add_action('wp_head', function () {
 	$f = get_stylesheet_directory_uri() . '/assets/fonts/';
 	foreach (['Roboto-normal-latin.woff2', 'RobotoCondensed-normal-latin.woff2'] as $arq) {
-		echo '<link rel="preload" href="' . esc_url($f . $arq) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+		echo '<link rel="preload" href="' . esc_url($f . $arq) . '" as="font" type="font/woff2" crossorigin fetchpriority="low">' . "\n";
 	}
 }, 1);
 

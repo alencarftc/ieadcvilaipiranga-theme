@@ -60,3 +60,9 @@ Mudou algo (horário, telefone, endereço)? Mude **primeiro no painel do site** 
 ## 6. Pendências (só você tem o dado)
 
 Estão em `docs/operacao/pendencias-para-o-felipe.md`, no bloco "SEO e Google": link de avaliação (ou código do lugar), propriedade do Perfil da Empresa, verificação do Search Console, e-mail público e, se quiser, as coordenadas.
+
+## Campos novos da fase 4: verificação e medição
+
+- **Search Console e Bing sem mexer no DNS:** em *Configurações > IEADC Vila Ipiranga* há os campos *Código do Google Search Console* e *Código do Bing Webmaster Tools*. Cole o código do método "Tag HTML" (pode colar a meta tag inteira); o site imprime a meta tag certa. Depois, "Verificar" no serviço e enviar o `sitemap_index.xml`.
+- **Arquivos de categoria** (`/category/mensagem/` etc.) ficam **fora do Google** (`noindex, follow`) e fora do mapa do site: com poucos artigos eles só repetiriam a lista de Conteúdos. Cada categoria tem descrição própria (meta description e prévia ao compartilhar), editável em *Artigos > Categorias*. Para indexar as categorias no futuro, quando houver muitos artigos: `add_filter('ieadc_arquivos_indexaveis', '__return_true')`.
+- **Medição (Analytics, Tag Manager) e aviso de cookies:** `docs/operacao/rastreamento.md`.

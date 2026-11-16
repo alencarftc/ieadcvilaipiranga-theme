@@ -44,6 +44,28 @@ add_action('template_redirect', function () {
 	exit;
 }, 0);
 
+/**
+ * Mapas do site (Yoast: /sitemap_index.xml, /post-sitemap.xml, /main-sitemap.xsl; WordPress: /wp-sitemap.xml) também ficam fechados para visitantes:
+ * eles listam os endereços do site. O Yoast atende o mapa cedo (em pre_get_posts, antes do template_redirect acima), por isso a interceptação é em
+ * parse_request, que roda antes. Quem tem login e o site aberto não são afetados (ieadc_site_fechado_bloqueia() é falso).
+ */
+add_action('parse_request', function ($wp) {
+	if (!ieadc_site_fechado_bloqueia()) {
+		return;
+	}
+	$pedido = (string) ($wp->request ?? '');
+	if (!preg_match('#(^|/)(wp-)?sitemap[^/]*\.(xml|xsl)$|(^|/)[^/]*-sitemap[^/]*\.(xml|xsl)$#', $pedido)) {
+		return;
+	}
+	nocache_headers();
+	status_header(503);
+	header('Retry-After: 3600');
+	header('X-Robots-Tag: noindex, nofollow');
+	header('Content-Type: text/html; charset=utf-8');
+	echo ieadc_site_fechado_html();
+	exit;
+}, 0);
+
 /* A API REST mostraria o mesmo conteúdo: também fechada para visitantes. */
 add_filter('rest_authentication_errors', function ($erro) {
 	if ($erro === null && ieadc_site_fechado_bloqueia()) {

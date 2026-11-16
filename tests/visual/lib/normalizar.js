@@ -48,6 +48,8 @@ function serializarSecoes(opcoes) {
     const noForm = !!el.closest('form');
     for (const a of el.attributes) {
       if (IGNORAR.has(a.name)) continue;
+      // Compartilhar artigo (fase 4): o endereço do link e o data-url mudam com o artigo (o protótipo é estático): compara só o resto.
+      if (el.hasAttribute('data-ieadc-rede') || el.hasAttribute('data-ieadc-copiar')) { if (a.name === 'href' || a.name === 'data-url') continue; }
       if (noForm && IGNORAR_FORM.has(a.name)) continue;
       if (el.tagName === 'FORM' && a.name === 'id') continue;
       if (noForm && a.name === 'id' && el.type === 'radio') continue;

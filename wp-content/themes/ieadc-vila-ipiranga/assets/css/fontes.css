@@ -72,3 +72,58 @@
   font-display: swap;
   src: url(../fonts/DancingScript-latin.woff2) format('woff2');
 }
+
+/* Fase 4 (CLS): fontes de reserva com as medidas das reais. Enquanto o Roboto, o Roboto Condensed e o Dancing Script não chegam, o navegador mostra
+   estas (o Arial, ou o Liberation Sans/Arimo no Linux, ajustados em largura e altura de linha): o texto quebra nas mesmas linhas e, quando a fonte certa
+   entra (font-display: swap), nada se mexe. Larguras medidas com o texto real do site (razão da largura da fonte real sobre a do Arial). Usadas só como
+   segunda opção em --f-txt/--f-tit (ajustes.css); se o aparelho não tem nenhuma delas (Android), o navegador cai no sans-serif, que lá é o próprio Roboto. */
+@font-face {
+  font-family: 'Roboto Fallback';
+  font-style: normal;
+  font-weight: 100 599;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo'), local('Helvetica');
+  size-adjust: 98.7%;
+  ascent-override: 96.3%;
+  descent-override: 25.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Roboto Fallback';
+  font-style: normal;
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Helvetica Bold');
+  size-adjust: 92.4%;
+  ascent-override: 102.8%;
+  descent-override: 27.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Roboto Condensed Fallback';
+  font-style: normal;
+  font-weight: 100 599;
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'), local('Arimo'), local('Helvetica');
+  size-adjust: 88%;
+  ascent-override: 108%;
+  descent-override: 28.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Roboto Condensed Fallback';
+  font-style: normal;
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Helvetica Bold');
+  size-adjust: 83%;
+  ascent-override: 114.5%;
+  descent-override: 30.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Dancing Script Fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'), local('Arimo Bold'), local('Helvetica Bold');
+  size-adjust: 75.5%;
+  ascent-override: 121.9%;
+  descent-override: 37.1%;
+  line-gap-override: 0%;
+}

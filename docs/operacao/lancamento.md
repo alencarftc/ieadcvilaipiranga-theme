@@ -62,6 +62,25 @@ Abre o site para todos (desliga `ieadc_site_fechado`) e libera para o Google. Pa
 
 O fechamento é a opção `ieadc_site_fechado` (mu-plugin `ieadc-core`), que não expira. O modo manutenção do WordPress (`.maintenance`) expira sozinho em 10 minutos e bloqueia também o login, por isso o script só o usa durante a cópia.
 
+## Estado do site: fechado, aberto fora do Google e no ar
+
+Desde a fase 4 o estado do site se muda **no painel, sem refazer a carga**: *Configurações > IEADC Vila Ipiranga*, caixa **Estado do site** no alto da tela (só aparece para administradores; usa nonce como o resto da tela). Ela mostra o estado de hoje em palavras e tem **dois interruptores**:
+
+| Interruptor | Opção do WordPress que grava | Marcado | Desmarcado |
+|---|---|---|---|
+| **Site aberto ao público** | `ieadc_site_fechado` (marcado = 0) | visitantes veem o site | visitantes veem a página "em preparação" (503, sem indexação); quem tem login vê o site normalmente |
+| **Permitir que o Google indexe o site** | `blog_public` (marcado = 1) | o Google pode indexar | pedido de não indexar (noindex e `robots.txt` fechado) |
+
+Regra: **fechado nunca é indexado**. Com o site fechado, o segundo interruptor fica desmarcado e desabilitado. As três combinações possíveis, com o texto que a tela mostra:
+
+1. **Hoje: fechado.** (aberto desmarcado) Só quem tem login vê o site. É o estado do ensaio de produção e de quem valida tudo antes de abrir.
+2. **Hoje: aberto, fora do Google.** (aberto marcado, Google desmarcado) Qualquer pessoa com o link abre o site, mas o Google não indexa. É o estado da homologação, e serve para testar com ferramentas externas que precisam de acesso público: PageSpeed, Teste de Resultados Rich do Google, prévia do WhatsApp e do Facebook, medição do Analytics com visitantes reais.
+3. **Hoje: no ar e indexável.** (os dois marcados) O site está lançado.
+
+Fechado, o site responde **503 para visitantes** em tudo: páginas, `/wp-json/`, `/robots.txt` e também os mapas do site (`/sitemap_index.xml` do Yoast, `/post-sitemap.xml`, `/main-sitemap.xsl` e `/wp-sitemap.xml`), que listariam os endereços; quem tem login continua recebendo 200 (provado em `tests/php/medicao/teste-seguranca.php`). Ao salvar, o site esvazia o cache do LiteSpeed (páginas e `robots.txt` podem estar em cache e mostrariam o estado antigo). **Uma atualização do código (`CARGA=codigo`, `bin/atualizar-remoto.sh`) não muda este estado**: ele fica nas opções do banco, que a atualização não toca. A carga completa (`bin/migrar-remoto.sh`) sobrescreve o banco e volta ao estado do MODO escolhido; por isso, na produção, depois da carga inicial use só atualizações de código e este painel.
+
+Passo a passo para validar a medição na produção com o site fechado: aplique o `GTM_ID` (`docs/operacao/rastreamento.md`), entre no site com o seu login (ele não é bloqueado), aceite o aviso de cookies, confira o Tag Manager (modo de visualização) e o Analytics (DebugView). Quando estiver satisfeito, marque **Site aberto ao público** (e, para o Google, **Permitir que o Google indexe**), salve e confira a página inicial numa janela anônima.
+
 ## Ensaio sem hospedagem (qualquer dia, quantas vezes quiser)
 
 ```

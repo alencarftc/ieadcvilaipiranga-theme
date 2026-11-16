@@ -90,3 +90,21 @@ O que impede o 100 no celular **local** e onde está o resto:
 - **Preload da foto do topo**: medido, no celular ele piora o LCP (disputa banda com o CSS), por isso só vale para o computador.
 
 Para refazer: `./bin/lighthouse.sh` (8 a 9 minutos para as 18 medições). Para a homologação ou a produção: `LH_URL_BASE=<endereço> ./bin/lighthouse.sh` e compare com esta tabela.
+
+## 5. Fase 4: CLS da página inicial (troca de fonte) e o que depende do servidor
+
+**Problema medido na homologação** (Hostinger, LiteSpeed, HTTP/2): página inicial no celular com desempenho 92 (LCP 2,7 s, CLS 0,08, Speed Index 4,3 s) e no computador 96 (CLS 0,029); as outras páginas davam 98 a 100. Local o CLS dava 0 porque as fontes chegam na hora; no servidor real elas chegam depois do primeiro desenho e a troca de fonte (`font-display: swap`) **empurrava o texto**: o Arial, usado enquanto o Roboto não chega, é mais largo que o Roboto Condensed (títulos) e o texto quebrava em linhas diferentes.
+
+**Como foi reproduzido sem a homologação:** rede lenta e fontes atrasadas em 1,5 s no Playwright, registrando os `layout-shift` com o elemento que mexeu. Antes: CLS 0,068 no celular (o `.lead` do topo passava de 2 para 1 linha e o resto subia 27 px). Depois: 0,0000 no celular e 0,0003 no computador, em início, sobre-nos, ministérios/mocidade, horários e artigo.
+
+**O que foi feito:**
+- **Fontes de reserva com as medidas das reais** (`fontes.css`, "... Fallback"; `ajustes.css` redefine `--f-tit`, `--f-txt` e `--theme-font-family`): `Roboto Fallback`, `Roboto Condensed Fallback` e `Dancing Script Fallback` usam `local(Arial)` (ou Liberation Sans/Arimo, no Linux) com `size-adjust`, `ascent-override` e `descent-override` calculados com o texto real do site (razão da largura da fonte real sobre a do Arial: Roboto 98,7% em 400-599 e 92,4% em 600-900; Roboto Condensed 88% e 83%; Dancing Script 75,5%). Com a fonte carregada nada muda de aparência (markup 28 e visual 84 passam). No Android o `sans-serif` já é o Roboto, então a reserva nem entra.
+- **Preload das fontes com `fetchpriority="low"`**: com prioridade alta, as duas fontes (93 KB) disputavam a banda com o CSS no celular com rede lenta. Sem preload nenhum o Lighthouse local caía de 98 para 96 (as fontes só seriam pedidas depois do CSS); com prioridade baixa fica em 98.
+- **Medido e descartado** (devtools throttling e simulação): preload da foto do topo no celular (87 contra 90: disputa banda com o CSS, mesmo com latência real), tirar o `main.min.css` do Blocksy junto com o preload (98, LCP 2,3 s) e preload sem fonte (96). O LCP local fica em 2,2 s (CSS de 33 KB e a foto de 64 KB, que só é descoberta depois do CSS).
+
+**Notas locais (16/11/2026, `./bin/lighthouse.sh /`, Docker sem cache de página):** celular 98 / 100 / 100 / 100 (LCP 2,2 s, TBT 0, **CLS 0,000**); computador **100 / 100 / 100 / 100** (LCP 0,7 s, CLS 0,000).
+
+**O que depende do servidor (para confirmar com `LH_URL_BASE=<endereço> ./bin/lighthouse.sh /` depois da publicação):**
+1. **CLS:** deve cair de 0,08 (celular) e 0,029 (computador) para perto de 0. Se sobrar algum, a causa é do servidor (por exemplo, o LiteSpeed Cache minificando ou adiando CSS: desligue "Load CSS Asynchronously" e "Critical CSS" no plugin, ver `docs/operacao/plugins.md`).
+2. **LCP e Speed Index (2,7 s e 4,3 s):** o LCP é a foto do topo, descoberta só depois do CSS; o que mais o reduz é a **resposta do HTML** (TTFB): com o cache de página do LiteSpeed ligado cai de centenas para dezenas de milissegundos. Confirmar também que a foto do topo sai do cache do navegador com `Cache-Control` longo (o `.htaccess` já pede 30 dias) e em HTTP/2.
+3. **Speed Index 4,3 s:** vem de a foto e as fontes chegarem tarde na rede real; o primeiro desenho agora já traz o texto na largura certa, então o que sobra é o tempo da foto. Se continuar alto na homologação, as próximas alavancas são um CSS crítico inline só do topo (não feito: arriscaria deslocamento de layout nas 28 páginas) e uma versão menor da foto do topo do celular (a de 768 px tem 64 KB; uma de 560 px teria cerca de 35 KB, mas exigiria regerar as miniaturas no servidor).
