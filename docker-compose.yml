@@ -30,7 +30,13 @@ services:
       WORDPRESS_DB_USER: ${DB_USUARIO}
       WORDPRESS_DB_PASSWORD: ${DB_SENHA}
       WORDPRESS_CONFIG_EXTRA: &config_extra |
-        define('WP_HOME', getenv('SITE_URL') ?: 'http://localhost:8080');
+        // O site responde no endereço que o navegador usou (localhost, o IP da máquina, o celular na rede de casa), sem
+        // depender de um IP escrito no .env que muda quando o roteador reinicia. No wp-cli (sem HTTP_HOST) vale o SITE_URL.
+        if (PHP_SAPI !== 'cli' && !empty($$_SERVER['HTTP_HOST']) && preg_match('/^[A-Za-z0-9.-]+(:[0-9]+)?$/', $$_SERVER['HTTP_HOST'])) {
+          define('WP_HOME', 'http://' . $$_SERVER['HTTP_HOST']);
+        } else {
+          define('WP_HOME', getenv('SITE_URL') ?: 'http://localhost:8080');
+        }
         define('WP_SITEURL', WP_HOME);
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('DISALLOW_FILE_EDIT', true);
