@@ -20,11 +20,17 @@ Set-Location (Join-Path $PSScriptRoot '..')
 #   HOSTINGER_SERVIDOR=...   HOSTINGER_PORTA=...   HOSTINGER_USUARIO=...
 $env_ = @{}
 if (Test-Path .env) {
-  Get-Content .env | Where-Object { $_ -match '^\s*HOSTINGER_[A-Z_]+=' } | ForEach-Object { $k, $v = $_ -split '=', 2; $env_[$k.Trim()] = $v.Trim() }
+  foreach ($linha in (Get-Content .env -Encoding UTF8)) {
+    if ($linha -match '^\s*(HOSTINGER_[A-Z_]+)\s*=\s*(.*?)\s*$') { $env_[$Matches[1]] = $Matches[2].Trim('"', "'") }
+  }
 }
-if (-not $Servidor) { $Servidor = $env_['HOSTINGER_SERVIDOR'] }
-if (-not $Porta)    { $Porta    = [int]($env_['HOSTINGER_PORTA']) }
-if (-not $Usuario)  { $Usuario  = $env_['HOSTINGER_USUARIO'] }
+if (-not $Servidor) { $Servidor = [string]$env_['HOSTINGER_SERVIDOR'] }
+if (-not $Usuario)  { $Usuario  = [string]$env_['HOSTINGER_USUARIO'] }
+if (-not $Porta) {
+  $p = 0
+  if (-not [int]::TryParse([string]$env_['HOSTINGER_PORTA'], [ref]$p)) { $p = 0 }
+  $Porta = $p
+}
 if (-not $Servidor -or -not $Porta -or -not $Usuario) { throw 'Faltam HOSTINGER_SERVIDOR, HOSTINGER_PORTA e HOSTINGER_USUARIO no .env (veja o hPanel > Avançado > SSH), ou passe -Servidor, -Porta e -Usuario.' }
 
 foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
