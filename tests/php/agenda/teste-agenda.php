@@ -35,9 +35,9 @@ function resumo(array $os): array { return array_map(fn($o) => $o['data'] . ' ' 
 function evento_confraternizacao(): WP_Post {
 	return new WP_Post([
 		'ID' => 101, 'post_title' => 'Confraternização dos jovens', 'post_name' => 'confraternizacao-dos-jovens',
-		'post_excerpt' => 'Dias 17 e 18 de outubro. [Local e programação a confirmar]',
+		'post_excerpt' => 'Dias 17 e 18 de outubro.',
 		'meta' => [
-			'evento_data' => '2026-10-17', 'evento_data_fim' => '2026-10-18', 'evento_horario' => '[horário a confirmar]',
+			'evento_data' => '2026-10-17', 'evento_data_fim' => '2026-10-18', 'evento_horario' => '',
 			'evento_categoria' => 'c-jovens', 'evento_link' => 'ministerios/mocidade',
 		],
 	]);

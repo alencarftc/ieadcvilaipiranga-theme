@@ -2,7 +2,7 @@
 /**
  * Bloco ieadc/departamentos (B3). HTML esperado: docs/specs/referencias/departamentos.html.
  * Dados: ieadc_departamentos() (M3). Líder sem foto = círculo com ícone e title="Foto em breve";
- * com foto = a foto recortada no mesmo círculo. Linha só de pendência ("[a definir]") vira parágrafo.
+ * com foto = a foto recortada no mesmo círculo.
  */
 defined('ABSPATH') || exit;
 $a = $attributes;
@@ -16,8 +16,7 @@ if (!empty($a['nota'])) {
 if ($departamentos) {
 	echo '<div class="grade g3">';
 	foreach ($departamentos as $d) {
-		$lideres    = array_filter($d['lideres'], fn($l) => !preg_match('/^\[[^\]]*\]$/u', $l['nome']));
-		$pendencias = array_filter($d['lideres'], fn($l) => preg_match('/^\[[^\]]*\]$/u', $l['nome']));
+		$lideres = $d['lideres'];
 		echo '<div class="dep"><h3 class="h4">' . esc_html($d['nome']) . '</h3>';
 		if ($lideres) {
 			echo '<ul class="pessoas">';
@@ -30,9 +29,6 @@ if ($departamentos) {
 				echo '<span>' . ieadc_pend($l['nome']) . '</span></li>';
 			}
 			echo '</ul>';
-		}
-		foreach ($pendencias as $l) {
-			echo '<p>' . ieadc_pend($l['nome']) . '</p>';
 		}
 		if ($d['complemento'] !== '') {
 			echo '<p>' . ieadc_pend($d['complemento']) . '</p>';
