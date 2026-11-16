@@ -122,6 +122,13 @@ function ieadc_btn(string $texto, string $link, string $classe = '', string $ico
  */
 function ieadc_url(string $link): string {
 	$link = trim($link);
+	// Atalhos montados a partir do endereço de Configurações > IEADC Vila Ipiranga (fase 4): {maps} = Google Maps, {waze} = Waze.
+	if ($link === '{maps}' && function_exists('ieadc_google_maps_url')) {
+		return ieadc_google_maps_url();
+	}
+	if ($link === '{waze}' && function_exists('ieadc_waze_url')) {
+		return ieadc_waze_url();
+	}
 	if ($link === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//|\#|\?)#i', $link)) {
 		return $link;
 	}

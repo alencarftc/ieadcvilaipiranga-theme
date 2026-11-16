@@ -10,6 +10,7 @@ defined('ABSPATH') || exit;
 
 define('IEADC_CORE_DIR', __DIR__ . '/ieadc-core');
 
+require IEADC_CORE_DIR . '/medicao.php';
 require IEADC_CORE_DIR . '/info.php';
 require IEADC_CORE_DIR . '/tipos.php';
 require IEADC_CORE_DIR . '/pedidos.php';
