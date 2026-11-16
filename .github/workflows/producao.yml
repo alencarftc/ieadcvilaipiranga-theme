@@ -1,0 +1,209 @@
+name: Produção
+
+# ÚNICA porta de entrada para a PRODUÇÃO: só roda quando alguém dispara (Actions > Produção > Run workflow), na main.
+# Regra de ouro: a produção fica sempre atrás da homologação. Só vai para a produção o commit que a homologação já está
+# rodando (e implantou com sucesso), que passou nos testes e que é a ponta da main, com o MESMO pacote que a homologação
+# recebeu. Os segredos PROD_* existem só no environment "producao" (com revisor obrigatório); nenhum outro workflow os usa.
+# Atenção: a conta SSH da hospedagem é a mesma da homologação, então a chave HML alcança a pasta da produção; quem protege
+# a produção é a trava deste arquivo, o bin/implantar.sh (que só aceita a pasta do domínio do ambiente) e o environment.
+# Veja docs/operacao/ci-cd.md.
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: 'Versão da release, no formato vX.Y.Z (ex.: v1.0.0)'
+        required: true
+        type: string
+      modo:
+        description: 'codigo = só tema e mu-plugins (não mexe no conteúdo); completo = código + banco + fotos (só na carga inicial)'
+        required: true
+        type: choice
+        options: [codigo, completo]
+        default: codigo
+      abertura:
+        description: 'Só no modo completo: fechado = ensaio (visitantes veem "em preparação") | no-ar = lança e libera para o Google'
+        required: true
+        type: choice
+        options: [fechado, no-ar]
+        default: fechado
+      confirmacao:
+        description: 'Digite PRODUCAO (modo codigo) ou CARGA-INICIAL (modo completo; SUBSTITUIR-CONTEUDO se a produção já tem conteúdo)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: producao
+  cancel-in-progress: false
+
+jobs:
+  trava-hml:
+    name: Trava (a homologação tem de estar neste commit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Só para ler o ieadc_deploy da homologação por SSH (usa os segredos HML_*; nada da produção entra aqui).
+    environment: homologacao
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      sha: ${{ steps.trava.outputs.sha }}
+      run_hml: ${{ steps.trava.outputs.run_hml }}
+      pacote: ${{ steps.trava.outputs.pacote }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Preparar a chave SSH da homologação
+        env:
+          CHAVE: ${{ secrets.HML_SSH_CHAVE }}
+        run: |
+          umask 077
+          printf '%s\n' "$CHAVE" | tr -d '\r' > "$RUNNER_TEMP/chave-hml"
+          echo "ALVO_CHAVE=$RUNNER_TEMP/chave-hml" >> "$GITHUB_ENV"
+
+      # Toda a lógica da trava está em bin/trava-producao.sh (testável sem o GitHub); as mensagens de erro estão em docs/operacao/ci-cd.md.
+      - name: Trava
+        id: trava
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSAO: ${{ inputs.versao }}
+          MODO: ${{ inputs.modo }}
+          CONFIRMACAO: ${{ inputs.confirmacao }}
+          AMBIENTE: homologacao
+          ALVO_SERVIDOR: ${{ secrets.HML_SERVIDOR }}
+          ALVO_PORTA: ${{ secrets.HML_PORTA }}
+          ALVO_USUARIO: ${{ secrets.HML_USUARIO }}
+          ALVO_URL: ${{ secrets.HML_URL }}
+          ALVO_IMPRESSAO: ${{ secrets.HML_IMPRESSAO }}
+          ALVO_DESTINO: ${{ secrets.HML_DESTINO }}
+        run: ./bin/trava-producao.sh
+
+      - name: Apagar a chave SSH
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave-hml"
+
+  release:
+    name: Criar a release com o pacote da homologação
+    needs: trava-hml
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSAO: ${{ inputs.versao }}
+      SHA: ${{ needs.trava-hml.outputs.sha }}
+      RUN_HML: ${{ needs.trava-hml.outputs.run_hml }}
+      PACOTE_HASH: ${{ needs.trava-hml.outputs.pacote }}
+    steps:
+      - name: Baixar o pacote da homologação
+        run: |
+          set -euo pipefail
+          gh run download "$RUN_HML" -R "$GITHUB_REPOSITORY" -n "pacote-hml-$SHA" -D pacote
+          arq="$(find pacote -name 'ieadc-*.tgz' | head -n 1)"
+          [ -n "$arq" ] || { echo "::error::O artifact não trouxe o pacote."; exit 1; }
+          [ "$(sha256sum "$arq" | cut -d' ' -f1)" = "$PACOTE_HASH" ] || { echo "::error::O pacote guardado não é o que a homologação recebeu (o hash não bate)."; exit 1; }
+          [ "$arq" = "pacote/ieadc-$SHA.tgz" ] || mv "$arq" "pacote/ieadc-$SHA.tgz"
+
+      # Nasce como pré-lançamento: só vira release comum depois que a produção receber o pacote (job "publicar").
+      - name: Criar a release
+        run: |
+          set -euo pipefail
+          gh release create "$VERSAO" "pacote/ieadc-$SHA.tgz" \
+            -R "$GITHUB_REPOSITORY" --target "$SHA" --title "Site $VERSAO" --prerelease --generate-notes \
+            --notes "Pacote validado na homologação (commit \`${SHA:0:7}\`), com os testes verdes. O anexo é o mesmo arquivo que a homologação recebeu."
+
+  producao:
+    name: Implantar na produção
+    needs: [trava-hml, release]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Revisor obrigatório e só a main: configure no GitHub (docs/operacao/ci-cd.md). Os segredos PROD_* vivem só aqui.
+    # Este job só lê (o publicar a release é do job "publicar"); as ações estão fixadas por SHA de commit.
+    environment: producao
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSAO: ${{ inputs.versao }}
+      SHA: ${{ needs.trava-hml.outputs.sha }}
+      PACOTE_HASH: ${{ needs.trava-hml.outputs.pacote }}
+    steps:
+      # Entre o disparo e a aprovação pode ter passado tempo (e novos commits): confere de novo, já com o aval dado.
+      - name: A main ainda está neste commit?
+        run: |
+          set -euo pipefail
+          ponta="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)" || { echo "::error::Não consegui consultar a main no GitHub."; exit 1; }
+          [ "$ponta" = "$SHA" ] || { echo "::error::A main avançou (${ponta:0:7}) desde o disparo. Nada foi enviado; dispare de novo para lançar o commit mais novo, depois que a homologação o receber."; exit 1; }
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.trava-hml.outputs.sha }}
+          persist-credentials: false
+
+      - name: Baixar o pacote da release
+        run: |
+          set -euo pipefail
+          gh release download "$VERSAO" -R "$GITHUB_REPOSITORY" -p "ieadc-$SHA.tgz" -D pacote
+          [ "$(sha256sum "pacote/ieadc-$SHA.tgz" | cut -d' ' -f1)" = "$PACOTE_HASH" ] || { echo "::error::O pacote da release não é o que a homologação recebeu (o hash não bate)."; exit 1; }
+
+      - name: Preparar a chave SSH da produção
+        env:
+          CHAVE: ${{ secrets.PROD_SSH_CHAVE }}
+        run: |
+          umask 077
+          printf '%s\n' "$CHAVE" | tr -d '\r' > "$RUNNER_TEMP/chave-prod"
+          echo "ALVO_CHAVE=$RUNNER_TEMP/chave-prod" >> "$GITHUB_ENV"
+
+      - name: Enviar, rodar a fumaça e registrar a implantação
+        env:
+          ALVO_SERVIDOR: ${{ secrets.PROD_SERVIDOR }}
+          ALVO_PORTA: ${{ secrets.PROD_PORTA }}
+          ALVO_USUARIO: ${{ secrets.PROD_USUARIO }}
+          ALVO_URL: ${{ secrets.PROD_URL || 'https://ieadcvilaipiranga.com.br' }}
+          ALVO_IMPRESSAO: ${{ secrets.PROD_IMPRESSAO }}
+          ALVO_DESTINO: ${{ secrets.PROD_DESTINO }}
+          ALVO_EMAIL_ADMIN: ${{ secrets.PROD_EMAIL_ADMIN }}
+          CARGA: ${{ inputs.modo }}
+          MODO: ${{ inputs.modo == 'completo' && (inputs.abertura == 'no-ar' && 'lancar' || 'ensaio') || '' }}
+          AMBIENTE: producao
+          CONFIRMACAO: ${{ inputs.confirmacao }}
+          DEPLOY_SHA: ${{ needs.trava-hml.outputs.sha }}
+          DEPLOY_VERSAO: ${{ inputs.versao }}
+          DEPLOY_RUN_ID: ${{ github.run_id }}
+        run: ./bin/implantar.sh enviar "pacote/ieadc-$DEPLOY_SHA.tgz"
+
+      - name: Resumo
+        env:
+          CARGA_ESCOLHIDA: ${{ inputs.modo }}
+        run: |
+          {
+            echo "### Produção atualizada: $VERSAO"
+            echo "- Commit: \`${SHA:0:7}\` (o mesmo da homologação)"
+            echo "- Carga: $CARGA_ESCOLHIDA"
+            echo "- O pacote está anexado à release $VERSAO."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Apagar a chave SSH
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave-prod"
+
+  # Sem nenhum segredo da produção: só troca a marca da release de pré-lançamento para publicada.
+  publicar:
+    name: Publicar a release
+    needs: [trava-hml, producao]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSAO: ${{ inputs.versao }}
+    steps:
+      - name: Deixar de ser pré-lançamento
+        run: gh release edit "$VERSAO" -R "$GITHUB_REPOSITORY" --prerelease=false --latest
