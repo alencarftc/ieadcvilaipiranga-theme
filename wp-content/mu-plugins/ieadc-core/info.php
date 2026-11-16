@@ -81,8 +81,8 @@ function ieadc_info_tela(): void {
 	];
 	$ajuda = [
 		'google_avaliacao' => 'Cole o link de avaliação do Perfil da Empresa no Google (ou search.google.com/local/writereview?placeid=…; vale também só o código do lugar, que começa com ChIJ). Vazio: o botão "Avaliar no Google" abre a igreja no Google Maps.',
-		'latitude' => 'Opcional. Ajuda o Google a achar a igreja no mapa (exemplo: -25.4999). Deixe vazio se não souber.',
-		'longitude' => 'Opcional (exemplo: -49.2999). Só vale se a latitude também estiver preenchida.',
+		'latitude' => 'Opcional. Ajuda o Google a achar a igreja no mapa (exemplo: -00.0000). Deixe vazio se não souber.',
+		'longitude' => 'Opcional (exemplo: -00.0000). Só vale se a latitude também estiver preenchida.',
 	];
 	$v = ieadc_info();
 	echo '<div class="wrap"><h1>IEADC Vila Ipiranga</h1><p>Dados usados no cabeçalho, no rodapé e nos formulários. A fonte é a aba Informações gerais da documentação da Comunicação.</p><form method="post" action="options.php">';
@@ -112,7 +112,16 @@ function ieadc_google_avaliacao_limpar(string $valor): string {
 	if (preg_match('/^ChIJ[\w-]{10,}$/', $valor)) {
 		return 'https://search.google.com/local/writereview?placeid=' . $valor;
 	}
-	return esc_url_raw($valor, ['https']);
+	// Só endereços do Google (o campo é de texto livre): perfil/avaliação, Maps e encurtadores oficiais; nada de // nem de outros domínios.
+	$url = esc_url_raw($valor, ['https']);
+	$host = strtolower((string) wp_parse_url($url, PHP_URL_HOST));
+	$permitidos = ['google.com', 'g.page', 'goo.gl', 'maps.app.goo.gl', 'g.co', 'share.google'];
+	foreach ($permitidos as $d) {
+		if ($host === $d || str_ends_with($host, '.' . $d)) {
+			return $url;
+		}
+	}
+	return '';
 }
 
 /** Coordenada decimal dentro do limite (90 ou 180), ou vazio. */

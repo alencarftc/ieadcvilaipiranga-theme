@@ -466,6 +466,10 @@ echo "avalie a igreja no Google
 ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4', ieadc_google_avaliacao_limpar('ChIJN1t_tDeuEmsRUsoyG83frY4'), 'campo aceita só o código do lugar (ChIJ…)');
 ieadc_igual('https://g.page/r/abc123/review', ieadc_google_avaliacao_limpar(' https://g.page/r/abc123/review '), 'campo aceita o link do Perfil da Empresa');
 ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJxyz', ieadc_google_avaliacao_limpar('https://search.google.com/local/writereview?placeid=ChIJxyz'), 'campo aceita o link writereview?placeid=');
+ieadc_igual('', ieadc_google_avaliacao_limpar('https://evil.example/x'), 'campo recusa domínio que não é do Google');
+ieadc_igual('', ieadc_google_avaliacao_limpar('//evil.example/x'), 'campo recusa endereço sem protocolo');
+ieadc_igual('', ieadc_google_avaliacao_limpar('https://google.com.evil.example/x'), 'campo recusa domínio que só começa com google.com');
+ieadc_igual('https://maps.app.goo.gl/abc', ieadc_google_avaliacao_limpar('https://maps.app.goo.gl/abc'), 'campo aceita o encurtador do Maps');
 ieadc_igual('', ieadc_google_avaliacao_limpar('javascript:alert(1)'), 'campo recusa javascript:');
 ieadc_igual('', ieadc_google_avaliacao_limpar('http://exemplo.com/sem-https'), 'campo só aceita https');
 ieadc_igual('-25.4999', ieadc_coordenada_limpar('-25,4999', 90), 'latitude aceita vírgula');
