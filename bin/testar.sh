@@ -31,6 +31,16 @@ if [ -f .env ] && grep -Eq '^IEADC_HOJE=[^[:space:]]' .env && [ "$parte" != "php
   echo "AVISO: .env com IEADC_HOJE preenchido; deixe vazio (o dia real vale e os testes fixam a data por cabeçalho)." >&2
 fi
 
+# Dado de teste: o evento avulso que a agenda do protótipo mostra em 06/10/2026 ("Confraternização dos jovens", 17 e 18/10).
+# O site de verdade não tem esse evento (data passada, era exemplo): ele é criado aqui e apagado no fim (tests/fixtures/).
+fixtures() {
+  docker compose run --rm -T -v "$PWD/tests:/tests:ro" wpcli wp eval-file /tests/fixtures/evento-prototipo.php "$1" >/dev/null 2>&1
+}
+if [ "$parte" != "php" ]; then
+  fixtures criar || echo "AVISO: não consegui criar o evento de teste (agenda do protótipo); markup e visual vão falhar." >&2
+  trap 'fixtures remover' EXIT
+fi
+
 testes_php() {
   passo "php -l (sintaxe de todos os arquivos PHP)"
   local erros=0 arq

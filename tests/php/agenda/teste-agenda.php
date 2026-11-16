@@ -172,5 +172,14 @@ $GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 105, 'post_title' => 'S
 do_action('save_post_evento', 105);
 ok(ieadc_agenda_dia(d('2026-10-27'))[0]['descricao'] === '', 'evento sem resumo fica com descrição vazia (nada de [&hellip;] automático)');
 
+/* 11. Evento que já passou não é "próximo": destaques e próximas datas começam em hoje; evento em andamento continua. */
+$GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 106, 'post_title' => 'Evento passado', 'post_name' => 'evento-passado', 'meta' => ['evento_data' => '2026-09-26']]);
+$GLOBALS['ieadc_teste_eventos'][] = new WP_Post(['ID' => 107, 'post_title' => 'Evento em andamento', 'post_name' => 'evento-em-andamento', 'meta' => ['evento_data' => '2026-10-05', 'evento_data_fim' => '2026-10-07']]);
+do_action('save_post_evento', 106);
+$titulos_destaques = array_column(ieadc_agenda_destaques(30, d('2026-10-06')), 'titulo');
+ok(!in_array('Evento passado', $titulos_destaques, true), 'evento passado não aparece nos próximos destaques');
+ok(in_array('Evento em andamento', $titulos_destaques, true), 'evento em andamento (começou ontem, termina amanhã) ainda aparece');
+ok(!in_array('Evento passado', array_column(ieadc_agenda_destaques(30), 'titulo'), true), 'ieadc_agenda_destaques() parte de hoje (IEADC_HOJE dos testes)');
+
 echo "\n" . ($total - $falhas) . " de $total testes passaram.\n";
 exit($falhas ? 1 : 0);
