@@ -119,7 +119,7 @@ if ($inicio_resp['status'] !== 200) {
 
 /* Evento de teste (apagado no fim, mesmo que algo falhe). */
 $evento_id = wp_insert_post(['post_type' => 'evento', 'post_status' => 'publish', 'post_title' => 'Culto de teste de SEO (apagar)', 'post_excerpt' => '',
-	'meta_input' => ['evento_data' => '2026-12-05', 'evento_data_fim' => '2026-12-06', 'evento_horario' => '19h30 às 21h', 'evento_local' => '']], true);
+	'meta_input' => ['evento_data' => '2026-12-05', 'evento_data_fim' => '2026-12-06', 'evento_horario' => '19h30 às 21h', 'evento_local' => '[local a confirmar]']], true);
 register_shutdown_function(function () use ($evento_id) {
 	if ($evento_id && !is_wp_error($evento_id)) {
 		wp_delete_post($evento_id, true);
@@ -426,6 +426,7 @@ ieadc_igual('https://schema.org/EventScheduled', $no_ev['eventStatus'] ?? '', 'E
 ieadc_igual('https://schema.org/OfflineEventAttendanceMode', $no_ev['eventAttendanceMode'] ?? '', 'Event: presencial');
 ieadc_ok(($no_ev['location']['@type'] ?? '') === 'Place' && ($no_ev['location']['name'] ?? '') === $nome && ($no_ev['location']['address']['addressLocality'] ?? '') === 'Curitiba', 'Event: location = a igreja (Place com o endereço), já que o evento não tem local próprio', $no_ev['location'] ?? null);
 ieadc_igual($igreja_id, $no_ev['organizer']['@id'] ?? '', 'Event: organizer = a igreja');
+ieadc_ok(!str_contains(json_encode($no_ev, JSON_UNESCAPED_UNICODE), '['), 'Event: "[local a confirmar]" do cadastro não vai para o Google (o local cai na igreja)');
 ieadc_ok(wp_parse_url($no_ev['url'] ?? '', PHP_URL_PATH) === $ev_path && preg_match('#^https?://#', $no_ev['image'] ?? ''), 'Event: url da página e imagem');
 ieadc_ok(str_contains($no_ev['description'] ?? '', 'das 19h30 às 21h') && !str_contains($no_ev['description'] ?? '', 'às 19h30 às'), 'Event: descrição montada com data e horário', $no_ev['description'] ?? null);
 ieadc_igual(['Início', 'Eventos', 'Culto de teste de SEO (apagar)'], $ev ? array_column(ieadc_t_nos($ev, 'BreadcrumbList')[0]['itemListElement'] ?? [], 'name') : null, 'página do evento: migalha Início > Eventos > título');
@@ -433,8 +434,8 @@ $lista = $paginas['/eventos/'] ?? null;
 $nomes_lista = $lista ? array_column(ieadc_t_nos($lista, 'Event'), 'name') : [];
 ieadc_ok(in_array('Culto de teste de SEO (apagar)', $nomes_lista, true), 'página Eventos: lista os próximos eventos como Event', $nomes_lista);
 ieadc_ok($lista && in_array('CollectionPage', ieadc_t_tipos(ieadc_t_nos($lista, 'WebPage')[0] ?? []), true), 'página Eventos: WebPage também é CollectionPage');
-$outro_evento = array_diff_key($paginas, [$ev_path => 1, '/eventos/' => 1]);
-ieadc_t_todas($outro_evento, 'Event só na página do evento e na página Eventos', fn($c, $p) => !ieadc_t_nos($p, 'Event') ?: 'Event fora de lugar');
+$sem_evento = array_filter($paginas, fn($p, $c) => $p['post']->post_type !== 'evento' && $c !== '/eventos/', ARRAY_FILTER_USE_BOTH); // o testar.sh também cria o evento do protótipo
+ieadc_t_todas($sem_evento, 'Event só nas páginas de evento e na página Eventos', fn($c, $p) => !ieadc_t_nos($p, 'Event') ?: 'Event fora de lugar');
 
 /* ---------- Sem Yoast: o mesmo grafo pelo fallback do tema ---------- */
 echo "grafo sem Yoast (fallback do tema)\n";
@@ -458,6 +459,28 @@ foreach ([['inicio', 'page', 1], ['alcancar-curitiba', 'post', 3]] as [$slug, $t
 	}
 }
 wp_reset_query();
+
+/* ---------- Avalie no Google (bloco e campo de Configurações) ---------- */
+echo "avalie a igreja no Google
+";
+ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4', ieadc_google_avaliacao_limpar('ChIJN1t_tDeuEmsRUsoyG83frY4'), 'campo aceita só o código do lugar (ChIJ…)');
+ieadc_igual('https://g.page/r/abc123/review', ieadc_google_avaliacao_limpar(' https://g.page/r/abc123/review '), 'campo aceita o link do Perfil da Empresa');
+ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJxyz', ieadc_google_avaliacao_limpar('https://search.google.com/local/writereview?placeid=ChIJxyz'), 'campo aceita o link writereview?placeid=');
+ieadc_igual('', ieadc_google_avaliacao_limpar('javascript:alert(1)'), 'campo recusa javascript:');
+ieadc_igual('', ieadc_google_avaliacao_limpar('http://exemplo.com/sem-https'), 'campo só aceita https');
+ieadc_igual('-25.4999', ieadc_coordenada_limpar('-25,4999', 90), 'latitude aceita vírgula');
+ieadc_igual(['', ''], [ieadc_coordenada_limpar('95', 90), ieadc_coordenada_limpar('abc', 180)], 'coordenada fora do limite ou não numérica some');
+$mapa = ieadc_google_maps_url();
+ieadc_ok(str_starts_with($mapa, 'https://www.google.com/maps/search/?api=1&query=') && str_contains($mapa, rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'))), 'sem link próprio, o botão leva à igreja no Google Maps (nome e endereço codificados)', $mapa);
+$html = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
+ieadc_ok(str_contains($html, 'href="' . esc_url($mapa) . '"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: botão abre em nova aba com rel="noopener" (sem campo preenchido, vai ao Maps)');
+ieadc_ok(substr_count($html, 'class="estrela"') === 5 && str_contains($html, '<div class="estrelas" aria-hidden="true">') && str_contains($html, '>Avaliar no Google<'), 'bloco: 5 estrelas decorativas e botão com texto visível "Avaliar no Google"');
+ieadc_ok(!preg_match('/\d+([,.]\d+)?\s*(estrelas|avalia)|nota\s+\d/iu', wp_strip_all_tags($html)), 'bloco: sem nota nem número de avaliações no texto', wp_strip_all_tags($html));
+$troca = fn($d) => array_merge($d, ['google_avaliacao' => 'https://g.page/r/abc123/review']);
+add_filter('ieadc_info', $troca);
+$html = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
+remove_filter('ieadc_info', $troca);
+ieadc_ok(str_contains($html, 'href="https://g.page/r/abc123/review"') && str_contains($html, 'aria-label="Avaliar no Google (abre em nova aba)"'), 'bloco: com o campo preenchido o botão usa o link de avaliação');
 
 /* ---------- robots.txt, sitemap e llms.txt ---------- */
 echo "robots.txt, sitemap e llms.txt\n";

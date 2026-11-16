@@ -267,7 +267,7 @@ function ieadc_schema_eventos(?WP_Post $post): array {
 		}
 		$url = get_permalink($p);
 		$horas = ieadc_schema_horas((string) $ev['hora']);
-		$local = trim((string) get_post_meta($p->ID, 'evento_local', true));
+		$local = ieadc_seo_limpar((string) get_post_meta($p->ID, 'evento_local', true)); // "[local a confirmar]" não vai para o Google
 		$fim = isset($horas[1]) ? ieadc_schema_data_hora($ev['fim'], $horas[1]) : ($ev['fim'] > $ev['ini'] ? $ev['fim'] : '');
 		$foto = get_the_post_thumbnail_url($p, 'full') ?: (ieadc_seo_imagem_dados($p)['url'] ?? '');
 		$saida[] = array_filter([
@@ -320,7 +320,7 @@ function ieadc_schema_limpar(array $grafo): array {
 			}
 			$r[$k] = $limpa($item);
 		}
-		return array_is_list($v) ? array_values($r) : $r;
+		return ($v === [] || array_keys($v) === range(0, count($v) - 1)) ? array_values($r) : $r;
 	};
 	return $limpa($grafo);
 }

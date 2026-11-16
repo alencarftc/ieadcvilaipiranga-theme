@@ -103,11 +103,11 @@ function ieadc_seo_descricao_evento(WP_Post $p): string {
 		$d = DateTimeImmutable::createFromFormat('!Y-m-d', $ini, ieadc_agenda_fuso());
 		$partes[] = wp_date('j \d\e F \d\e Y', $d->getTimestamp(), ieadc_agenda_fuso());
 	}
-	$hora = trim((string) get_post_meta($p->ID, 'evento_horario', true));
+	$hora = ieadc_seo_limpar((string) get_post_meta($p->ID, 'evento_horario', true)); // sem "[a confirmar]"
 	if ($hora !== '') { // "19h30" vira "às 19h30"; "19h30 às 21h" vira "das 19h30 às 21h"
 		$partes[] = (preg_match_all('/\d{1,2}h/u', $hora) > 1 ? 'das ' : 'às ') . $hora;
 	}
-	$local = trim((string) get_post_meta($p->ID, 'evento_local', true));
+	$local = ieadc_seo_limpar((string) get_post_meta($p->ID, 'evento_local', true));
 	$txt = ieadc_seo_limpar(get_the_title($p)) . ($partes ? ': ' . implode(', ', $partes) : '') . ($local !== '' ? ' · ' . $local : '');
 	return $txt . '. Evento da ' . ieadc_seo_nome() . '.';
 }
