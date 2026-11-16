@@ -37,7 +37,9 @@ if ($titulo !== '') {
 	echo '<h1 class="h1">' . ieadc_kses_rico($titulo) . '</h1>';
 }
 echo ieadc_swoosh();
-echo ieadc_paragrafos((string) ($a['lead'] ?? ''), 'lead');
+// {atualizacao} = data da última alteração desta página (ex.: "Última atualização" da política de privacidade).
+$lead = str_replace('{atualizacao}', esc_html((string) get_the_modified_date('', (int) get_the_ID())), (string) ($a['lead'] ?? ''));
+echo ieadc_paragrafos($lead, 'lead');
 
 $extra = trim((string) ($a['extra'] ?? ''));
 if ($extra !== '') {

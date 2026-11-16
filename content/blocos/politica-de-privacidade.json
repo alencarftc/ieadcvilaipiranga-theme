@@ -5,7 +5,7 @@
    "variante": "sem-foto",
    "eyebrow": "Política de privacidade",
    "titulo": "Política de privacidade",
-   "lead": "Última atualização: [data da publicação]"
+   "lead": "Última atualização: {atualizacao}"
   }
  },
  {

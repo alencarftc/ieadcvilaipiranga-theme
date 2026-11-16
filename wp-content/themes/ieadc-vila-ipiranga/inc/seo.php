@@ -46,6 +46,7 @@ function ieadc_seo_descricao(): string {
 	if ($txt === '') {
 		$txt = (string) get_the_excerpt($post);
 	}
+	$txt = str_replace('{atualizacao}', (string) get_the_modified_date('', $post), $txt); // ver blocos/hero/render.php
 	$txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(strip_shortcodes($txt))));
 	$txt = trim(str_replace(['[', ']'], '', $txt)); // [a confirmar] não vai para o Google
 	return mb_strlen($txt) > 160 ? rtrim(mb_substr($txt, 0, 157)) . '…' : $txt;

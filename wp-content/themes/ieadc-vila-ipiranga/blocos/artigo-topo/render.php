@@ -2,7 +2,7 @@
 /**
  * Bloco ieadc/artigo-topo (B4). HTML esperado: docs/specs/referencias/artigo-topo.html.
  * Lê o post atual: categoria, selo de exemplo (meta ieadc_exemplo), título, resumo (excerpt),
- * autor e data, imagem destacada. Nos artigos de exemplo, autor e data ficam "[a confirmar]".
+ * autor e data, imagem destacada. Nos artigos de exemplo o autor é "Comunicação IEADC Vila Ipiranga"; a data é a do post.
  */
 defined('ABSPATH') || exit;
 $a = $attributes;
@@ -37,15 +37,10 @@ if (has_excerpt($post)) {
 }
 
 // Autor e data. Exemplo: ainda sem autor nem data definidos.
-if ($exemplo) {
-	$avatar = '?';
-	$linha = 'Autor <mark class="pend">[a confirmar]</mark> · <mark class="pend">[data da publicação]</mark>';
-} else {
-	$nome = trim((string) get_the_author_meta('display_name', (int) $post->post_author));
-	$partes = array_values(array_filter(preg_split('/\s+/u', $nome), fn($w) => $w !== '' && !str_ends_with($w, '.')));
-	$avatar = $partes ? mb_strtoupper(mb_substr($partes[0], 0, 1) . (count($partes) > 1 ? mb_substr(end($partes), 0, 1) : '')) : '?';
-	$linha = ($nome !== '' ? esc_html($nome) : 'Autor <mark class="pend">[a confirmar]</mark>') . ' · ' . esc_html(get_the_date('', $post));
-}
+$nome = $exemplo ? 'Comunicação IEADC Vila Ipiranga' : trim((string) get_the_author_meta('display_name', (int) $post->post_author));
+$partes = array_values(array_filter(preg_split('/\s+/u', $nome), fn($w) => $w !== '' && !str_ends_with($w, '.')));
+$avatar = $partes ? mb_strtoupper(mb_substr($partes[0], 0, 1) . (count($partes) > 1 ? mb_substr(end($partes), 0, 1) : '')) : '?';
+$linha = ($nome !== '' ? esc_html($nome) : 'Comunicação IEADC Vila Ipiranga') . ' · ' . esc_html(get_the_date('', $post));
 echo '<div class="autor"><span class="avatar">' . esc_html($avatar) . '</span><span>' . $linha . '</span></div>';
 echo '</div>';
 if ($capa !== '') {

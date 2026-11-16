@@ -141,7 +141,7 @@
 		},
 		"notaTexto": {
 			"type": "string",
-			"default": "As datas das confraternizações e eventos de cada departamento são apresentadas pelas lideranças na reunião de início de ano. [datas de 2027 a confirmar]",
+			"default": "As datas das confraternizações e eventos de cada departamento são apresentadas pelas lideranças na reunião de início de ano. Quando forem definidas, as datas aparecem no calendário acima.",
 			"ieadc": {
 				"rotulo": "Texto da nota",
 				"campo": "rico"
