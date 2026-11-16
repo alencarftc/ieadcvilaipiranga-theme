@@ -1,15 +1,35 @@
 <?php
-// M3: eventos avulsos. O site NÃO nasce com evento de exemplo: quem cadastra os eventos é a equipe de Comunicação
-// (painel > Eventos), e a agenda (mu-plugin ieadc-core/agenda.php) mostra só os que ainda vão acontecer.
+// M3: eventos avulsos. Quem cadastra os eventos depois do lançamento é a equipe de Comunicação (painel > Eventos), e a agenda
+// (mu-plugin ieadc-core/agenda.php) mostra só os que ainda vão acontecer.
 //
-// Antes havia aqui a "Confraternização dos jovens" (17 e 18 de outubro de 2026, horário e local a confirmar), copiada do
-// protótipo. A data já passou e o evento era dado de exemplo; ele agora existe só como dado de teste, criado e apagado por
-// tests/fixtures/evento-prototipo.php (bin/testar.sh), porque a agenda do protótipo de 06/10/2026 o mostra.
+// Fase 5B (16/11/2026): os eventos abaixo são os que o Felipe informou (datas e descrições dele). Horário e local ficam vazios
+// quando ele não os informou: a agenda esconde o campo vazio, e a pergunta está em docs/operacao/perguntas-ao-pastor-robson.md.
+// A "Confraternização dos jovens" (17 e 18 de outubro, exemplo do protótipo) já passou: ela existe só como dado de teste, criado e
+// apagado por tests/fixtures/evento-prototipo.php (bin/testar.sh), porque a agenda do protótipo de 06/10/2026 a mostra.
 //
-// Este arquivo apaga restos desse dado de teste (se um teste foi interrompido) e deixa o espaço pronto para eventos
-// fixos de verdade: acrescente itens em $eventos só com dados confirmados pela liderança (data, horário, local).
+// Este arquivo apaga restos desse dado de teste (se um teste foi interrompido) e cria os eventos que ainda não existem
+// (procura pelo endereço do evento; evento já editado no painel não é alterado, exceto com IEADC_ATUALIZAR=1).
+// Acrescente itens em $eventos só com dados confirmados pela liderança.
 
-$eventos = [];
+$eventos = [
+	[
+		'slug' => 'confra-infantil', 'titulo' => 'Confra infantil', 'resumo' => 'Confraternização infantil da igreja.',
+		'data' => '2026-11-28', 'data_fim' => '', 'horario' => '', 'local' => '', 'categoria' => 'c-culto', 'link' => '',
+	],
+	[
+		'slug' => 'almoco-da-igreja', 'titulo' => 'Almoço da igreja', 'resumo' => 'Almoço de comunhão da igreja.',
+		'data' => '2026-12-03', 'data_fim' => '', 'horario' => '', 'local' => '', 'categoria' => 'c-culto', 'link' => '',
+	],
+	[
+		'slug' => 'ceunem-biblico', 'titulo' => 'Céunem Bíblico',
+		'resumo' => 'Desafio em formato de prova sobre o livro de João, no estilo do ENEM, com 90 perguntas e alternativas de A a D.',
+		'data' => '2026-12-13', 'data_fim' => '', 'horario' => '', 'local' => '', 'categoria' => 'c-ensino', 'link' => '',
+	],
+	[
+		'slug' => 'cantata-de-natal', 'titulo' => 'Cantata de Natal', 'resumo' => 'Cantata de Natal da igreja.',
+		'data' => '2026-12-13', 'data_fim' => '', 'horario' => 'À noite', 'local' => '', 'categoria' => 'c-culto', 'link' => '',
+	],
+];
 
 // Restos do dado de teste (meta _ieadc_fixture_teste): nunca devem ir para o site de verdade.
 $restos = get_posts(['post_type' => 'evento', 'post_status' => 'any', 'meta_key' => '_ieadc_fixture_teste', 'meta_value' => '1', 'posts_per_page' => -1, 'fields' => 'ids']);
