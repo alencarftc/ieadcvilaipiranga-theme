@@ -25,14 +25,14 @@ Pastor, pode responder do jeito que for mais fácil, por mensagem ou de viva voz
 11. **Mocidade.** Existem encontros próprios dos jovens? Em que dia e horário? Há retiros ou eventos marcados para o ano?
 12. **Crianças.** O que as crianças fazem nas aulas (atividades, músicas, histórias, trabalhos manuais)? A classe Pérolas de Cristo, da Escola Bíblica Dominical, é a mesma turma do ministério das Crianças (de 0 a 8 anos) ou atende outra faixa de idade?
 13. **Ensinai.** Quais são as matérias e os livros do curso básico de 2 anos, na ordem em que serão estudados? Em que mês começa a próxima turma (que inicia quando a atual terminar)? Como se faz a inscrição e o curso dá certificado?
-14. **Escola Bíblica Dominical.** Para qual idade é cada classe (Abraão e Sara, Chama Celeste e Pérolas de Cristo)? Qual é a revista da CPAD usada neste trimestre?
+14. **Escola Bíblica Dominical.** Para qual idade é cada classe (Abraão e Sara, Chama Celeste e Pérolas de Cristo)? Qual é o livro da CPAD usado neste trimestre?
 
 ## Liderança, fotos e imagens
 
 15. **Fotos dos líderes.** O senhor pode pedir aos líderes (o senhor, o Pb. Manoel Lima e os líderes de cada departamento) a autorização para publicar uma foto no site? O Felipe cuida de tirar ou receber as fotos.
-16. **Fotos dos cultos e dos ministérios.** Quais fotos recentes podemos publicar na galeria e nas páginas de cada ministério? Como estão guardadas as autorizações de imagem dos pais ou responsáveis das crianças, e quais fotos já têm autorização? Para o Ensinai, que é de adultos, basta o aviso geral, como o Felipe informou?
+16. **Fotos dos cultos e dos ministérios.** Quais fotos recentes podemos publicar na galeria e nas páginas de cada ministério? Como estão guardadas as autorizações de imagem dos pais ou responsáveis das crianças, e quais fotos já têm autorização? Para o Ensinai, o Felipe informou que não é preciso pedir autorização de imagem; o senhor confirma?
 17. **Departamentos sem responsável.** O departamento de Mídia/Comunicação saiu da lista por enquanto, porque ainda não há uma definição. Há outros departamentos que faltam definir ou criar? Quem seria o responsável por cada um?
-18. **Como cada pessoa quer ser chamada.** O site usa Pr. Robson Stein para o senhor, Pb. para presbítero, Ev. para evangelista, Dc. para diácono e Coop. para cooperador. O senhor prefere assim? Algum líder pede outro tratamento?
+18. **Cargo e tratamento.** Qual é o seu cargo oficial (pastor ou evangelista) e como o senhor quer ser chamado no site? Hoje ele usa Pr. Robson Stein; se o certo for outro, trocamos em todas as páginas. Para os demais, o site usa Pb. para presbítero, Ev. para evangelista, Dc. para diácono e Coop. para cooperador: algum líder pede outro tratamento?
 
 ## História da igreja
 

@@ -83,10 +83,10 @@
     {
      "ancora": "tema-culto-de-ensino",
      "titulo": "Tema atual",
-     "tipo": "versiculo+texto",
-     "texto": "<b>Vida renascida acontece sob o poder da esperança.</b>\n\nO Plano de Deus para nosso ser criado é completamente preenchido quando nos encontramos vivos perante Ele. O pecado introduziu morte Espiritual, a Salvação em Cristo gerou nova vida por meio do poder regenerador da sua Palavra.",
-     "versiculo": "pois fostes regenerados, não de semente corruptível, mas de incorruptível, mediante a palavra de Deus, viva e permanente.",
-     "referencia": "1 Pedro 1.23 (ARA)",
+     "tipo": "texto",
+     "texto": "<b>Vida renascida acontece sob o poder da esperança.</b> (1 Pedro 1.23)\n\nO Plano de Deus para nosso ser criado é completamente preenchido quando nos encontramos vivos perante Ele. O pecado introduziu morte Espiritual, a Salvação em Cristo gerou nova vida por meio do poder regenerador da sua Palavra.",
+     "versiculo": "",
+     "referencia": "",
      "itens": []
     },
     {

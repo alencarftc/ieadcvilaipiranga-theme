@@ -13,7 +13,9 @@ Aqui ficam só os passos que dependem dele.
 | 3 | **Fotos dos líderes** | Receber de cada líder (com autorização) uma foto JPG ou PNG, rosto visível, de 800 px de largura ou mais, e trocar nas páginas (*Liderança*: pastoreio e departamentos). Enquanto isso, os cartões mostram iniciais e ícone, com o aviso "As fotos dos líderes serão publicadas em breve." | Liderança com fotos |
 | 4 | **E-mails dos formulários** | Pedir aos responsáveis um e-mail para os **pedidos de oração** e outro para o **Fale conosco** e gravar em *Configurações > IEADC Vila Ipiranga*. Sem isso os formulários enviam para o e-mail do administrador do site | Mensagens e pedidos chegando a quem responde |
 | 5 | **UpdraftPlus no Google Drive da igreja** | No painel: *Configurações > UpdraftPlus Backups > Configurações > Google Drive*, autorizar entrando **ele mesmo** com a conta da igreja (a senha não passa por ninguém) e rodar um backup de teste. O agendamento (semanal e diário, 4 cópias) já vem gravado | Backup fora do servidor |
-| 6 | **Abrir ao público** | Só com o "pode abrir" dele. Os interruptores *aberto ao público* e *permitir que o Google indexe* ficam em *Configurações > IEADC Vila Ipiranga > Estado do site* (ver `lancamento.md`) | Site no ar |
+| 6 | **Ligar o 2FA (duas etapas)** do Felipe e do pastor | Cada um liga o seu em *Usuários > Perfil > Opções de dois fatores > E-mail* e testa sair e entrar de novo (passo a passo em `plugins.md`). Só depois que os e-mails do servidor chegarem de verdade (teste com *Esqueci a senha*) | Login seguro antes de abrir |
+| 7 | **Relação das matérias do Ensinai** | O Felipe se ofereceu a passar a lista das matérias e dos livros do curso básico (2 anos, desde agosto/2026) para entrar na página do Ensinai | Página do Ensinai completa |
+| 8 | **Abrir ao público** | Só com o "pode abrir" dele. Os interruptores *aberto ao público* e *permitir que o Google indexe* ficam em *Configurações > IEADC Vila Ipiranga > Estado do site* (ver `lancamento.md`) | Site no ar |
 
 ## Lançamento: carga do conteúdo novo
 

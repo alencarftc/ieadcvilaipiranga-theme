@@ -14,7 +14,7 @@ function ieadc_info_padrao(): array {
 		'nome_longo' => 'Congregação da Igreja Evangélica Assembleia de Deus em Curitiba',
 		'endereco'   => 'Rua Marechal Althayr Roszanniy, 555 - Capão Raso, Curitiba - PR',
 		'telefone'   => '+55 (41) 98838-1994',
-		'email'      => 'ieadcvilaipiranga@gmail.com', // e-mail público da igreja (o do pastor fica só na lista de contatos e na política de privacidade)
+		'email'      => 'ieadcvilaipiranga@gmail.com', // e-mail público da igreja (o e-mail pessoal do pastor não é publicado)
 		'instagram'  => 'https://www.instagram.com/ieadc.vilaipiranga/',
 		'facebook'   => 'https://www.facebook.com/ieadcvipagina',
 		'youtube'    => 'https://www.youtube.com/channel/UC7la6gW5oIvo83_DQhBp9sQ',

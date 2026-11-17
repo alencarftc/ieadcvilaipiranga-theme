@@ -123,7 +123,7 @@ RODAPE = f'''<footer class="rodape"><div class="wrap"><div class="cols topo-rod"
 <p style="margin-top:21px"><b style="color:#fff">IEADC Vila Ipiranga</b><br>Congregação da Igreja Evangélica Assembleia de Deus em Curitiba</p>
 <div class="redes"><a href="{IG}" aria-label="Instagram">{ic("insta")}</a><a href="{FB}" aria-label="Facebook">{ic("fb")}</a><a href="{YT}" aria-label="YouTube">{ic("yt")}</a></div></div>
 <div><h4>Cultos</h4><ul><li>Segunda · 20h · Culto de Oração</li><li>Quarta · 20h · Culto de Ensino</li><li>Quinta · 20h · Círculo de Oração</li><li>Sexta · 19h30 · Ensinai</li><li>Domingo · 9h30 EBD · 19h culto</li><li>2º sábado · 19h30 · Ceia do Senhor</li></ul></div>
-<div><h4>Contato</h4><ul><li>{END}</li><li>+55 (41) 98838-1994</li><li>robsondouglass@terra.com.br</li></ul></div>
+<div><h4>Contato</h4><ul><li>{END}</li><li>+55 (41) 98838-1994</li><li>ieadcvilaipiranga@gmail.com</li></ul></div>
 <div><h4>Outros links</h4><ul><li><a href="{SEDE}">Site da IEADC</a></li><li><a href="{IG}">Instagram</a></li><li><a href="{FB}">Facebook</a></li><li><a href="{YT}">YouTube</a></li></ul></div>
 </div>{_mapa_site()}<div class="base"><span>Igreja Sede: Pr. Wagner Tadeu dos Santos Gaby, presidente, e Pr. Aristides Vieira, vice-presidente.</span><span class="tema">2026 · ALCANÇAR CURITIBA PARA CRISTO. NOSSA MISSÃO, NOSSA PAIXÃO.</span></div></div></footer>'''
 
@@ -617,7 +617,7 @@ c += f'''<section class="sec"><div class="wrap" style="display:grid;grid-templat
 <div class="msg" id="ok-contato" hidden>{ic("ok")}<span>Mensagem enviada. Obrigado pelo contato! Vamos responder assim que possível.</span></div>
 <div class="msg erro">{ic("erro")}<span><b>Mensagem de erro (exemplo)</b>Não foi possível enviar. Confira os campos e tente de novo.</span></div></form>
 <aside class="lateral"><span class="eyebrow claro">Contatos</span><h2 class="h3" style="margin-top:8px">Fale com a igreja</h2>
-<div class="contato-lista"><div>{ic("fone")}<p><b>1° dirigente: Ev. Robson Stein</b><span>+55 (41) 98838-1994<br>robsondouglass@terra.com.br</span></p></div>
+<div class="contato-lista"><div>{ic("fone")}<p><b>1° dirigente: Ev. Robson Stein</b><span>+55 (41) 98838-1994<br>ieadcvilaipiranga@gmail.com</span></p></div>
 <div>{ic("fone")}<p><b>2º dirigente: Pb. Manoel Lima</b><span>+55 (41) 98444-5001<br>E-mail <mark class="pend">[a definir]</mark></span></p></div>
 <div>{ic("pin")}<p><b>Endereço</b><span>{END}</span></p></div>
 <div>{ic("insta")}<p><b>Redes sociais</b><span><a href="{IG}">Instagram</a> · <a href="{FB}">Facebook</a> · <a href="{YT}">YouTube</a></span></p></div></div></aside></div></section>

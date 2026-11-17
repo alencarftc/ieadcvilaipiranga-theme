@@ -20,10 +20,10 @@ Construir o site em WordPress com **alta fidelidade ao protótipo v3 aprovado**,
 Regras que não mudam:
 
 - Família Roboto + Roboto Condensed; a frase cursiva (Dancing Script) só onde o protótipo usa.
-- Fotos sempre coloridas, sem filtro, sem repetir entre seções e páginas. Sem fotos com o pastor João; Ev. Robson Stein de preferência.
+- Fotos sempre coloridas, sem filtro, sem repetir entre seções e páginas. Sem fotos com o pastor João; Pr. Robson Stein de preferência.
 - Nunca inventar dado da igreja. (No plano original o texto não confirmado ficava entre colchetes com fundo amarelo; a fase 5B retirou essa marcação: o que falta fica como texto geral.)
 - Sem chamadas de transmissão ao vivo (só o link do canal nas redes).
-- Pastor: "Ev. Robson Stein, pastor da igreja local". Usar "Ceia do Senhor" e "Culto de Ensino". Endereço com número 555.
+- Pastor: "Pr. Robson Stein, pastor da igreja local". Usar "Ceia do Senhor" e "Culto de Ensino". Endereço com número 555.
 
 ## 2. Estado atual (base pronta em 15/11)
 
