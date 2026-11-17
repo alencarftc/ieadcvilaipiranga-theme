@@ -249,7 +249,7 @@ provar() {
   wpr $SITE_HML option update home "$URL_HML" > /dev/null 2>&1; wpr $SITE_HML option update siteurl "$URL_HML" > /dev/null 2>&1
   imp AMBIENTE=homologacao ESPERADO=aberto ALVO_URL="$URL_HML" ALVO_DESTINO="$P_HML" -- fumaca
   confere "fumaça: depois de restaurar o endereço, a hml volta a passar" rc0_e_saida_tem "Fumaça aprovada"
-  H_PROD5="$(h_sem_hml)"; H_HML5="$(h_hml)"
+  H_PROD5="$(h_sem_hml)"
   # 5b) S5: link simbólico dentro da hml (aqui, uploads apontando para a produção) é recusado pelo cliente completo e nada é escrito.
   R sh -c "mv $SITE_HML/wp-content/uploads $SITE_HML/wp-content/uploads.real && ln -s ../../wp-content/uploads $SITE_HML/wp-content/uploads"
   H_HML5L="$(h_hml)"
