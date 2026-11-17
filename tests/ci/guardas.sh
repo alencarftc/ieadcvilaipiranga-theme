@@ -199,9 +199,9 @@ med() {
   total=$((total + 1))
   saida="$(env -i PATH="$PATH" HOME="$TMP" "$@" bash bin/implantar.sh enviar "$TMP/mini.tgz" 2>&1)"; rc=$?
   if [ "$esperado" = ok ]; then
-    if [ "$rc" -ne 0 ] && [[ "$saida" == *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"GTM_ID"* ]] && [[ "$saida" != *"CLARITY_ID"* ]]; then passa; else falhou "deveria ACEITAR o ID (validação passa e para sem conectar): $nome" "$saida"; fi
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"GTM_ID"* ]] && [[ "$saida" != *"CLARITY_ID"* ]]; then passou; else falhou "deveria ACEITAR o ID (validação passa e para sem conectar): $nome" "$saida"; fi
   else
-    if [ "$rc" -ne 0 ] && [[ "$saida" == *"ERRO"* ]] && [[ "$saida" == *"$trecho"* ]] && [[ "$saida" != *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"Chave do servidor"* ]]; then passa; else falhou "deveria RECUSAR o ID: $nome" "$saida"; fi
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"ERRO"* ]] && [[ "$saida" == *"$trecho"* ]] && [[ "$saida" != *"falta a variável ALVO_SERVIDOR"* ]] && [[ "$saida" != *"Chave do servidor"* ]]; then passou; else falhou "deveria RECUSAR o ID: $nome" "$saida"; fi
   fi
 }
 MP=(AMBIENTE=producao CARGA=codigo CONFIRMACAO=PRODUCAO ALVO_URL="https://$PROD")          # produção
