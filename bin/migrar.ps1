@@ -64,13 +64,20 @@ $dominioProducao = 'ieadcvilaipiranga.com.br'
 $hostUrl = ([uri]$Url).Host.ToLowerInvariant()
 $pastaProducao = "domains/$dominioProducao/public_html"; $pastaHml = "$pastaProducao/hml"; $hostHml = "hml.$dominioProducao"
 $hostPrincipal = ($hostUrl -ceq $dominioProducao) -or ($hostUrl -ceq "www.$dominioProducao")
+# localhost e 127.0.0.1 só existem no ensaio local (bin\ensaio-local.ps1 usa -Servidor 127.0.0.1): contra qualquer outro servidor
+# eles nunca são o endereço de um site.
+$servidorLocal = @('127.0.0.1', 'localhost', '::1') -contains ([string]$Servidor).ToLowerInvariant()
+$hostLocal = @('localhost', '127.0.0.1') -contains $hostUrl
+# O endereço gravado em home/siteurl é sempre minúsculo, sem barra final e sem porta (a porta só existe no ensaio local).
+$uriNorm = [uri]$Url
+$Url = $uriNorm.Scheme + '://' + $hostUrl + $(if ($servidorLocal -and -not $uriNorm.IsDefaultPort) { ':' + $uriNorm.Port } else { '' })
 if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
 if (-not $Destino) {
-  $Destino = if ($hostUrl -ceq $hostHml) { $pastaHml } elseif ($Ambiente -eq 'producao' -and $hostPrincipal) { $pastaProducao } else { "domains/$hostUrl/public_html" }
+  $Destino = if ($hostUrl -ceq $hostHml) { $pastaHml } elseif ($Ambiente -eq 'producao' -and ($hostPrincipal -or $hostLocal)) { $pastaProducao } else { "domains/$hostUrl/public_html" }
 }
 if ($Destino -cmatch '(^/)|\.\.|//|\\|\s|~') { throw "A pasta do site ($Destino) é inválida: não pode começar com /, ter .., //, barra invertida, espaços nem ~." }
 if ($Ambiente -eq 'producao') {
-  if ($hostUrl -ceq $hostHml) { throw "A produção não pode apontar para o endereço da homologação ($hostHml)." }
+  if (-not ($hostPrincipal -or ($hostLocal -and $servidorLocal))) { throw "Na produção o endereço deve ser $dominioProducao ou www.$dominioProducao (localhost e 127.0.0.1 só no ensaio local, com -Servidor 127.0.0.1). Recebi $hostUrl." }
   if ($Destino -cne $pastaProducao) { throw "Na produção a pasta do site deve ser exatamente $pastaProducao (recebi $Destino). Nenhuma outra pasta da conta é tocada." }
 } else {
   if ($hostPrincipal) { throw "A homologação não pode apontar para $dominioProducao (endereço $Url, pasta $Destino). Para enviar à produção use -Ambiente producao." }
