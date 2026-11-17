@@ -33,6 +33,7 @@ if (!$menu) {
 	};
 	$add($ids['inicio']);
 	$igreja = $add($ids['sobre'], 0, '', 'A Igreja');
+	$add($ids['sobre'], $igreja, '', 'Sobre nós');
 	$add($ids['lideranca'], $igreja);
 	$mi = $add($ids['minis'], $igreja);
 	foreach ($minis as $slug => [$t, $ico]) {
@@ -52,6 +53,50 @@ if (!$menu) {
 	$menu = wp_get_nav_menu_object($menu_id);
 	WP_CLI::log('Menu principal criado.');
 }
+
+// Fase 5B: "Sobre nós" também como primeiro item do submenu "A Igreja" (antes só havia o título "A Igreja", que leva à mesma página,
+// e a página parecia faltar no menu e no mapa do rodapé). Menu criado antes disso: acrescenta o item na posição certa, sem apagar
+// o que foi mudado no painel.
+if ($ids['sobre']) {
+	$itens_menu = wp_get_nav_menu_items($menu->term_id) ?: [];
+	$pai_igreja = null;
+	$tem_filho = false;
+	foreach ($itens_menu as $it) {
+		if ((int) $it->object_id !== $ids['sobre']) {
+			continue;
+		}
+		if ((int) $it->menu_item_parent === 0) {
+			$pai_igreja = $it;
+		} else {
+			$tem_filho = true;
+		}
+	}
+	if ($pai_igreja && !$tem_filho) {
+		$posicao = PHP_INT_MAX;
+		foreach ($itens_menu as $it) {
+			if ((int) $it->menu_item_parent === (int) $pai_igreja->ID) {
+				$posicao = min($posicao, (int) $it->menu_order);
+			}
+		}
+		$posicao = $posicao === PHP_INT_MAX ? (int) $pai_igreja->menu_order + 1 : $posicao;
+		foreach ($itens_menu as $it) {
+			if ((int) $it->menu_order >= $posicao) {
+				wp_update_post(['ID' => (int) $it->ID, 'menu_order' => (int) $it->menu_order + 1]);
+			}
+		}
+		wp_update_nav_menu_item($menu->term_id, 0, [
+			'menu-item-object-id' => $ids['sobre'],
+			'menu-item-object'    => 'page',
+			'menu-item-type'      => 'post_type',
+			'menu-item-parent-id' => (int) $pai_igreja->ID,
+			'menu-item-position'  => $posicao,
+			'menu-item-title'     => 'Sobre nós',
+			'menu-item-status'    => 'publish',
+		]);
+		WP_CLI::log('Menu: "Sobre nós" acrescentado em A Igreja.');
+	}
+}
+
 $locais = get_theme_mod('nav_menu_locations', []);
 $locais['primary'] = $menu->term_id;
 set_theme_mod('nav_menu_locations', $locais);

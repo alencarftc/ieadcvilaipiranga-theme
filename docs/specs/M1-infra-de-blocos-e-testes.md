@@ -34,8 +34,8 @@ JavaScript puro (sem JSX e sem build). Para cada bloco `ieadc/*` registrado no s
 
 | Função | Faz |
 |---|---|
-| `ieadc_pend(string $texto): string` | Escapa o texto e troca cada `[...]` por `<mark class="pend">[...]</mark>` |
-| `ieadc_kses_rico(string $html): string` | Permite só `b`, `strong`, `i`, `em`, `br`, `a[href]`, `span[class=azul]`, `small`, `mark[class=pend]`, e aplica `ieadc_pend` no texto |
+| `ieadc_pend(string $texto): string` | Só escapa o texto (até a fase 5B trocava cada `[...]` por `<mark class="pend">[...]</mark>`; não marca mais) |
+| `ieadc_kses_rico(string $html): string` | Permite só `b`, `strong`, `i`, `em`, `br`, `a[href]`, `span[class=azul]` e `small` (a `mark.pend` e a marcação de `[...]` saíram na fase 5B) |
 | `ieadc_paragrafos(string $texto, string $classe = ''): string` | Linha em branco separa `<p>` |
 | `ieadc_img(int $id, string $tamanho = 'full'): string` | URL da mídia (vazio se não houver) |
 | `ieadc_fundo(int $id, string $foco = '', string $extra = ''): string` | Atributo `style` completo de fundo, igual ao protótipo |

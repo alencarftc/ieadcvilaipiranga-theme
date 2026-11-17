@@ -43,9 +43,9 @@ Links: Vigília e Consagração → `vigilia-e-consagracao`; Ceia → `ceia-do-s
 
 ## Eventos avulsos (tipo `evento`, campos do M3)
 
-Viram ocorrências em todos os dias de `evento_data` a `evento_data_fim` (ou só `evento_data`), com `hora` = `evento_horario` (texto livre, ex.: `[horário a confirmar]`), `categoria` = `evento_categoria` (padrão `c-culto`), `especial` = sim. Só eventos publicados.
+Viram ocorrências em todos os dias de `evento_data` a `evento_data_fim` (ou só `evento_data`), com `hora` = `evento_horario` (texto livre, ex.: `À noite` ou vazio), `categoria` = `evento_categoria` (padrão `c-culto`), `especial` = sim. Só eventos publicados.
 
-Para os testes, o seed do M3 cadastra o avulso que está no protótipo: Confraternização dos jovens, 17 e 18/10/2026, `[horário a confirmar]`, `c-jovens`, descrição "Dias 17 e 18 de outubro. [Local e programação a confirmar]".
+Para os testes, o seed do M3 cadastra o avulso que está no protótipo: Confraternização dos jovens, 17 e 18/10/2026, sem horário, `c-jovens`, descrição "Dias 17 e 18 de outubro." (desde a fase 5B quem a cria é `tests/fixtures/evento-prototipo.php`; o seed cadastra os eventos reais de nov/dez de 2026).
 
 ## API (contrato; ver plano, seção 5.1)
 

@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-circulo-de-oracao",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O Círculo de Oração reúne as irmãs da igreja em torno de um propósito simples: orar. Elas oram pela congregação, pelas famílias e por cada pedido que chega à igreja, inclusive os enviados pelo site, que vão apenas para o Círculo e nunca são publicados.\n\nToda quinta-feira, às 20h, o Círculo dirige o culto na igreja. É uma noite de oração, louvor e Palavra, aberta a todos os membros e visitantes.\n\nNo 4º domingo de cada mês, o culto dominical, às 19h, é dirigido pelas mulheres da igreja.\n\nO ministério também tem um coral, regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), que louva a Deus nos cultos. [ensaios do coral a confirmar]",
+     "texto": "O Círculo de Oração reúne as irmãs da igreja em torno de um propósito simples: orar. Elas oram pela congregação, pelas famílias e por cada pedido que chega à igreja, inclusive os enviados pelo site, que vão apenas para o Círculo e nunca são publicados.\n\nToda quinta-feira, às 20h, o Círculo dirige o culto na igreja. É uma noite de oração, louvor e Palavra, aberta a todos os membros e visitantes.\n\nNo 4º domingo de cada mês, o culto dominical, às 19h, é dirigido pelas mulheres da igreja.\n\nO ministério também tem um coral, o Filhas do Rei, formado pelas irmãs do Círculo e regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), que louva a Deus nos cultos.\n\nOs encontros do Círculo acontecem toda quinta-feira, no mesmo horário dos cultos, e as irmãs são avisadas com antecedência no grupo de WhatsApp.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -113,9 +112,7 @@
      "referencia": "",
      "itens": [
       "Quinta-feira · 20h | Culto dirigido pelo Círculo de Oração",
-      "4º domingo · 19h | Culto dominical dirigido pelas mulheres",
-      "[a confirmar] | Ensaios do coral",
-      "[a confirmar] | Outros encontros de oração"
+      "4º domingo · 19h | Culto dominical dirigido pelas mulheres"
      ]
     }
    ],

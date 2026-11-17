@@ -27,7 +27,7 @@ foreach (['alcancar-curitiba', 'ate-que-ele-venha', 'orai-uns-pelos-outros'] as 
 		WP_CLI::warning("Artigo não encontrado: {$slug}");
 		continue;
 	}
-	$transicao = str_contains($p->post_content, '<!-- wp:html -->') || str_contains($p->post_content, '[Provisório: página em montagem');
+	$transicao = str_contains($p->post_content, '<!-- wp:html -->') || (str_contains($p->post_content, 'Página em montagem. Volte em breve.') || str_contains($p->post_content, '[Provisório: página em montagem'));
 	if (!$transicao && getenv('IEADC_ATUALIZAR') !== '1') {
 		WP_CLI::log("Mantido (editado no painel): /{$slug}/");
 		continue;

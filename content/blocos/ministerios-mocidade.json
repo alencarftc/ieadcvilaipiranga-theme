@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-mocidade",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\n[encontros e retiros a confirmar]",
+     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\nPara conhecer os encontros e as atividades da Mocidade, é só procurar os líderes.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -112,8 +111,7 @@
      "versiculo": "",
      "referencia": "",
      "itens": [
-      "3º domingo · 19h | Culto dominical dedicado aos jovens e adolescentes",
-      "[a confirmar] | Encontros próprios da Mocidade"
+      "3º domingo · 19h | Culto dominical dedicado aos jovens e adolescentes"
      ]
     }
    ],

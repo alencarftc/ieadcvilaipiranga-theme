@@ -115,9 +115,7 @@ if ($lideres || $texto !== '' || $botoes || !empty($a['lateralTitulo'])) {
 	if (!empty($a['lateralTitulo'])) {
 		echo '<span class="eyebrow claro">' . ieadc_pend($a['lateralTitulo']) . '</span>';
 	}
-	if (count($lideres) === 1 && str_starts_with($lideres[0], '[')) {
-		echo '<p style="margin-top:8px;color:#fff;font:600 19px/1.4 var(--f-tit)">' . ieadc_pend($lideres[0]) . '</p>';
-	} elseif ($lideres) {
+	if ($lideres) {
 		echo '<ul class="lideres-lado">';
 		foreach ($lideres as $n) {
 			echo '<li><span class="foto-lider" title="Foto em breve">' . ieadc_icone('pessoa') . '</span><span>' . ieadc_pend($n) . '</span></li>';

@@ -20,10 +20,10 @@ Construir o site em WordPress com **alta fidelidade ao protótipo v3 aprovado**,
 Regras que não mudam:
 
 - Família Roboto + Roboto Condensed; a frase cursiva (Dancing Script) só onde o protótipo usa.
-- Fotos sempre coloridas, sem filtro, sem repetir entre seções e páginas. Sem fotos com o pastor João; Ev. Robson Stein de preferência.
-- Texto não confirmado fica **entre colchetes com fundo amarelo** (classe `pend`). Nunca inventar dado da igreja.
+- Fotos sempre coloridas, sem filtro, sem repetir entre seções e páginas. Sem fotos com o pastor João; Pr. Robson Stein de preferência.
+- Nunca inventar dado da igreja. (No plano original o texto não confirmado ficava entre colchetes com fundo amarelo; a fase 5B retirou essa marcação: o que falta fica como texto geral.)
 - Sem chamadas de transmissão ao vivo (só o link do canal nas redes).
-- Pastor: "Ev. Robson Stein, pastor da igreja local". Usar "Ceia do Senhor" e "Culto de Ensino". Endereço com número 555.
+- Pastor: "Pr. Robson Stein, pastor da igreja local". Usar "Ceia do Senhor" e "Culto de Ensino". Endereço com número 555.
 
 ## 2. Estado atual (base pronta em 15/11)
 
@@ -104,7 +104,7 @@ Estes contratos são definidos na Onda 0 e **não mudam sem PR próprio aprovado
 - O registro é automático (`inc/blocos.php` registra toda pasta com `block.json`). Ninguém edita `functions.php` para registrar bloco.
 - Atributos seguem o vocabulário do editor genérico: `string` (campo), `string` com `"ieadc": {"campo": "texto-longo"}` (área de texto), `"campo": "imagem"` (ID da mídia), `"campo": "link"` (URL), `"campo": "icone"` (lista de ícones), `array` de objetos com `"campo": "lista"` (itens repetidos com sub-campos).
 - `render.php` reproduz **exatamente** o HTML da seção no protótipo (mesmas tags, classes e ordem). Texto vazio não gera tag vazia.
-- Texto com `[...]` vira `<span class="pend">[...]</span>` pela função `ieadc_pend()` (M1).
+- `ieadc_pend()` (M1) escapa o texto; antes da fase 5B ela também marcava `[...]` em amarelo.
 - Imagem: `ieadc_img_url($id, 'large')`; fundo com `style="background-image:url(...)"` igual ao protótipo, com `background-position` como atributo opcional.
 
 ### 5.3 Conteúdo e dados

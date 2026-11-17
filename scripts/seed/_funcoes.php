@@ -47,7 +47,7 @@ function do_prototipo(string $arquivo): string {
 function provisorio(string $titulo, string $extra = ''): string {
 	return "<!-- wp:group {\"className\":\"wrap\",\"layout\":{\"type\":\"constrained\"}} -->\n<div class=\"wp-block-group wrap\">"
 		. "<!-- wp:heading {\"level\":1,\"className\":\"h1\"} -->\n<h1 class=\"wp-block-heading h1\">{$titulo}</h1>\n<!-- /wp:heading -->\n"
-		. "<!-- wp:paragraph {\"className\":\"pend\"} -->\n<p class=\"pend\">[Provisório: página em montagem, segue o protótipo v3.]</p>\n<!-- /wp:paragraph -->\n"
+		. "<!-- wp:paragraph -->\n<p>Página em montagem. Volte em breve.</p>\n<!-- /wp:paragraph -->\n"
 		. $extra . "</div>\n<!-- /wp:group -->";
 }
 
@@ -66,7 +66,7 @@ function pagina(string $slug, string $titulo, int $pai = 0, string $origem = '',
 	// A política de privacidade que o WordPress cria na instalação (rascunho com o texto-modelo, mesmo endereço da nossa)
 	// ainda não foi editada por ninguém: o seed a assume e publica.
 	$modelo_wp = $p && $p->post_status === 'draft' && str_contains($p->post_content, 'privacy-policy-tutorial');
-	if ($p && !$forcar && !$modelo_wp && !str_contains($p->post_content, '[Provisório: página em montagem')) {
+	if ($p && !$forcar && !$modelo_wp && !(str_contains($p->post_content, 'Página em montagem. Volte em breve.') || str_contains($p->post_content, '[Provisório: página em montagem'))) {
 		return $p->ID; // já editada no painel: não mexe
 	}
 	$dados = [
@@ -152,7 +152,7 @@ function ieadc_seed_pagina_blocos(string $caminho, string $json, string $tipo = 
 		$attrs = $troca($item['attrs'] ?? []);
 		$html .= get_comment_delimited_block_content($item['bloco'], $attrs, '') . "\n\n";
 	}
-	$transicao = str_contains($p->post_content, '<!-- wp:html -->') || str_contains($p->post_content, '[Provisório: página em montagem');
+	$transicao = str_contains($p->post_content, '<!-- wp:html -->') || (str_contains($p->post_content, 'Página em montagem. Volte em breve.') || str_contains($p->post_content, '[Provisório: página em montagem'));
 	if (!$transicao && getenv('IEADC_ATUALIZAR') !== '1') {
 		WP_CLI::log("Mantida (editada no painel): /{$caminho}/");
 		return $p->ID;

@@ -52,7 +52,7 @@
     {
      "icone": "pessoas",
      "rotulo": "Quem participa",
-     "valor": "[a confirmar]"
+     "valor": "Quem é batizado nas águas"
     },
     {
      "icone": "pin",
@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para o pastor revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "como-ceia-do-senhor",
      "titulo": "Como é o culto",
      "tipo": "texto",
-     "texto": "No 2º sábado de cada mês, às 19h30, a igreja se reúne para a Ceia do Senhor. É um momento de memória, comunhão e gratidão pelo sacrifício de Jesus.\n\nAntes da ceia, a igreja se prepara em oração. Em alguns meses há vigília na sexta-feira anterior, às 22h; nos outros, consagração no próprio sábado, pela manhã, às 8h.\n\n[orientações para visitantes a confirmar]",
+     "texto": "No 2º sábado de cada mês, às 19h30, a igreja se reúne para a Ceia do Senhor. É um momento de memória, comunhão e gratidão pelo sacrifício de Jesus.\n\nAntes da ceia, a igreja se prepara em oração. Em alguns meses há vigília na sexta-feira anterior, às 22h; nos outros, consagração no próprio sábado, pela manhã, às 8h.\n\nTodos podem visitar a igreja e acompanhar a Ceia do Senhor. Participar do pão e do cálice, porém, é para quem foi batizado nas águas e examina a si mesmo (1 Co 11.28).",
      "versiculo": "",
      "referencia": "",
      "itens": []

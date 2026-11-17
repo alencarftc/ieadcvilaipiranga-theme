@@ -35,9 +35,9 @@ function resumo(array $os): array { return array_map(fn($o) => $o['data'] . ' ' 
 function evento_confraternizacao(): WP_Post {
 	return new WP_Post([
 		'ID' => 101, 'post_title' => 'Confraternização dos jovens', 'post_name' => 'confraternizacao-dos-jovens',
-		'post_excerpt' => 'Dias 17 e 18 de outubro. [Local e programação a confirmar]',
+		'post_excerpt' => 'Dias 17 e 18 de outubro.',
 		'meta' => [
-			'evento_data' => '2026-10-17', 'evento_data_fim' => '2026-10-18', 'evento_horario' => '[horário a confirmar]',
+			'evento_data' => '2026-10-17', 'evento_data_fim' => '2026-10-18', 'evento_horario' => '',
 			'evento_categoria' => 'c-jovens', 'evento_link' => 'ministerios/mocidade',
 		],
 	]);
@@ -66,7 +66,7 @@ ok(resumo(ieadc_agenda_destaques(3)) === [
 /* 3. Destaques da página Eventos = 6 cartões de eventos.html (data, "até", título, hora, descrição, link). */
 $ref = file_get_contents($RAIZ . '/docs/specs/referencias/eventos-grade.html');
 $ref = explode('<!-- ===== ', $ref)[1]; // só a ocorrência de eventos.html
-preg_match_all('#<a class="cartao evento" href="([^"]*)"><div class="data"><span class="dw">([^<]*)</span><span class="dn">(\d+)</span><span class="mm">([^<]*)</span>(?:<span class="ate">([^<]*)</span>)?</div>.*?<h3 class="h4">([^<]*)</h3><span class="hora">.*?</svg>(.*?)</span><p class="small">(.*?)</p>#s', $ref, $m, PREG_SET_ORDER);
+preg_match_all('#<a class="cartao evento" href="([^"]*)"><div class="data"><span class="dw">([^<]*)</span><span class="dn">(\d+)</span><span class="mm">([^<]*)</span>(?:<span class="ate">([^<]*)</span>)?</div>.*?<h3 class="h4">([^<]*)</h3>(?:<span class="hora">.*?</svg>(.*?)</span>)?<p class="small">(.*?)</p>#s', $ref, $m, PREG_SET_ORDER);
 $dsem  = [1 => 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
 $meses = [1 => 'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 $cartoes_ref = array_map(fn($c) => [

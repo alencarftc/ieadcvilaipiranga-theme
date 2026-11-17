@@ -56,7 +56,7 @@ Poucos, de propósito:
 - **Páginas do protótipo** usam o modelo *Página do protótipo (largura total)*.
 - **Pedidos de oração** ficam privados no painel (só administradores e o papel *Equipe de oração*), chegam por e-mail e são apagados sozinhos em 90 dias.
 - **Formulários**: shortcodes `[ieadc_pedido_oracao]` e `[ieadc_contato]`. Destinatários em *Configurações > IEADC Vila Ipiranga*.
-- Texto ainda não aprovado vai marcado com fundo amarelo (classe `pend`) e entre colchetes.
+- O site não usa marcação de texto pendente (a antiga classe `pend`, em amarelo, saiu na fase 5B): o que falta fica como texto geral e a pergunta vai para `docs/operacao/perguntas-ao-pastor-robson.md`.
 
 ## Migração para a Hostinger (30/11/2026)
 

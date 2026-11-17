@@ -17,7 +17,7 @@
    ],
    "eyebrow": "Ministérios · Crianças",
    "titulo": "Crianças",
-   "lead": "Ensina a Palavra de Deus às crianças, de um jeito adequado a cada idade. Quando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado a elas. Aos domingos, às 9h30, há classes da EBD para crianças.",
+   "lead": "Ensina a Palavra de Deus às crianças, de um jeito adequado a cada idade. Quando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado a elas. Aos domingos, às 9h30, as crianças têm a sua aula na EBD.",
    "botoes": [
     {
      "texto": "Como participar",
@@ -52,7 +52,7 @@
     {
      "icone": "pessoas",
      "rotulo": "Para quem",
-     "valor": "Crianças [faixa etária a confirmar]"
+     "valor": "Crianças de 0 a 8 anos"
     },
     {
      "icone": "pin",
@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-criancas",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O ministério das Crianças ensina a Palavra de Deus aos pequenos, de um jeito adequado a cada idade. As aulas acontecem nas classes da EBD, aos domingos, às 9h30, nas salas da parte de baixo da igreja.\n\nQuando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado às crianças.\n\n[classes e atividades a confirmar]",
+     "texto": "O ministério das Crianças ensina a Palavra de Deus aos pequenos, de um jeito adequado a cada idade. As aulas acontecem na EBD, aos domingos, às 9h30, nas salas da parte de baixo da igreja.\n\nQuando o mês tem 5º domingo, o culto dominical, às 19h, é dedicado às crianças.\n\nAs crianças de 0 a 8 anos participam juntas, sem divisão de classes. As atividades são pensadas para essa idade, com histórias da Bíblia, músicas e momentos de oração.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -113,7 +112,7 @@
      "referencia": "",
      "itens": [
       "5º domingo · 19h | Culto dominical dedicado às crianças, quando o mês tem 5º domingo",
-      "Domingo · 9h30 | Classes da EBD para crianças"
+      "Domingo · 9h30 | Aula das crianças na EBD"
      ]
     }
    ],

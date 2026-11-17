@@ -203,7 +203,7 @@
 		},
 		"assinatura": {
 			"type": "string",
-			"default": "Ev. Robson",
+			"default": "Pr. Robson",
 			"ieadc": {
 				"rotulo": "Assinatura"
 			}

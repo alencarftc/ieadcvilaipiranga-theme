@@ -62,7 +62,7 @@
     {
      "icone": "maos",
      "rotulo": "Quem lidera",
-     "valor": "[a confirmar]"
+     "valor": "Ev. Francisco Belo"
     }
    ]
   }
@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-ensinai",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. As aulas acontecem às sextas-feiras, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\n[duração e inscrição a confirmar]",
+     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. O Ev. Francisco Belo lidera o curso e ensina toda sexta-feira, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\nO curso básico dura 2 anos, e o primeiro livro começou a ser estudado em agosto de 2026. Quem quiser pode entrar a qualquer momento: os livros que já foram estudados são repostos na próxima turma, que começa quando a atual terminar.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -113,7 +112,7 @@
      "referencia": "",
      "itens": [
       "Sexta-feira · 19h30 | Aulas do curso",
-      "[a confirmar] | Início da próxima turma"
+      "Quando a turma atual terminar | Início da próxima turma, em que quem entrou depois repõe os livros que faltaram"
      ]
     }
    ],
@@ -129,7 +128,7 @@
     }
    ],
    "lateralTitulo": "Quem lidera",
-   "lideres": "[a confirmar]",
+   "lideres": "Ev. Francisco Belo",
    "botoes": [
     {
      "texto": "Fale conosco",
@@ -143,7 +142,9 @@
  {
   "bloco": "ieadc/fotos-pendentes",
   "attrs": {
-   "ancora": "fotos-ensinai"
+   "ancora": "fotos-ensinai",
+   "aviso": "As fotos do Ensinai serão publicadas em breve.",
+   "icone": "livro"
   }
  },
  {
@@ -154,7 +155,7 @@
    "titulo": "Dê o primeiro passo",
    "variante": "passo-unico",
    "passos": [
-    "Procure a liderança do Ensinai. Ela vai receber você e explicar como participar."
+    "Procure o Ev. Francisco Belo, que lidera o Ensinai. Você pode entrar a qualquer momento; ele vai receber você e explicar como participar."
    ],
    "icone": "pessoas",
    "unicoBotaoTexto": "Fale conosco",

@@ -59,7 +59,7 @@ Mudou algo (horário, telefone, endereço)? Mude **primeiro no painel do site** 
 
 ## 6. Pendências (só você tem o dado)
 
-Estão em `docs/operacao/pendencias-para-o-felipe.md`, no bloco "SEO e Google": link de avaliação (ou código do lugar), propriedade do Perfil da Empresa, verificação do Search Console, e-mail público e, se quiser, as coordenadas.
+Em 16/11/2026 o Felipe informou o link de avaliação, o e-mail público, as coordenadas e que o Perfil da Empresa já está verificado; tudo isso já é padrão do código. Só falta o registro DNS (TXT) do Search Console e o envio do `sitemap_index.xml` (`docs/operacao/pendencias-para-o-felipe.md`).
 
 ## Campos novos da fase 4: verificação e medição
 

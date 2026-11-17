@@ -10,55 +10,29 @@ function ieadc_swoosh(string $classe = 'swoosh'): string {
 	return '<svg class="' . esc_attr($classe) . '" viewBox="0 0 260 16" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 3 170 2 257 8"/></svg>';
 }
 
-/** Troca cada [trecho] (já escapado) por <mark class="pend">[trecho]</mark>. Uso interno. */
-function ieadc_marca_pend(string $html): string {
-	return (string) preg_replace('/\[([^\]]+)\]/u', '<mark class="pend">[$1]</mark>', $html);
-}
-
-/** Escapa o texto e marca os trechos [a confirmar]. */
+/**
+ * Escapa o texto. Até a fase 5B este nome marcava os trechos [a confirmar] em amarelo (<mark class="pend">); a liderança
+ * respondeu tudo e mandou tratar o conteúdo como definitivo, então hoje nenhuma página produz marcação amarela e esta
+ * função só escapa. O nome continua porque os blocos ainda a chamam (e o que for digitado entre colchetes sai como texto).
+ */
 function ieadc_pend(string $texto): string {
-	return ieadc_marca_pend(esc_html($texto));
+	return esc_html($texto);
 }
 
 /**
- * Texto "rico": só b, strong, i, em, br, small, a[href], span.azul e mark.pend.
- * Os [trechos] fora de <mark> viram <mark class="pend">.
+ * Texto "rico": só b, strong, i, em, br, small, a[href] e span.azul. Qualquer outra tag ou classe some.
  */
 function ieadc_kses_rico(string $html): string {
 	$permitidas = [
 		'b' => [], 'strong' => [], 'i' => [], 'em' => [], 'br' => [], 'small' => [],
 		'a' => ['href' => true],
 		'span' => ['class' => true],
-		'mark' => ['class' => true],
 	];
 	$html = wp_kses($html, $permitidas);
-	// span e mark só com a classe permitida (span.azul, mark.pend); outra classe some.
-	$html = (string) preg_replace_callback('/<(span|mark)\b([^>]*)>/i', function ($m) {
-		$tag = strtolower($m[1]);
-		$ok = $tag === 'span' ? 'azul' : 'pend';
-		$tem = preg_match('/\bclass\s*=\s*(["\'])\s*' . $ok . '\s*\1/i', $m[2]);
-		return $tem ? "<{$tag} class=\"{$ok}\">" : "<{$tag}>";
+	// span só com a classe permitida (span.azul); outra classe some.
+	return (string) preg_replace_callback('/<span\b([^>]*)>/i', function ($m) {
+		return preg_match('/\bclass\s*=\s*(["\'])\s*azul\s*\1/i', $m[1]) ? '<span class="azul">' : '<span>';
 	}, $html);
-	// [trechos] no texto (fora das tags e fora de <mark> já existente)
-	$partes = preg_split('/(<[^>]*>)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
-	$dentro_mark = 0;
-	foreach ($partes as $k => $p) {
-		if ($p === '' ) {
-			continue;
-		}
-		if ($p[0] === '<') {
-			if (preg_match('/^<mark\b/i', $p)) {
-				$dentro_mark++;
-			} elseif (preg_match('/^<\/mark/i', $p)) {
-				$dentro_mark = max(0, $dentro_mark - 1);
-			}
-			continue;
-		}
-		if (!$dentro_mark) {
-			$partes[$k] = ieadc_marca_pend($p);
-		}
-	}
-	return implode('', $partes);
 }
 
 /** Separa o texto em <p> por linha em branco; cada parágrafo aceita o texto rico. */
