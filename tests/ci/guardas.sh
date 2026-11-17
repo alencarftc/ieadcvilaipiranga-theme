@@ -395,6 +395,7 @@ case "${args[0]:-} ${args[1]:-}" in
   "config get") echo wp_ ;;
   "eval "*) [ -z "$caminho" ] || echo 'RewriteRule . /index.php [L]' > "$caminho/.htaccess" ;;
   "user list") echo 1 ;;
+  "option get") case "${args[2]:-}" in blog_public | ieadc_site_fechado) echo 0 ;; esac ;;   # o que a fumaça lê (homologação aberta e fora do Google)
   "db export") echo "-- Dump completed" > "${args[2]}" ;;
   "maintenance-mode activate") [ -z "$caminho" ] || : > "$caminho/.maintenance" ;;
   "maintenance-mode deactivate") [ -z "$caminho" ] || rm -f "$caminho/.maintenance" ;;
@@ -620,6 +621,64 @@ confere "cópias: a produção não apagou nenhuma da hml (6)" test "$(ls "$C"/b
 sim atualizar hml "$P_HML" "https://$HML" "$C"
 confere "cópias: depois da hml ficam 5 da hml" test "$(ls "$C"/backup-codigo-antes-hml-*.tgz | wc -l)" -eq 5
 confere "cópias: a hml não apagou nenhuma da produção (5)" test "$(ls "$C"/backup-codigo-antes-[0-9]*.tgz | wc -l)" -eq 5
+
+# --- 3b. enviar de ponta a ponta, com ssh e scp de mentira ---------------------------------------------------------------------
+# O servidor de mentira é o HOME de mentira: o ssh de mentira roda o comando remoto com bash e o scp de mentira copia o pacote para lá.
+# Prova que uma instalação RECUSADA pelas barreiras do servidor derruba o envio (o código de saída do script remoto não pode ser
+# engolido pela limpeza que vem depois dele) e que nenhum ieadc_deploy "ok" é gravado nesse caso.
+secao "implantar.sh enviar: instalação recusada no servidor derruba o envio (ssh e scp de mentira)"
+SSHS="$TMP/ssh-falso"; mkdir -p "$SSHS"
+printf '#!/bin/sh\necho "127.0.0.1 ssh-ed25519 AAAAfalso"\n' > "$SSHS/ssh-keyscan"
+printf '#!/bin/sh\necho "256 SHA256:falsa servidor (ED25519)"\n' > "$SSHS/ssh-keygen"
+cat > "$SSHS/ssh" <<'FIM'
+#!/usr/bin/env bash
+# ssh de mentira: pula as opções, ignora usuário@host e roda o comando no HOME de mentira ($FAKE_HOME).
+while [ $# -gt 0 ]; do case "$1" in -p | -i | -o) shift 2 ;; -*) shift ;; *) break ;; esac; done
+shift
+exec env HOME="$FAKE_HOME" bash -c "$1"
+FIM
+cat > "$SSHS/scp" <<'FIM'
+#!/usr/bin/env bash
+# scp de mentira: copia o arquivo para o HOME de mentira (o destino vem como usuário@host:caminho).
+while [ $# -gt 2 ]; do case "$1" in -P | -i | -o) shift 2 ;; -*) shift ;; *) break ;; esac; done
+cp "$1" "$FAKE_HOME/${2#*:}"
+FIM
+chmod +x "$SSHS/"*
+novo_pacote; printf 'PACOTE_PREFIXO=wp_\nPACOTE_ORIGENS=http://localhost:8080\nPACOTE_SHA=desconhecido\n' > "$PAC/pacote.env"; tar -czf "$TMP/e2e.tgz" -C "$PAC" .
+: > "$TMP/chave-falsa"
+# e2e <casa> VAR=valor...: roda "enviar" contra a casa de mentira (SAIDA, RC e WP_LOG)
+e2e() {
+  local casa="$1"; shift
+  WP_LOG="$TMP/wp-e2e-$((++n_pac)).log"; : > "$WP_LOG"
+  SAIDA="$(env -i PATH="$SSHS:$FALSOS:$CURLS:$PATH" HOME="$TMP" FAKE_HOME="$casa" WP_LOG="$WP_LOG" ALVO_SERVIDOR=127.0.0.1 ALVO_PORTA=22 ALVO_USUARIO=u123 \
+    ALVO_CHAVE="$TMP/chave-falsa" ALVO_IMPRESSAO=SHA256:falsa AMBIENTE=homologacao ALVO_URL="https://$HML" ALVO_DESTINO="$P_HML" FAKE_HOST_FINAL="$HML" \
+    "$@" bash bin/implantar.sh enviar "$TMP/e2e.tgz" 2>&1)"; RC=$?
+}
+grava_ok() { grep -q 'option update ieadc_deploy .*"resultado":"ok"' "$WP_LOG"; }
+grava_falhou() { grep -q 'option update ieadc_deploy .*"resultado":"falhou"' "$WP_LOG"; }
+C="$TMP/casa-e2e-ok"; montar_casa "$C"
+e2e "$C" CARGA=codigo
+confere "e2e: código na hml termina bem, a fumaça passa e o ieadc_deploy fica ok" bash -c '[ "$1" -eq 0 ] && [[ "$2" == *"Implantação concluída"* ]]' _ "$RC" "$SAIDA"
+confere "e2e: ... e o registro ok foi gravado" grava_ok
+C="$TMP/casa-e2e-ok2"; montar_casa "$C"
+e2e "$C" CARGA=completo MODO=homologacao
+confere "e2e: carga completa na hml termina bem" bash -c '[ "$1" -eq 0 ] && [[ "$2" == *"Implantação concluída"* ]]' _ "$RC" "$SAIDA"
+for carga in codigo completo; do
+  C="$TMP/casa-e2e-banco-$carga"; montar_casa "$C" u1_prod   # a hml no mesmo banco da produção: o servidor recusa
+  e2e "$C" CARGA=$carga MODO=homologacao
+  confere "e2e ($carga): recusa do servidor (mesmo banco) derruba o envio" bash -c '[ "$1" -ne 0 ] && [[ "$2" == *"a instalação no servidor falhou"* ]] && [[ "$2" == *"mesmo banco"* ]]' _ "$RC" "$SAIDA"
+  confere "e2e ($carga): ... e nenhum ieadc_deploy ok foi gravado (ficou falhou)" bash -c '! grep -q "\"resultado\":\"ok\"" "$1" && grep -q "\"resultado\":\"falhou\"" "$1"' _ "$WP_LOG"
+  confere "e2e ($carga): ... e a fumaça nem chegou a rodar" bash -c '[[ "$1" != *"Fumaça"* ]]' _ "$SAIDA"
+  C="$TMP/casa-e2e-semwp-$carga"; montar_casa "$C"; rm -f "$C/$P_PROD/hml/wp-config.php"   # a hml sem WordPress
+  e2e "$C" CARGA=$carga MODO=homologacao
+  confere "e2e ($carga): hml sem WordPress derruba o envio" bash -c '[ "$1" -ne 0 ] && [[ "$2" == *"a instalação no servidor falhou"* ]]' _ "$RC" "$SAIDA"
+  C="$TMP/casa-e2e-link-$carga"; montar_casa "$C"; rm -rf "$C/$P_PROD/hml/wp-content/uploads"; ln -s ../../wp-content/uploads "$C/$P_PROD/hml/wp-content/uploads" 2> /dev/null
+  if [ -L "$C/$P_PROD/hml/wp-content/uploads" ]; then
+    e2e "$C" CARGA=$carga MODO=homologacao
+    confere "e2e ($carga): link simbólico na hml derruba o envio" bash -c '[ "$1" -ne 0 ] && [[ "$2" == *"link simbólico"* ]]' _ "$RC" "$SAIDA"
+    confere "e2e ($carga): ... e a produção não recebeu nada pelo link" bash -c '[ ! -e "$1/wp-content/uploads/foto.jpg" ] && [ "$(cat "$1/wp-content/uploads/a.jpg")" = "foto da produção" ]' _ "$C/$P_PROD"
+  fi
+done
 
 # --- 4. bin/migrar.ps1 (caminho manual) -------------------------------------------------------------------------------
 secao "migrar.ps1: a mesma trava no PowerShell"
