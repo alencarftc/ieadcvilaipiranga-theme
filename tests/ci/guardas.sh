@@ -55,8 +55,8 @@ H ok "hml, carga completa, modo homologacao-fechada" "pasta=$P_HML" CARGA=comple
 H ok "hostingersite (transição), pasta padrão" "pasta=domains/abc123.hostingersite.com/public_html" ALVO_URL="https://abc123.hostingersite.com"
 H ok "hostingersite (transição), pasta exata" "host=abc123.hostingersite.com" ALVO_URL="https://abc123.hostingersite.com" ALVO_DESTINO="domains/abc123.hostingersite.com/public_html"
 H ok "hostingersite com mais de um rótulo" "pasta=domains/a.b.hostingersite.com/public_html" ALVO_URL="https://a.b.hostingersite.com"
-H ok "ensaio local com outro domínio principal (DOMINIO_PRODUCAO)" "pasta=domains/teste.local/public_html/hml" DOMINIO_PRODUCAO=teste.local ALVO_URL="http://hml.teste.local:8082"
-H ok "GITHUB_ACTIONS=true usa sempre o domínio real (par real)" "pasta=$P_HML" GITHUB_ACTIONS=true DOMINIO_PRODUCAO=teste.local ALVO_URL="https://$HML"
+H ok "ensaio local com outro domínio principal (DOMINIO_PRODUCAO)" "pasta=domains/teste.local/public_html/hml" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=127.0.0.1 ALVO_URL="http://hml.teste.local:8082"
+H ok "GITHUB_ACTIONS=true usa sempre o domínio real (par real)" "pasta=$P_HML" GITHUB_ACTIONS=true DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=127.0.0.1 ALVO_URL="https://$HML"
 
 secao "implantar.sh: homologação, domínio principal e variações de endereço"
 H no "domínio principal" "não pode apontar para o domínio da produção" ALVO_URL="https://$PROD"
@@ -154,7 +154,24 @@ imp no "carga completa sem MODO" "falta a variável MODO" CARGA=completo ALVO_UR
 imp no "CARGA inválida" "CARGA deve ser" AMBIENTE=homologacao CARGA=banana ALVO_URL="https://$HML"
 imp no "MODO inválido" "MODO deve ser" CARGA=completo MODO=staging ALVO_URL="https://$HML"
 imp no "DOMINIO_PRODUCAO com caracteres inválidos" "DOMINIO_PRODUCAO tem caracteres inválidos" DOMINIO_PRODUCAO='a;b' AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://$HML"
-imp no "GITHUB_ACTIONS=true ignora o DOMINIO_PRODUCAO de teste" "só aceita o endereço" GITHUB_ACTIONS=true DOMINIO_PRODUCAO=teste.local AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+imp no "GITHUB_ACTIONS=true ignora o DOMINIO_PRODUCAO de teste" "só aceita o endereço" GITHUB_ACTIONS=true DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=127.0.0.1 AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+# O override do domínio principal só vale contra o servidor do próprio computador (S3): na máquina do Felipe, com o servidor real,
+# ele faria o conferir e o envio aceitarem pares de um domínio de terceiros.
+imp no "DOMINIO_PRODUCAO sem ALVO_SERVIDOR (conferir)" "DOMINIO_PRODUCAO só vale" DOMINIO_PRODUCAO=teste.local AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+imp no "DOMINIO_PRODUCAO com servidor remoto" "DOMINIO_PRODUCAO só vale" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=ssh.hospedagem.example AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+imp no "DOMINIO_PRODUCAO com servidor 127.0.0.1.evil.com" "DOMINIO_PRODUCAO só vale" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=127.0.0.1.evil.com AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+imp no "DOMINIO_PRODUCAO com servidor 128.0.0.1" "DOMINIO_PRODUCAO só vale" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=128.0.0.1 AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+imp no "DOMINIO_PRODUCAO de terceiro (domínio real de outro site) com servidor remoto, produção" "DOMINIO_PRODUCAO só vale" DOMINIO_PRODUCAO=terceiro.com.br ALVO_SERVIDOR=ssh.hospedagem.example AMBIENTE=producao CARGA=codigo CONFIRMACAO=PRODUCAO ALVO_URL="https://terceiro.com.br"
+imp ok "DOMINIO_PRODUCAO com servidor ::1" "pasta=domains/teste.local/public_html/hml" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=::1 AMBIENTE=homologacao CARGA=codigo ALVO_URL="https://hml.teste.local"
+# O endereço que vai para home/siteurl é minúsculo, sem barra final e sem porta (a porta só existe no ensaio local) (S10).
+H ok "URL em maiúsculas vira minúscula" "url=https://hml.ieadcvilaipiranga.com.br" ALVO_URL="https://HML.IeadcViLaIpiranga.COM.BR"
+H ok "URL com barra final" "url=https://hml.ieadcvilaipiranga.com.br" ALVO_URL="https://hml.ieadcvilaipiranga.com.br/"
+H ok "URL com porta fora do ensaio local perde a porta" "url=https://hml.ieadcvilaipiranga.com.br" ALVO_URL="https://hml.ieadcvilaipiranga.com.br:8443"
+H ok "URL com porta 443 perde a porta" "url=https://hml.ieadcvilaipiranga.com.br" ALVO_URL="https://hml.ieadcvilaipiranga.com.br:443"
+H ok "URL com porta no ensaio local (servidor 127.0.0.1) mantém a porta" "url=http://hml.ieadcvilaipiranga.com.br:8082" ALVO_SERVIDOR=127.0.0.1 ALVO_URL="http://HML.ieadcvilaipiranga.com.br:8082/"
+H no "esquema em maiúsculas" "formato" ALVO_URL="HTTPS://$HML"
+P ok "produção em maiúsculas vira minúscula" "url=https://ieadcvilaipiranga.com.br" ALVO_URL="https://IEADCVilaIpiranga.COM.BR/"
+P ok "produção com www e porta perde a porta" "url=https://www.ieadcvilaipiranga.com.br" ALVO_URL="https://WWW.ieadcvilaipiranga.com.br:8443"
 
 secao "implantar.sh: produção"
 P ok "domínio principal, pasta padrão" "pasta=$P_PROD" ALVO_URL="https://$PROD"
@@ -162,7 +179,7 @@ P ok "www, pasta padrão (a pasta é a do domínio sem www)" "pasta=$P_PROD" ALV
 P ok "pasta exata" "host=$PROD" ALVO_URL="https://$PROD" ALVO_DESTINO="$P_PROD"
 imp ok "carga completa, ensaio, CARGA-INICIAL" "pasta=$P_PROD" CARGA=completo MODO=ensaio CONFIRMACAO=CARGA-INICIAL ALVO_URL="https://$PROD"
 imp ok "carga completa, lançar, SUBSTITUIR-CONTEUDO" "pasta=$P_PROD" CARGA=completo MODO=lancar CONFIRMACAO=SUBSTITUIR-CONTEUDO ALVO_URL="https://$PROD"
-P ok "ensaio local com outro domínio principal" "pasta=domains/teste.local/public_html" DOMINIO_PRODUCAO=teste.local ALVO_URL="http://teste.local:8082"
+P ok "ensaio local com outro domínio principal" "pasta=domains/teste.local/public_html" DOMINIO_PRODUCAO=teste.local ALVO_SERVIDOR=localhost ALVO_URL="http://teste.local:8082"
 P no "endereço da homologação (hml)" "na produção o endereço deve ser" ALVO_URL="https://$HML"
 P no "endereço da hml com a pasta da hml" "na produção o endereço deve ser" ALVO_URL="https://$HML" ALVO_DESTINO="$P_HML"
 P no "domínio principal com a pasta da hml" "pasta do site deve ser exatamente" ALVO_URL="https://$PROD" ALVO_DESTINO="$P_HML"
@@ -243,6 +260,49 @@ med no "produção com a pasta da hml e GTM_ID válido" "pasta do site deve ser 
 med no "produção com o endereço da hml e GTM_ID válido" "na produção o endereço deve ser" AMBIENTE=producao CARGA=codigo CONFIRMACAO=PRODUCAO ALVO_URL="https://$HML" GTM_ID=GTM-ABCD1234
 med no "produção sem confirmação e GTM_ID válido" "CONFIRMACAO" AMBIENTE=producao CARGA=codigo ALVO_URL="https://$PROD" GTM_ID=GTM-ABCD1234
 
+# --- 1c. A fumaça confere o host FINAL (S1) -------------------------------------------------------------------------------------
+# O curl segue redirecionamentos. A hml é uma subpasta da produção: se o endereço da hml caísse na pasta da produção, o WordPress
+# dela redirecionaria ao domínio principal e a fumaça "passaria" validando a produção. Com um curl de mentira que responde 200
+# mas diz que o endereço final é outro, a fumaça tem de falhar (sem esperar as 5 tentativas) e dizer por quê.
+secao "implantar.sh fumaca: o host final da resposta precisa ser o do ambiente"
+CURLS="$TMP/curl-falso"; mkdir -p "$CURLS"
+cat > "$CURLS/curl" <<'FIM'
+#!/usr/bin/env bash
+# curl de mentira: responde FAKE_COD (padrão 200) e informa como endereço FINAL o host FAKE_HOST_FINAL com o mesmo caminho.
+for u; do :; done
+resto="${u#*://}"; case "$resto" in */*) cam="/${resto#*/}" ;; *) cam=/ ;; esac
+printf '%s https://%s%s' "${FAKE_COD:-200}" "$FAKE_HOST_FINAL" "$cam"
+FIM
+chmod +x "$CURLS/curl"
+# fum ok|no "descrição" "trecho" VAR=valor...   (ESPERADO=aberto: sem chave SSH, a fumaça só faz as chamadas HTTP)
+fum() {
+  local esperado="$1" nome="$2" trecho="$3" saida rc; shift 3
+  total=$((total + 1))
+  saida="$(env -i PATH="$CURLS:$PATH" HOME="$TMP" ESPERADO=aberto "$@" bash bin/implantar.sh fumaca 2>&1)"; rc=$?
+  if [ "$esperado" = ok ]; then
+    if [ "$rc" -eq 0 ] && [[ "$saida" == *"Fumaça aprovada"* ]]; then passou; else falhou "a fumaça deveria APROVAR: $nome" "$saida"; fi
+  else
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"$trecho"* ]] && [[ "$saida" != *"Fumaça aprovada"* ]]; then passou; else falhou "a fumaça deveria FALHAR: $nome" "$saida"; fi
+  fi
+}
+FH=(AMBIENTE=homologacao ALVO_URL="https://$HML")
+FP=(AMBIENTE=producao ALVO_URL="https://$PROD")
+fum ok "hml: o host final é o da hml" "" "${FH[@]}" FAKE_HOST_FINAL="$HML"
+fum ok "hml: o host final em maiúsculas é o da hml" "" "${FH[@]}" FAKE_HOST_FINAL="HML.IeadcViLaIpiranga.com.br"
+fum no "hml que cai na produção (redireciona ao domínio principal)" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="$PROD"
+fum no "hml que cai na produção (redireciona ao www)" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="www.$PROD"
+fum no "hml que redireciona a outro subdomínio" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="staging.$PROD"
+fum no "hml que redireciona a outro domínio" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="evil.com"
+fum no "hml que redireciona a um host colado (.evil.com)" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="$HML.evil.com"
+fum no "hml que redireciona ao a.hml" "OUTRO endereço" "${FH[@]}" FAKE_HOST_FINAL="a.$HML"
+fum no "transição que redireciona à produção" "OUTRO endereço" AMBIENTE=homologacao ALVO_URL="https://abc.hostingersite.com" FAKE_HOST_FINAL="$PROD"
+fum ok "transição: o host final é o próprio" "" AMBIENTE=homologacao ALVO_URL="https://abc.hostingersite.com" FAKE_HOST_FINAL="abc.hostingersite.com"
+fum ok "produção: o host final é o domínio principal" "" "${FP[@]}" FAKE_HOST_FINAL="$PROD"
+fum ok "produção: o host final é o www do domínio principal" "" "${FP[@]}" FAKE_HOST_FINAL="www.$PROD"
+fum no "produção que redireciona à hml" "OUTRO endereço" "${FP[@]}" FAKE_HOST_FINAL="$HML"
+fum no "produção que redireciona a outro domínio" "OUTRO endereço" "${FP[@]}" FAKE_HOST_FINAL="evil.com"
+fum no "produção que redireciona a outro site da conta" "OUTRO endereço" "${FP[@]}" FAKE_HOST_FINAL="isabellaeneto.com.br"
+fum no "o redirecionamento falha também no sitemap" "sitemap: foi redirecionado" "${FH[@]}" FAKE_HOST_FINAL="$PROD"
 # --- 2. Os scripts que rodam no servidor, só a trava de pasta -------------------------------------------------------------
 # Cada execução usa um pacote e um HOME vazios (copiados para a pasta temporária: os scripts apagam o próprio pacote no fim).
 secao "atualizar-remoto.sh e migrar-remoto.sh: a trava repetida no servidor"
@@ -304,11 +364,23 @@ for s in atualizar migrar; do
   rem no $s "endereço inválido" "" "$P_PROD" "https://$PROD;ls"
   rem no $s "DOMINIO_PRODUCAO inválido" "inválido" "$P_PROD" "https://$PROD" DOMINIO_PRODUCAO='a;b'
 done
-# Só a atualização (o ensaio local da carga completa usa localhost com a pasta da produção, como antes):
-rem no atualizar "localhost com a pasta da produção" "" "$P_PROD" "http://localhost:8081"
-rem no atualizar "subdomínio qualquer com a pasta da produção" "" "$P_PROD" "https://staging.$PROD"
-rem ok migrar "ensaio local da carga completa (localhost, pasta da produção)" "" "$P_PROD" "http://localhost:8081"
-rem no migrar "subdomínio hostingersite com a pasta da produção" "" "$P_PROD" "https://abc.hostingersite.com"
+# A pasta da produção só aceita o domínio principal (com ou sem www.) e, no ensaio local do caminho manual, localhost e 127.0.0.1;
+# qualquer outro endereço, inclusive de outro site da mesma conta, é recusado nos dois scripts (S2).
+for s in atualizar migrar; do
+  rem ok $s "ensaio local do caminho manual (localhost, pasta da produção)" "" "$P_PROD" "http://localhost:8081"
+  rem ok $s "ensaio local do caminho manual (127.0.0.1, pasta da produção)" "" "$P_PROD" "http://127.0.0.1:8081"
+  rem no $s "subdomínio qualquer com a pasta da produção" "" "$P_PROD" "https://staging.$PROD"
+  rem no $s "outro site da conta com a pasta da produção" "" "$P_PROD" "https://isabellaeneto.com.br"
+  rem no $s "evil.com com a pasta da produção" "" "$P_PROD" "https://evil.com"
+  rem no $s "www.hml com a pasta da produção" "" "$P_PROD" "https://www.$HML"
+  rem no $s "a.hml com a pasta da produção" "" "$P_PROD" "https://a.$HML"
+  rem no $s "hml colado em outro domínio com a pasta da produção" "" "$P_PROD" "https://$HML.evil.com"
+  rem no $s "localhost.evil.com com a pasta da produção" "" "$P_PROD" "https://localhost.evil.com"
+  rem no $s "127.0.0.1.evil.com com a pasta da produção" "" "$P_PROD" "https://127.0.0.1.evil.com"
+  rem no $s "outro IP com a pasta da produção" "" "$P_PROD" "http://10.0.0.1"
+  rem no $s "hostingersite com a pasta da produção" "" "$P_PROD" "https://abc.hostingersite.com"
+  rem no $s "localhost com a pasta da hml" "" "$P_HML" "http://localhost:8081"
+done
 
 # --- 3. Simulação: HOME de mentira e wp-cli de mentira ------------------------------------------------------------------
 secao "simulação no servidor: a produção nunca toca a hml e a hml nunca toca o pai"
@@ -435,6 +507,107 @@ for s in atualizar migrar; do
   confere "$s/hml sem wp-config.php: nada foi alterado" test "$(hash_dir "$C")" = "$h_antes"
 done
 
+# --- S4, S5, S7, S10: as barreiras que falham fechadas, links simbólicos, rótulo da transição e URL em minúsculas ---------------
+wp_config() {   # wp_config <arquivo> <conteúdo do wp-config.php>
+  printf '%s\n' "<?php" "$2" > "$1"
+}
+# recusa_sim <script> <nome> <casa> prod|hml <trecho>: roda e confere que recusou com a mensagem e sem alterar nada
+recusa_sim() {
+  local s="$1" nome="$2" casa="$3" alvo="$4" trecho="$5" antes
+  antes="$(hash_dir "$casa")"
+  if [ "$alvo" = prod ]; then sim "$s" prod "$P_PROD" "https://$PROD" "$casa"; else sim "$s" hml "$P_HML" "https://$HML" "$casa"; fi
+  confere "$s: recusa ($nome)" bash -c '[ "$1" -ne 0 ] && [[ "$2" == *"$3"* ]]' _ "$RC" "$SAIDA" "$trecho"
+  confere "$s: recusa sem alterar nada ($nome)" test "$(hash_dir "$casa")" = "$antes"
+}
+for s in atualizar migrar; do
+  # S4: o banco falha fechado. Sem DB_NAME literal legível em qualquer um dos dois wp-config, recusa; só o nome conta (não o host).
+  for alvo in prod hml; do
+    C="$TMP/casa-db-getenv-$alvo-$s"; montar_casa "$C"; wp_config "$C/$P_PROD/wp-config.php" "define( 'DB_NAME', getenv('WORDPRESS_DB_NAME') );"
+    recusa_sim $s "produção com DB_NAME vindo de getenv, alvo $alvo" "$C" $alvo "não consegui ler o DB_NAME"
+    C="$TMP/casa-db-hmlgetenv-$alvo-$s"; montar_casa "$C"; wp_config "$C/$P_PROD/hml/wp-config.php" "define( 'DB_NAME', getenv('WORDPRESS_DB_NAME') );"
+    recusa_sim $s "hml com DB_NAME vindo de getenv, alvo $alvo" "$C" $alvo "não consegui ler o DB_NAME"
+    C="$TMP/casa-db-ausente-$alvo-$s"; montar_casa "$C"; wp_config "$C/$P_PROD/hml/wp-config.php" "define( 'DB_USER', 'u1' );"
+    recusa_sim $s "hml sem DB_NAME, alvo $alvo" "$C" $alvo "não consegui ler o DB_NAME"
+    C="$TMP/casa-db-comentado-$alvo-$s"; montar_casa "$C"; wp_config "$C/$P_PROD/hml/wp-config.php" "// define( 'DB_NAME', 'u1_hml' );"
+    recusa_sim $s "hml com o DB_NAME só em comentário, alvo $alvo" "$C" $alvo "não consegui ler o DB_NAME"
+    C="$TMP/casa-db-duplo-$alvo-$s"; montar_casa "$C"; wp_config "$C/$P_PROD/wp-config.php" "define( 'DB_NAME', 'u1_prod' ); define( 'DB_NAME', 'outro' );"
+    recusa_sim $s "produção com duas definições de DB_NAME, alvo $alvo" "$C" $alvo "não consegui ler o DB_NAME"
+    C="$TMP/casa-db-mesmonome-$alvo-$s"; montar_casa "$C" u1_prod; wp_config "$C/$P_PROD/hml/wp-config.php" "define( 'DB_NAME', 'u1_prod' );
+define( 'DB_HOST', '127.0.0.1' );"
+    recusa_sim $s "mesmo DB_NAME com DB_HOST diferente, alvo $alvo" "$C" $alvo "mesmo banco"
+  done
+  C="$TMP/casa-db-semprod-$s"; montar_casa "$C"; rm -f "$C/$P_PROD/wp-config.php"
+  recusa_sim $s "hml sem o wp-config da produção no pai" "$C" hml "não achei o wp-config.php da produção"   # sem ele não dá para comparar os bancos
+  # Aceita: o wp-config padrão da Hostinger (aspas simples ou duplas, vários define na mesma linha, comentários) continua funcionando.
+  C="$TMP/casa-db-ok-$s"; montar_casa "$C"
+  wp_config "$C/$P_PROD/wp-config.php" "/** The name of the database for WordPress */
+// define( 'DB_NAME', 'comentado' );
+define('DB_NAME', 'u1_prod'); define('DB_USER', 'u1'); define('DB_PASSWORD', 'x');"
+  wp_config "$C/$P_PROD/hml/wp-config.php" "/** banco do staging */
+define( \"DB_NAME\", \"u1_hml\" ); define( 'DB_HOST', 'localhost' );"
+  sim $s hml "$P_HML" "https://$HML" "$C"
+  confere "$s: wp-config padrão da Hostinger (define na mesma linha, aspas duplas, comentário) continua aceito na hml" test "$RC" -eq 0
+  sim $s prod "$P_PROD" "https://$PROD" "$C"
+  confere "$s: wp-config padrão da Hostinger continua aceito na produção" test "$RC" -eq 0
+
+  # S5: link simbólico dentro do site (até 3 níveis) é recusado: o rm -rf e o cp -a escreveriam fora da pasta.
+  C="$TMP/casa-lnk-uploads-$s"; montar_casa "$C"; SITE_P="$C/$P_PROD"
+  rm -rf "$SITE_P/hml/wp-content/uploads"; ln -s ../../wp-content/uploads "$SITE_P/hml/wp-content/uploads" 2> /dev/null
+  if [ -L "$SITE_P/hml/wp-content/uploads" ]; then
+    recusa_sim $s "hml com wp-content/uploads apontando para a produção" "$C" hml "link simbólico"
+    h_hml_ant="$(hash_dir "$SITE_P/hml")"
+    sim $s prod "$P_PROD" "https://$PROD" "$C"
+    confere "$s: a produção segue normalmente quando o link simbólico está só na hml (a pasta hml não é dela)" test "$RC" -eq 0
+    confere "$s: ... e a hml continua intacta" test "$(hash_dir "$SITE_P/hml")" = "$h_hml_ant"
+    C="$TMP/casa-lnk-mu-$s"; montar_casa "$C"; SITE_P="$C/$P_PROD"
+    rm -rf "$SITE_P/hml/wp-content/mu-plugins"; ln -s ../../wp-content/mu-plugins "$SITE_P/hml/wp-content/mu-plugins"
+    recusa_sim $s "hml com mu-plugins apontando para a produção" "$C" hml "link simbólico"
+    C="$TMP/casa-lnk-prod-$s"; montar_casa "$C"; SITE_P="$C/$P_PROD"
+    rm -rf "$SITE_P/wp-content/themes"; ln -s ../hml/wp-content/themes "$SITE_P/wp-content/themes"
+    recusa_sim $s "produção com wp-content/themes apontando para a hml" "$C" prod "link simbólico"
+    C="$TMP/casa-lnk-plugins-$s"; montar_casa "$C"; SITE_P="$C/$P_PROD"
+    rm -rf "$SITE_P/hml/wp-content/plugins"; ln -s ../../wp-content/plugins "$SITE_P/hml/wp-content/plugins"
+    recusa_sim $s "hml com plugins apontando para a produção" "$C" hml "link simbólico"
+  else
+    echo "  (pulado: este sistema não cria links simbólicos)"
+  fi
+
+  # S7: a homologação de transição (*.hostingersite.com) também leva o rótulo hml- nas cópias de segurança.
+  C="$TMP/casa-legado-$s"; montar_casa "$C"; LEG="$C/domains/abc.hostingersite.com/public_html"
+  mkdir -p "$LEG/wp-content/themes/ieadc-vila-ipiranga" "$LEG/wp-content/mu-plugins"; wp_config "$LEG/wp-config.php" "define( 'DB_NAME', 'u1_leg' );"
+  : > "$C/backup-antes-da-migracao-2020-01-01-0000.sql"; : > "$C/backup-codigo-antes-2020-01-01-000000.tgz"
+  sim $s legado "domains/abc.hostingersite.com/public_html" "https://abc.hostingersite.com" "$C"
+  confere "$s: homologação de transição termina bem" test "$RC" -eq 0
+  if [ "$s" = atualizar ]; then
+    confere "$s: a cópia da homologação de transição tem o rótulo hml-" bash -c "ls '$C'/backup-codigo-antes-hml-*.tgz"
+    confere "$s: ... e a cópia da produção continua lá, intacta" test -e "$C/backup-codigo-antes-2020-01-01-000000.tgz"
+  else
+    confere "$s: a cópia do banco da homologação de transição tem o rótulo hml-" bash -c "ls '$C'/backup-antes-da-migracao-hml-*.sql"
+    confere "$s: ... e a cópia da produção continua lá, intacta" test -e "$C/backup-antes-da-migracao-2020-01-01-0000.sql"
+  fi
+done
+
+# S7: os dumps do banco da homologação (um por carga completa) ficam nos 5 mais recentes; os da produção nunca são apagados.
+C="$TMP/casa-dumps"; montar_casa "$C"
+for i in 1 2 3 4 5 6; do
+  : > "$C/backup-antes-da-migracao-2020-01-0$i-0000.sql"; : > "$C/backup-antes-da-migracao-hml-2020-01-0$i-0000.sql"
+  touch -d "2020-01-0$i 00:00:00" "$C/backup-antes-da-migracao-2020-01-0$i-0000.sql" "$C/backup-antes-da-migracao-hml-2020-01-0$i-0000.sql"
+done
+sim migrar hml "$P_HML" "https://$HML" "$C"
+confere "dumps: depois da carga da hml ficam 5 da hml" test "$(ls "$C"/backup-antes-da-migracao-hml-*.sql | wc -l)" -eq 5
+confere "dumps: a carga da hml não apagou nenhum da produção (6)" test "$(ls "$C"/backup-antes-da-migracao-[0-9]*.sql | wc -l)" -eq 6
+confere "dumps: o mais novo da hml foi guardado e o mais antigo saiu" bash -c '[ ! -e "$1/backup-antes-da-migracao-hml-2020-01-01-0000.sql" ] && [ -e "$1/backup-antes-da-migracao-hml-2020-01-06-0000.sql" ]' _ "$C"
+sim migrar prod "$P_PROD" "https://$PROD" "$C"
+confere "dumps: a carga da produção não apaga nenhum dump (7 da produção)" test "$(ls "$C"/backup-antes-da-migracao-[0-9]*.sql | wc -l)" -eq 7
+confere "dumps: a carga da produção não mexeu nos da hml (5)" test "$(ls "$C"/backup-antes-da-migracao-hml-*.sql | wc -l)" -eq 5
+
+# S10: o endereço gravado em home/siteurl pelo servidor é sempre minúsculo, mesmo que chegue em maiúsculas.
+C="$TMP/casa-url-minuscula"; montar_casa "$C"
+sim migrar hml "$P_HML" "https://HML.IeadcViLaIpiranga.COM.BR" "$C"
+confere "S10: o servidor aceita o endereço em maiúsculas e grava home em minúsculas" bash -c '[ "$1" -eq 0 ] && grep -q ":: option update home https://hml.ieadcvilaipiranga.com.br$" "$2"' _ "$RC" "$WP_LOG"
+confere "S10: ... e siteurl em minúsculas" grep -q ":: option update siteurl https://hml.ieadcvilaipiranga.com.br$" "$WP_LOG"
+confere "S10: nenhuma letra maiúscula foi gravada em home/siteurl" bash -c '! grep -E "option update (home|siteurl) .*[A-Z]" "$1"' _ "$WP_LOG"
+
 # As cópias de código (5 por site) não se apagam entre si: a produção e a hml dividem o mesmo HOME.
 C="$TMP/casa-copias"; montar_casa "$C"
 for i in 1 2 3 4 5 6; do
@@ -458,14 +631,15 @@ else
   # psc ok|no "descrição" ambiente url [pasta]
   psc() {
     local esperado="$1" nome="$2" amb="$3" url="$4" saida rc args
-    args=(-Ambiente "$amb" -Servidor servidor.invalido -Porta 22 -Usuario u123 -Url "$url" -Conferir -SemRede)
-    [ $# -lt 5 ] || args+=(-Destino "$5")
+    # PS_SRV troca o servidor (padrão: um que não é do computador); PS_TRECHO exige um trecho na saída (ex.: o endereço final).
+    args=(-Ambiente "$amb" -Servidor "${PS_SRV:-servidor.invalido}" -Porta 22 -Usuario u123 -Url "$url" -Conferir -SemRede)
+    [ $# -lt 5 ] || [ -z "$5" ] || args+=(-Destino "$5")
     total=$((total + 1))
     saida="$(cd "$TMP/ps" && "$PS" -NoProfile -ExecutionPolicy Bypass -File bin/migrar.ps1 "${args[@]}" 2>&1)"; rc=$?
     if [ "$esperado" = ok ]; then
-      if [ "$rc" -eq 0 ] && [[ "$saida" == *"TRAVAS OK"* ]]; then passou; else falhou "migrar.ps1 deveria ACEITAR: $nome" "$saida"; fi
+      if [ "$rc" -eq 0 ] && [[ "$saida" == *"TRAVAS OK"* ]] && [[ "$saida" == *"${PS_TRECHO:-}"* ]]; then passou; else falhou "migrar.ps1 deveria ACEITAR: $nome" "$saida"; fi
     else
-      if [ "$rc" -ne 0 ] && [[ "$saida" != *"TRAVAS OK"* ]]; then passou; else falhou "migrar.ps1 deveria RECUSAR: $nome" "$saida"; fi
+      if [ "$rc" -ne 0 ] && [[ "$saida" != *"TRAVAS OK"* ]] && [[ "$saida" == *"${PS_TRECHO:-}"* ]]; then passou; else falhou "migrar.ps1 deveria RECUSAR: $nome" "$saida"; fi
     fi
   }
   psc ok "hml, pasta padrão" homologacao "https://$HML"
@@ -473,7 +647,6 @@ else
   psc ok "hostingersite, pasta padrão" homologacao "https://abc123.hostingersite.com"
   psc ok "produção, pasta padrão" producao "https://$PROD"
   psc ok "produção, pasta exata" producao "https://$PROD" "$P_PROD"
-  psc ok "produção em ensaio local (localhost, pasta da produção)" producao "http://localhost:8081" "$P_PROD"
   psc no "domínio principal na homologação" homologacao "https://$PROD"
   psc no "www na homologação" homologacao "https://www.$PROD"
   psc no "domínio principal com a pasta hml" homologacao "https://$PROD" "$P_HML"
@@ -497,6 +670,26 @@ else
   psc no "produção com a pasta da hml" producao "https://$PROD" "$P_HML"
   psc no "produção com a pasta da hml e barra" producao "https://$PROD" "$P_HML/"
   psc no "produção com pasta de terceiro" producao "https://$PROD" "domains/terceiro.com.br/public_html"
+  # S2: na produção só vale o domínio principal; localhost e 127.0.0.1 só com o servidor do próprio computador (ensaio local).
+  PS_SRV=127.0.0.1 psc ok "produção em ensaio local (localhost, servidor 127.0.0.1)" producao "http://localhost:8081" "$P_PROD"
+  PS_SRV=127.0.0.1 psc ok "produção em ensaio local (127.0.0.1, servidor 127.0.0.1)" producao "http://127.0.0.1:8081" "$P_PROD"
+  PS_SRV=localhost psc ok "produção em ensaio local (servidor localhost)" producao "http://localhost:8081" "$P_PROD"
+  psc no "produção com localhost contra um servidor que não é o do computador" producao "http://localhost:8081" "$P_PROD"
+  PS_SRV=ssh.hospedagem.example psc no "produção com 127.0.0.1 contra um servidor remoto" producao "http://127.0.0.1:8081" "$P_PROD"
+  psc no "produção com outro site da conta" producao "https://isabellaeneto.com.br" "$P_PROD"
+  psc no "produção com evil.com" producao "https://evil.com" "$P_PROD"
+  psc no "produção com www.hml" producao "https://www.$HML" "$P_PROD"
+  psc no "produção com a.hml" producao "https://a.$HML" "$P_PROD"
+  psc no "produção com outro subdomínio" producao "https://staging.$PROD" "$P_PROD"
+  psc no "produção com hostingersite" producao "https://abc.hostingersite.com" "$P_PROD"
+  psc no "produção com localhost.evil.com" producao "https://localhost.evil.com" "$P_PROD"
+  PS_SRV=127.0.0.1 psc no "produção com a pasta da hml até no ensaio local" producao "http://localhost:8081" "$P_HML"
+  # S10: o endereço gravado é minúsculo, sem barra final e sem porta (a porta só existe no ensaio local).
+  PS_TRECHO="final: https://hml.ieadcvilaipiranga.com.br" psc ok "URL em maiúsculas vira minúscula" homologacao "https://HML.IeadcViLaIpiranga.COM.BR"
+  PS_TRECHO="final: https://hml.ieadcvilaipiranga.com.br" psc ok "URL com barra final" homologacao "https://$HML/"
+  PS_TRECHO="final: https://hml.ieadcvilaipiranga.com.br" psc ok "URL com porta fora do ensaio local perde a porta" homologacao "https://$HML:8443"
+  PS_TRECHO="final: https://www.ieadcvilaipiranga.com.br" psc ok "produção em maiúsculas, www e porta" producao "https://WWW.ieadcvilaipiranga.com.br:8443/"
+  PS_SRV=127.0.0.1 PS_TRECHO="final: http://localhost:8081" psc ok "no ensaio local a porta fica" producao "http://LOCALHOST:8081/" "$P_PROD"
 fi
 
 # --- 5. bin/cadastrar-segredos-github.sh -------------------------------------------------------------------------------------
@@ -511,6 +704,7 @@ cadastrar() {   # cadastrar <nome> <linhas do .env da hml...>   deixa em $SEGRED
 #!/usr/bin/env bash
 # gh de mentira: grava só o NOME do segredo (o valor, que vem pela entrada padrão, nunca é guardado).
 if [ "$1 $2" = "secret set" ]; then echo "$3" >> "$GH_LOG"; cat > /dev/null; fi
+if [ "$1 $2" = "secret delete" ]; then echo "apagar:$3" >> "$GH_LOG"; fi
 if [ "$1 $2" = "variable set" ]; then echo "variavel:$3" >> "$GH_LOG"; fi
 exit 0
 FIM
@@ -523,7 +717,9 @@ FIM
 total=$((total + 1)); cadastrar a "HOMOLOG_URL=https://$HML" "HOMOLOG_DESTINO=$P_HML"
 if [ "$RC" -eq 0 ] && [[ "$SEGREDOS" == *"HML_URL "* ]] && [[ "$SEGREDOS" == *"HML_DESTINO "* ]]; then passou; else falhou "cadastrar: o par exato da hml deveria gravar HML_URL e HML_DESTINO" "$SAIDA $SEGREDOS"; fi
 total=$((total + 1)); cadastrar b "HOMOLOG_URL=https://$HML"
-if [ "$RC" -eq 0 ] && [[ "$SEGREDOS" == *"HML_URL "* ]] && [[ "$SEGREDOS" != *"HML_DESTINO"* ]]; then passou; else falhou "cadastrar: sem HOMOLOG_DESTINO não grava HML_DESTINO" "$SAIDA $SEGREDOS"; fi
+if [ "$RC" -eq 0 ] && [[ "$SEGREDOS" == *"HML_URL "* ]] && [[ " ${SEGREDOS//apagar:HML_DESTINO/} " != *" HML_DESTINO "* ]] && [[ "$SEGREDOS" == *"apagar:HML_DESTINO"* ]]; then passou; else falhou "cadastrar: sem HOMOLOG_DESTINO não grava HML_DESTINO e APAGA o segredo antigo (S6)" "$SAIDA $SEGREDOS"; fi
+total=$((total + 1)); cadastrar a2 "HOMOLOG_URL=https://$HML" "HOMOLOG_DESTINO=$P_HML"
+if [[ "$SEGREDOS" != *"apagar:"* ]]; then passou; else falhou "cadastrar: com HOMOLOG_DESTINO o HML_DESTINO não é apagado" "$SAIDA $SEGREDOS"; fi
 total=$((total + 1)); cadastrar c "HOMOLOG_URL=https://$HML" "HOMOLOG_DESTINO=$P_PROD"
 if [ "$RC" -ne 0 ] && [ -z "$SEGREDOS" ]; then passou; else falhou "cadastrar: a pasta da produção como destino da hml deve ser recusada sem gravar nada" "$SAIDA $SEGREDOS"; fi
 total=$((total + 1)); cadastrar d "HOMOLOG_URL=https://$PROD"
@@ -531,7 +727,9 @@ if [ "$RC" -ne 0 ] && [ -z "$SEGREDOS" ]; then passou; else falhou "cadastrar: o
 total=$((total + 1)); cadastrar e "HOMOLOG_URL=https://staging.$PROD"
 if [ "$RC" -ne 0 ] && [ -z "$SEGREDOS" ]; then passou; else falhou "cadastrar: outro subdomínio deve ser recusado sem gravar nada" "$SAIDA $SEGREDOS"; fi
 total=$((total + 1)); cadastrar f "HOMOLOG_URL=https://abc.hostingersite.com"
-if [ "$RC" -eq 0 ] && [[ "$SEGREDOS" == *"HML_URL "* ]]; then passou; else falhou "cadastrar: o endereço hostingersite (transição) continua aceito" "$SAIDA $SEGREDOS"; fi
+if [ "$RC" -eq 0 ] && [[ "$SEGREDOS" == *"HML_URL "* ]] && [[ "$SEGREDOS" == *"apagar:HML_DESTINO"* ]]; then passou; else falhou "cadastrar: o endereço hostingersite (transição) continua aceito e apaga o HML_DESTINO da hml" "$SAIDA $SEGREDOS"; fi
+total=$((total + 1)); cadastrar g "HOMOLOG_URL=https://$HML" "HOMOLOG_DESTINO=$P_HML/"
+if [ "$RC" -ne 0 ] && [ -z "$SEGREDOS" ]; then passou; else falhou "cadastrar: pasta com barra final deve ser recusada sem gravar nada" "$SAIDA $SEGREDOS"; fi
 
 echo
 if [ "$falhas" -eq 0 ]; then echo "GUARDAS OK: $total casos, 0 falhas."; else echo "GUARDAS COM FALHAS: $falhas de $total casos."; fi

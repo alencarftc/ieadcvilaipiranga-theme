@@ -30,8 +30,15 @@ if [ "$alvo" = tudo ] || [ "$alvo" = homologacao ]; then
   imp="$(impressao "$srv" "$porta")"; echo "impressão digital do servidor da homologação: $imp (confira no hPanel)"
   segredo HML_SERVIDOR homologacao "$srv"; segredo HML_PORTA homologacao "$porta"; segredo HML_USUARIO homologacao "$usr"
   segredo HML_URL homologacao "$url"; segredo HML_IMPRESSAO homologacao "$imp"
-  # Só se existir no .env: o par exato da homologação aninhada (hml) precisa do HML_DESTINO; o endereço antigo não.
-  [ -z "$dest" ] || segredo HML_DESTINO homologacao "$dest"
+  # Com HOMOLOG_DESTINO no .env, grava o HML_DESTINO (recomendado para a hml aninhada). Sem ele, apaga o segredo antigo: um
+  # HML_DESTINO esquecido de um endereço anterior faria a trava recusar o par novo ("a pasta do site deve ser exatamente...").
+  if [ -n "$dest" ]; then
+    segredo HML_DESTINO homologacao "$dest"
+  elif gh secret delete HML_DESTINO --env homologacao --repo "$repo" > /dev/null 2>&1; then
+    echo "ok  homologacao / HML_DESTINO removido (o .env não tem HOMOLOG_DESTINO; vale a pasta padrão do endereço)"
+  else
+    echo "ok  homologacao / HML_DESTINO: nada a remover (vale a pasta padrão do endereço)"
+  fi
   gh secret set HML_SSH_CHAVE --env homologacao --repo "$repo" < content/backup/deploy-hml/id_ed25519 > /dev/null && echo "ok  homologacao / HML_SSH_CHAVE"
 fi
 
