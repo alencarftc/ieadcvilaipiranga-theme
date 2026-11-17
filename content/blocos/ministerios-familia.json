@@ -62,7 +62,7 @@
     {
      "icone": "maos",
      "rotulo": "Quem lidera",
-     "valor": "Coop. Bruno Bernadoque e Tácila Bernadoque, Ev. Robson Stein e Luciana Stein"
+     "valor": "Coop. Bruno Bernadoque e Tácila Bernadoque, Pr. Robson Stein e Luciana Stein"
     }
    ]
   }
@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-familia",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O ministério da Família cuida dos casais e das famílias da igreja, para que cada lar viva a fé no dia a dia. A liderança é formada por dois casais: o Coop. Bruno Bernadoque e a Tácila Bernadoque, e o Ev. Robson Stein e a Luciana Stein.\n\nNo 1º domingo de cada mês, o culto dominical, às 19h, tem o tema Família. É uma boa ocasião para vir com a casa toda e convidar outras famílias.\n\n[outros encontros a confirmar]",
+     "texto": "O ministério da Família cuida dos casais e das famílias da igreja, para que cada lar viva a fé no dia a dia. A liderança é formada por dois casais: o Coop. Bruno Bernadoque e a Tácila Bernadoque, e o Pr. Robson Stein e a Luciana Stein.\n\nNo 1º domingo de cada mês, o culto dominical, às 19h, tem o tema Família. É uma boa ocasião para vir com a casa toda e convidar outras famílias.\n\nO ministério também promove encontros de casais e confraternizações com as famílias da igreja. Para saber as próximas datas, fale com os líderes do ministério.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -112,8 +111,7 @@
      "versiculo": "",
      "referencia": "",
      "itens": [
-      "1º domingo · 19h | Culto dominical com o tema Família",
-      "[a confirmar] | Encontros de casais e confraternizações"
+      "1º domingo · 19h | Culto dominical com o tema Família"
      ]
     }
    ],
@@ -129,7 +127,7 @@
     }
    ],
    "lateralTitulo": "Quem lidera",
-   "lideres": "Coop. Bruno Bernadoque\nTácila Bernadoque\nEv. Robson Stein\nLuciana Stein",
+   "lideres": "Coop. Bruno Bernadoque\nTácila Bernadoque\nPr. Robson Stein\nLuciana Stein",
    "botoes": [
     {
      "texto": "Fale conosco",
@@ -164,7 +162,7 @@
    "titulo": "Dê o primeiro passo",
    "variante": "passo-unico",
    "passos": [
-    "Procure os líderes do ministério Família: Coop. Bruno Bernadoque e Tácila Bernadoque, ou Ev. Robson Stein e Luciana Stein. Eles vão receber você e explicar como participar."
+    "Procure os líderes do ministério Família: Coop. Bruno Bernadoque e Tácila Bernadoque, ou Pr. Robson Stein e Luciana Stein. Eles vão receber você e explicar como participar."
    ],
    "icone": "pessoas",
    "unicoBotaoTexto": "Fale conosco",

@@ -2,10 +2,10 @@
 /** Testes das funções comuns de renderização (inc/helpers.php). */
 require dirname(__DIR__) . '/bootstrap.php';
 
-echo "ieadc_pend\n";
-ieadc_igual('Olá <mark class="pend">[a confirmar]</mark> fim', ieadc_pend('Olá [a confirmar] fim'), 'marca [trecho]');
+echo "ieadc_pend (só escapa: nenhuma marcação amarela desde a fase 5B)\n";
+ieadc_igual('Olá [a confirmar] fim', ieadc_pend('Olá [a confirmar] fim'), 'colchetes saem como texto, sem <mark>');
 ieadc_igual('a &lt;b&gt; &amp; c', ieadc_pend('a <b> & c'), 'escapa HTML');
-ieadc_igual('<mark class="pend">[um]</mark> e <mark class="pend">[dois]</mark>', ieadc_pend('[um] e [dois]'), 'vários trechos');
+ieadc_igual('[um] e [dois]', ieadc_pend('[um] e [dois]'), 'vários trechos entre colchetes, sem marca');
 ieadc_igual('sem marca', ieadc_pend('sem marca'), 'texto sem colchetes');
 
 echo "ieadc_kses_rico\n";
@@ -14,8 +14,8 @@ ieadc_igual('alert(1)x', ieadc_kses_rico('<script>alert(1)</script>x'), 'tira a 
 ieadc_igual('<a href="/contato/">c</a>', ieadc_kses_rico('<a href="/contato/" onclick="x()">c</a>'), 'a só com href');
 ieadc_igual('<span class="azul">m</span>', ieadc_kses_rico('<span class="azul" style="color:red">m</span>'), 'span.azul sem style');
 ieadc_igual('<span>m</span>', ieadc_kses_rico('<span class="outra">m</span>'), 'span com outra classe perde a classe');
-ieadc_igual('a <mark class="pend">[b]</mark>', ieadc_kses_rico('a [b]'), 'marca [trecho] no texto rico');
-ieadc_igual('<mark class="pend">[b]</mark>', ieadc_kses_rico('<mark class="pend">[b]</mark>'), 'não duplica mark existente');
+ieadc_igual('a [b]', ieadc_kses_rico('a [b]'), 'texto rico não marca [trecho]');
+ieadc_igual('b', ieadc_kses_rico('<mark class="pend">b</mark>'), 'texto rico não aceita mark.pend (a tag some)');
 ieadc_igual('<small>p</small>', ieadc_kses_rico('<small>p</small>'), 'small');
 
 echo "ieadc_paragrafos\n";

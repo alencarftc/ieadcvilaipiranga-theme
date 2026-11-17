@@ -4,8 +4,8 @@ Guia do dia a dia do site da IEADC Vila Ipiranga: publicar artigo e evento, troc
 
 ## Antes de tudo: quatro regras
 
-1. **Não invente dado da igreja.** Endereço, horário, nome de pastor, telefone: só o que a liderança confirmou. Onde falta informação o site mostra `[a confirmar]` em fundo amarelo. Deixe assim até o dado chegar; depois troque o texto (o amarelo some sozinho quando os colchetes saem). O que ainda falta, página por página, está em `docs/operacao/pendencias-para-o-felipe.md`.
-2. **Fotos:** coloridas, sem repetir a mesma foto na mesma página e sem fotos em que apareça o pastor João (regra do projeto; prefira as do Ev. Robson Stein). Em fotos de crianças, confirme antes a autorização dos responsáveis.
+1. **Não invente dado da igreja.** Endereço, horário, nome de pastor, telefone: só o que a liderança confirmou. Onde falta informação, escreva um texto geral que não afirme nada (por exemplo, "procure os líderes") e não use marcação nem aviso de "a confirmar": o site não tem mais texto em amarelo. A pergunta vai para `docs/operacao/perguntas-ao-pastor-robson.md`, e o que depende do Felipe está em `docs/operacao/pendencias-para-o-felipe.md`.
+2. **Fotos:** coloridas, sem repetir a mesma foto na mesma página e sem fotos em que apareça o pastor João (regra do projeto; prefira as do Pr. Robson Stein). Em fotos de crianças, confirme antes a autorização dos responsáveis.
 3. **Pedidos de oração são privados.** Só quem tem acesso ao painel lê, nunca compartilhe em grupos nem imprima sem necessidade (veja a seção 5).
 4. **Termos:** "Ceia do Senhor" e "Culto de Ensino".
 
@@ -19,7 +19,7 @@ Endereço: `https://ieadcvilaipiranga.com.br/wp-login.php` (depois do lançament
 | Editor | Comunicação | Posts (artigos), Páginas, Eventos, Mensagens, Mídia |
 | Equipe de oração | quem cuida dos pedidos | só **Pedidos de oração** |
 
-Quem cria as contas é o administrador (menu **Usuários**). Quem mantém o site: **[a confirmar: nome e contato]**.
+Quem cria as contas é o administrador (menu **Usuários**). Quem mantém o site: o Felipe (até haver outra pessoa designada).
 
 O menu da esquerda, em resumo:
 
@@ -60,7 +60,7 @@ Cultos fixos (segunda, quarta, quinta, sexta, domingo, Ceia no 2º sábado, vig�
 2. **Título** e, se quiser, um texto de descrição e um **Resumo**.
 3. Caixa **Quando e onde** (painel da direita):
    - **Data** e, em eventos de mais de um dia, **Até**.
-   - **Horário** (por exemplo, `19h30`) e **Local** (por exemplo, `No templo da igreja`). Sem local, não invente: deixe `[a confirmar]`.
+   - **Horário** (por exemplo, `19h30`) e **Local** (por exemplo, `No templo da igreja`). Sem local, não invente: deixe o campo vazio (a agenda esconde o que está vazio).
    - **Categoria (cor na agenda):** Culto, Ensino, Domingo, Ceia do Senhor, Vigília e consagração ou Jovens.
    - **Link (opcional):** página do site (por exemplo, `ministerios/mocidade`) ou um endereço completo. Vazio = a página do próprio evento.
 4. **Publicar.** O evento entra, sem mais nenhum passo, em **Próximos eventos** (página inicial e página **Eventos**) e no calendário do mês da data; o site limpa a cópia guardada das páginas (cache) na hora. Evento que já passou **some sozinho** dos próximos eventos (a página dele continua existindo). A página inicial mostra sempre o mês e os dias de hoje. Para tirar um evento do ar, **Eventos > Todos os eventos**, passe o mouse no evento e clique em **Lixeira**.
@@ -86,7 +86,7 @@ Cuidados com a foto nova:
 
 1. **Pedidos de oração > Pedidos recebidos.** Cada linha tem o nome e a data do pedido.
 2. Clique no pedido para ler o texto. Na caixa **Contato** (à direita) aparecem se a pessoa quer contato e o telefone ou e-mail dela.
-3. Quando o pedido chegar, um e-mail também avisa o endereço configurado em **Configurações > IEADC Vila Ipiranga > E-mail que recebe os pedidos de oração**. **[a confirmar: e-mail da equipe de oração]**
+3. Quando o pedido chegar, um e-mail também avisa o endereço configurado em **Configurações > IEADC Vila Ipiranga > E-mail que recebe os pedidos de oração**. O Felipe pede esse e-mail à equipe de oração; até lá o aviso vai para o e-mail do administrador do site.
 
 Cuidados:
 
@@ -96,7 +96,7 @@ Cuidados:
 - Não copie pedidos para conversas, planilhas ou documentos fora do painel. Quem quiser contato é chamado só pelo telefone ou e-mail que a pessoa deixou.
 - Se a pessoa pedir para apagar o pedido dela, apague na hora e de vez.
 
-O **Fale conosco** funciona diferente: a mensagem vai só por e-mail, para o endereço de **E-mail que recebe o Fale conosco**, e o site não guarda nada. **[a confirmar: e-mail]**
+O **Fale conosco** funciona diferente: a mensagem vai só por e-mail, para o endereço de **E-mail que recebe o Fale conosco**, e o site não guarda nada. O Felipe pede esse e-mail aos responsáveis; até lá a mensagem vai para o e-mail do administrador do site.
 
 ## 6. Dados da igreja (rodapé e formulários)
 
@@ -112,8 +112,8 @@ O **Fale conosco** funciona diferente: a mensagem vai só por e-mail, para o end
 
 O site tem **duas camadas** de proteção:
 
-1. **Backup da Hostinger**, automático, pelo hPanel. Frequência e prazo dependem do plano: **[a confirmar no hPanel]**.
-2. **UpdraftPlus**, no painel do WordPress, com cópia para o **Google Drive da igreja** (conta: **[a confirmar]**).
+1. **Backup da Hostinger**, automático, pelo hPanel. Frequência e prazo dependem do plano: confira no hPanel e anote aqui.
+2. **UpdraftPlus**, no painel do WordPress, com cópia para o **Google Drive da igreja** (conta: o Gmail da igreja, `ieadcvilaipiranga@gmail.com`; quem autoriza é o Felipe, entrando com a própria senha).
 
 ### Configurar o UpdraftPlus (uma vez, pelo administrador)
 

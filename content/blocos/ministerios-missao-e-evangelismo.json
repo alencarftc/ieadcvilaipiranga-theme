@@ -70,13 +70,12 @@
  {
   "bloco": "ieadc/corpo-indice",
   "attrs": {
-   "aviso": "Texto-base para a liderança do ministério revisar. Trechos em amarelo aguardam confirmação.",
    "secoes": [
     {
      "ancora": "funciona-missao-e-evangelismo",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O ministério de Missão e Evangelismo leva o evangelho para além das portas da igreja. Ele caminha em sintonia com o tema do ano da IEADC: \"Alcançar Curitiba para Cristo. Nossa missão, nossa paixão.\"\n\nNo 2º domingo de cada mês, o culto dominical, às 19h, tem o tema Missões e Evangelismo.\n\n[ações do ministério a confirmar]",
+     "texto": "O ministério de Missão e Evangelismo leva o evangelho para além das portas da igreja. Ele caminha em sintonia com o tema do ano da IEADC: \"Alcançar Curitiba para Cristo. Nossa missão, nossa paixão.\"\n\nNo 2º domingo de cada mês, o culto dominical, às 19h, tem o tema Missões e Evangelismo.\n\nQuem deseja participar das ações do ministério pode procurar os líderes, que explicam como servir.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -101,7 +100,7 @@
       "Anunciar o evangelho em Curitiba",
       "Mobilizar a igreja para evangelizar",
       "Orar por quem ainda não conhece a Jesus",
-      "Apoiar a obra missionária [a confirmar]"
+      "Apoiar a obra missionária"
      ]
     },
     {
@@ -112,8 +111,7 @@
      "versiculo": "",
      "referencia": "",
      "itens": [
-      "2º domingo · 19h | Culto dominical com o tema Missões e Evangelismo",
-      "[a confirmar] | Saídas de evangelismo"
+      "2º domingo · 19h | Culto dominical com o tema Missões e Evangelismo"
      ]
     }
    ],

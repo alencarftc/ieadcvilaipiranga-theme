@@ -26,7 +26,7 @@ Deixar o `main` pronto para os agentes trabalharem em paralelo e cuidar do que �
 - Revisar e fazer merge dos PRs dos agentes (o Felipe aprova os de página).
 - Adicionar ícones quando um agente pedir.
 - Ao fim de cada onda: `./bin/setup.sh` do zero e `./bin/testar.sh` completo no `main`.
-- 28–29/11: revisão de textos com o Felipe, lista final de `[a confirmar]` para o pastor (gerada por `./bin/wp.sh eval 'echo …'` que procura `class="pend"` em todo o conteúdo).
+- 28–29/11: revisão de textos com o Felipe, lista final de perguntas para o pastor (na fase 5B não restou nenhum `[a confirmar]` no site; as perguntas estão em `docs/operacao/perguntas-ao-pastor-robson.md`).
 
 ## Contratos que fornece
 

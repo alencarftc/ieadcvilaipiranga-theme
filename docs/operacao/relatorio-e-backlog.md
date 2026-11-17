@@ -22,7 +22,7 @@ Estimativa honesta de conclusão do pedido inteiro: **cerca de 65%**. Duas das q
 - **CI/CD (GitHub Actions):** a homologação é publicada depois que os testes passam na `main`; a produção só por release, só com o que a homologação já recebeu **e testou com sucesso** (mesmo commit e mesmo pacote), com a trava conferida em duas revisões (40 casos de recusa simulados). Falta rodar no GitHub (precisa dos segredos).
 - **Data e eventos:** a home mostra o mês e os dias de hoje; os testes fixam 06/10/2026 por cabeçalho (só no ambiente local). Eventos só do módulo `ieadc-core`; cadastrar um evento o faz aparecer e apagar o faz sumir (provado).
 - **Plugins:** formulários nunca no cache do LiteSpeed (o nonce vence em página cacheada), agenda que expira à meia-noite, Yoast sem título/Open Graph duplicados, UpdraftPlus já agendado (semanal/diário, manter 4). Two Factor e Limit Login documentados.
-- **Textos amarelos:** 52 levantados, **20 resolvidos** sem inventar fato e **32 encurtados**; as perguntas que só o Felipe responde estão em `docs/operacao/pendencias-para-o-felipe.md`.
+- **Textos amarelos:** 52 levantados na fase 1; na fase 5B o Felipe respondeu e mandou tratar tudo como definitivo: **nenhum texto amarelo nem aviso de revisão resta** (teste automático). O que ele não soube responder (horários e periodicidade de Família, Missão e Mocidade, atividades das Crianças, matérias do Ensinai, horários dos eventos, escala depois de 02/12 etc.) está em `docs/operacao/perguntas-ao-pastor-robson.md`; o que só ele faz, em `docs/operacao/pendencias-para-o-felipe.md`.
 - **SEO e Google/Gemini:** um só grafo JSON-LD por página (Church+Organization, WebSite, WebPage, BreadcrumbList, BlogPosting, Event, FAQPage), títulos ≤ 59 e descrições 74–157 sem repetição, Open Graph e Twitter, `llms.txt`, robots e sitemap; nunca nota ou número de avaliações inventados. Conferido no ar na homologação.
 - **Seção "Avalie no Google":** início, Contato e Horários; botão leva ao link do Perfil da Empresa (campo em Configurações) ou, sem ele, à igreja no Google Maps; o campo só aceita endereços do Google.
 - **Testes hoje:** php 209 verificações, markup 28, visual 84 (0,000%), interação 8, todos verdes. CI do GitHub verde nas PRs #33 a #37.
@@ -38,9 +38,11 @@ Estimativa honesta de conclusão do pedido inteiro: **cerca de 65%**. Duas das q
 
 **Com o Felipe (só ele pode):**
 - [ ] **Segredos do GitHub:** rodar `bin/cadastrar-segredos-github.sh` (ou autorizar que eu o faça). Sem isso o CI não publica sozinho na homologação.
-- [ ] **Dados reais** (`docs/operacao/pendencias-para-o-felipe.md`): e-mail público e dos formulários; anos, grafia e sobrenomes de "Sobre nós"; regras de participação na Ceia; dirigente e ordem do Culto de Oração, temas do Ensino; dados do Círculo, Crianças, Ensinai, EBD, Família, Missão e Mocidade; responsável por Mídia/Comunicação e fotos dos pastores; agenda de 2027.
-- [ ] **Google:** link de avaliação do Perfil da Empresa (ou o código `ChIJ…`), Perfil verificado, verificação do Search Console (registro TXT no DNS) e envio do `sitemap_index.xml`; ID do Google Analytics (GA4).
-- [ ] **Painel:** 2FA dos administradores, destino do backup (Google Drive da igreja), conferir os e-mails dos formulários.
+- [x] **Dados reais:** respondidos em 16/11/2026 e aplicados na fase 5B (e-mail público, grafias e cargos, Ceia, Culto de Oração e de Ensino, ministérios, eventos de nov/dez).
+- [ ] **Com o Pastor Robson** (`docs/operacao/perguntas-ao-pastor-robson.md`): o que o Felipe não soube responder (horários, periodicidade, atividades, matérias do Ensinai, escala depois de 02/12, ano da inauguração do templo, fotos e autorizações).
+- [ ] **Com o Felipe** (`docs/operacao/pendencias-para-o-felipe.md`): encaminhar o Gmail da igreja, registros DNS, fotos dos líderes, e-mails dos formulários, UpdraftPlus no Drive e o "pode abrir".
+- [x] **Google:** link de avaliação, Perfil da Empresa verificado e IDs de medição informados pelo Felipe em 16/11/2026. [ ] Falta o registro TXT do Search Console no DNS (e o envio do `sitemap_index.xml`).
+- [ ] **Painel:** autorizar o UpdraftPlus no Google Drive da igreja e conferir os e-mails dos formulários (2FA do Felipe e do pastor já combinado).
 - [ ] **O "pode lançar"** para a produção, que hoje já tem outro WordPress em `ieadcvilaipiranga.com.br` (não foi tocado).
 
 ## 4. Melhorias cabíveis (a lista que o Felipe pediu)

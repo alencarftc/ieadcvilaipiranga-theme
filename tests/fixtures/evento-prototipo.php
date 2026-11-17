@@ -1,7 +1,7 @@
 <?php
 /**
  * Dado de teste: o evento avulso que aparece na agenda do protótipo de 06/10/2026 ("Confraternização dos jovens",
- * 17 e 18 de outubro, horário e local a confirmar). O site de verdade NÃO tem esse evento (a data passou e era exemplo);
+ * 17 e 18 de outubro). O site de verdade NÃO tem esse evento (a data passou e era exemplo);
  * os testes de fidelidade o criam antes de rodar e o apagam no fim (bin/testar.sh).
  *
  * Uso (dentro do contêiner wp-cli, com tests/ montado em /tests):
@@ -25,13 +25,13 @@ $dados = [
 	'post_status'  => 'publish',
 	'post_name'    => 'confraternizacao-dos-jovens',
 	'post_title'   => 'Confraternização dos jovens',
-	'post_excerpt' => 'Dias 17 e 18 de outubro. [Local e programação a confirmar]',
-	'post_content' => '<!-- wp:paragraph --><p>Dias 17 e 18 de outubro. [Local e programação a confirmar]</p><!-- /wp:paragraph -->',
+	'post_excerpt' => 'Dias 17 e 18 de outubro.',
+	'post_content' => '<!-- wp:paragraph --><p>Dias 17 e 18 de outubro.</p><!-- /wp:paragraph -->',
 	'meta_input'   => [
 		'_ieadc_fixture_teste' => '1',
 		'evento_data'          => '2026-10-17',
 		'evento_data_fim'      => '2026-10-18',
-		'evento_horario'       => '[horário a confirmar]',
+		'evento_horario'       => '',
 		'evento_local'         => '',
 		'evento_categoria'     => 'c-jovens',
 		'evento_link'          => 'ministerios/mocidade',

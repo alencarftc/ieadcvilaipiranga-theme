@@ -140,6 +140,39 @@ $total = count($paginas);
 echo "  $total páginas, artigos e eventos baixados\n";
 ieadc_ok($total >= 29, 'páginas, artigos e evento de teste publicados (29 ou mais)', $total);
 
+/* ---------- Conteúdo publicado (fase 5B): nenhuma marcação de pendência, aviso de revisão ou grafia antiga ---------- */
+echo "conteúdo publicado\n";
+$sem_evento_de_teste = array_filter($paginas, fn($p) => (int) $p['post']->ID !== (int) $evento_id); // o evento de teste leva "[local a confirmar]" de propósito
+ieadc_t_todas($sem_evento_de_teste, 'nenhuma página com "a confirmar", "a definir", class="pend", <mark> ou aviso de revisão', function ($c, $p) {
+	$html = (string) ($p['html'] ?? '');
+	if ($html === '') {
+		return 'sem HTML';
+	}
+	$achados = [];
+	if (preg_match('/class\s*=\s*["\'][^"\']*\bpend\b/i', $html)) {
+		$achados[] = 'class="pend"';
+	}
+	if (stripos($html, '<mark') !== false) {
+		$achados[] = '<mark>';
+	}
+	foreach (['a confirmar', 'a definir', 'Texto-base', 'aguardam confirmação', 'Provisório'] as $trecho) {
+		if (mb_stripos($html, $trecho) !== false) {
+			$achados[] = '"' . $trecho . '"';
+		}
+	}
+	return $achados ? implode(', ', $achados) : true;
+});
+ieadc_t_todas($sem_evento_de_teste, 'grafias antigas e e-mail pessoal do pastor fora do site (Geziel, Catarino, Messias da Costa, Sérgio Luiz, robsondouglass)', function ($c, $p) {
+	$html = html_entity_decode((string) ($p['html'] ?? ''), ENT_QUOTES, 'UTF-8');
+	$achados = [];
+	foreach (['Geziel', 'Catarino', 'Messias da Costa', 'Sérgio Luiz', 'robsondouglass', 'Ev. Robson'] as $trecho) {
+		if (mb_stripos($html, $trecho) !== false) {
+			$achados[] = $trecho;
+		}
+	}
+	return $achados ? implode(', ', $achados) : true;
+});
+
 /* ---------- Metatags ---------- */
 echo "metatags\n";
 $titulos = [];

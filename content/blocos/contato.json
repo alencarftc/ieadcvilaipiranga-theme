@@ -16,13 +16,18 @@
    "itens": [
     {
      "icone": "fone",
-     "titulo": "1° dirigente: Ev. Robson Stein",
-     "texto": "+55 (41) 98838-1994<br/>robsondouglass@terra.com.br"
+     "titulo": "1º dirigente: Pr. Robson Stein",
+     "texto": "+55 (41) 98838-1994"
     },
     {
      "icone": "fone",
      "titulo": "2º dirigente: Pb. Manoel Lima",
-     "texto": "+55 (41) 98444-5001<br/>E-mail [a definir]"
+     "texto": "+55 (41) 98444-5001"
+    },
+    {
+     "icone": "email",
+     "titulo": "E-mail",
+     "texto": "<a href=\"mailto:ieadcvilaipiranga@gmail.com\">ieadcvilaipiranga@gmail.com</a>"
     },
     {
      "icone": "pin",
