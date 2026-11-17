@@ -1,7 +1,9 @@
 ﻿# Envia o site local para a Hostinger. Rode no Windows, na pasta do repositório, com o site local funcionando.
 # Dois ambientes. O padrão é a HOMOLOGAÇÃO; a produção só com -Ambiente producao (nunca por engano):
-#   homologacao  hospedagem alternativa, onde o pastor e a equipe validam o site. Fica aberta para quem tem o link e
-#                fora do Google. No .env: HOMOLOG_SERVIDOR, HOMOLOG_PORTA, HOMOLOG_USUARIO e HOMOLOG_URL.
+#   homologacao  onde o pastor e a equipe validam o site. Fica aberta para quem tem o link e fora do Google. No .env:
+#                HOMOLOG_SERVIDOR, HOMOLOG_PORTA, HOMOLOG_USUARIO e HOMOLOG_URL (e HOMOLOG_DESTINO). Só são aceitos dois pares:
+#                https://hml.ieadcvilaipiranga.com.br com a pasta domains/ieadcvilaipiranga.com.br/public_html/hml (staging,
+#                subpasta da produção) ou, de transição, https://<algo>.hostingersite.com com domains/<algo>.hostingersite.com/public_html.
 #   producao     o domínio principal (https://ieadcvilaipiranga.com.br). No .env: HOSTINGER_SERVIDOR, HOSTINGER_PORTA e
 #                HOSTINGER_USUARIO (e PRODUCAO_URL, se o endereço for outro).
 # Uso:
@@ -15,10 +17,11 @@ param(
   [string]$Servidor = '',
   [int]$Porta = 0,
   [string]$Usuario = '',
-  [string]$Destino = '',   # padrão: domains/<endereço do site>/public_html (ou HOMOLOG_DESTINO / HOSTINGER_DESTINO no .env)
+  [string]$Destino = '',   # padrão: a pasta do par do endereço (ou HOMOLOG_DESTINO / HOSTINGER_DESTINO no .env, se for exatamente a do par)
   [string]$Url = '',       # padrão: HOMOLOG_URL (homologação) ou https://ieadcvilaipiranga.com.br (produção)
   [string]$EmailAdmin = '-',
-  [switch]$Conferir,       # só mostra o destino e testa a porta do SSH; não envia nada nem pede senha
+  [switch]$Conferir,       # só confere as travas, mostra o destino e testa a porta do SSH; não envia nada nem pede senha
+  [switch]$SemRede,        # com -Conferir: não testa a porta (usado pelos testes de CI, sem conexão)
   [switch]$Fechado,        # homologação: deixa o site só para quem tem login
   [switch]$Lancar          # produção: coloca no ar e libera para o Google
 )
@@ -50,19 +53,40 @@ if (-not $Url) {
 }
 if (-not $Url) { throw 'Falta HOMOLOG_URL no .env (o endereço da hospedagem de homologação) ou o parâmetro -Url.' }
 $Url = $Url.TrimEnd('/')
-if ($Url -notmatch '^https?://[^/\s]+') { throw "O endereço do site ($Url) precisa começar com https:// ou http:// (confira HOMOLOG_URL no .env ou o parâmetro -Url)." }
-if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
-if (-not $Destino) { $Destino = 'domains/' + ([uri]$Url).Host + '/public_html' }
-# Trava: a homologação nunca pode apontar para o domínio de produção (um .env ou um parâmetro errado enviaria sem a
-# confirmação PRODUCAO). Para a produção use -Ambiente producao.
+if ($Url -notmatch '^https?://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(:[0-9]+)?$') { throw "O endereço do site ($Url) deve ter o formato http(s)://domínio, sem pasta, espaços nem caracteres especiais (confira HOMOLOG_URL no .env ou o parâmetro -Url)." }
+# Trava de endereço e de pasta (a mesma do bin/implantar.sh). A conta de hospedagem tem a produção, a homologação e sites de
+# terceiros: o endereço e a pasta só podem ser um destes pares EXATOS (igualdade, nunca prefixo: a homologação hml é uma
+# SUBPASTA da produção). Um .env ou um parâmetro errado não pode enviar à produção sem a confirmação PRODUCAO.
+#   producao     ieadcvilaipiranga.com.br (ou www.)   domains/ieadcvilaipiranga.com.br/public_html
+#   homologacao  hml.ieadcvilaipiranga.com.br         domains/ieadcvilaipiranga.com.br/public_html/hml
+#   homologacao  *.hostingersite.com (transição)      domains/<endereço>/public_html
 $dominioProducao = 'ieadcvilaipiranga.com.br'
-if ($Ambiente -eq 'homologacao' -and (([uri]$Url).Host -match ('(^|\.)' + [regex]::Escape($dominioProducao) + '$') -or $Destino -match [regex]::Escape($dominioProducao))) {
-  throw "A homologação não pode apontar para $dominioProducao (endereço $Url, pasta $Destino). Para enviar à produção use -Ambiente producao."
+$hostUrl = ([uri]$Url).Host.ToLowerInvariant()
+$pastaProducao = "domains/$dominioProducao/public_html"; $pastaHml = "$pastaProducao/hml"; $hostHml = "hml.$dominioProducao"
+$hostPrincipal = ($hostUrl -ceq $dominioProducao) -or ($hostUrl -ceq "www.$dominioProducao")
+# localhost e 127.0.0.1 só existem no ensaio local (bin\ensaio-local.ps1 usa -Servidor 127.0.0.1): contra qualquer outro servidor
+# eles nunca são o endereço de um site.
+$servidorLocal = @('127.0.0.1', 'localhost', '::1') -contains ([string]$Servidor).ToLowerInvariant()
+$hostLocal = @('localhost', '127.0.0.1') -contains $hostUrl
+# O endereço gravado em home/siteurl é sempre minúsculo, sem barra final e sem porta (a porta só existe no ensaio local).
+$uriNorm = [uri]$Url
+$Url = $uriNorm.Scheme + '://' + $hostUrl + $(if ($servidorLocal -and -not $uriNorm.IsDefaultPort) { ':' + $uriNorm.Port } else { '' })
+if (-not $Destino) { $Destino = [string]$env_["${pre}_DESTINO"] }
+if (-not $Destino) {
+  $Destino = if ($hostUrl -ceq $hostHml) { $pastaHml } elseif ($Ambiente -eq 'producao' -and ($hostPrincipal -or $hostLocal)) { $pastaProducao } else { "domains/$hostUrl/public_html" }
+}
+if ($Destino -cmatch '(^/)|\.\.|//|\\|\s|~') { throw "A pasta do site ($Destino) é inválida: não pode começar com /, ter .., //, barra invertida, espaços nem ~." }
+if ($Ambiente -eq 'producao') {
+  if (-not ($hostPrincipal -or ($hostLocal -and $servidorLocal))) { throw "Na produção o endereço deve ser $dominioProducao ou www.$dominioProducao (localhost e 127.0.0.1 só no ensaio local, com -Servidor 127.0.0.1). Recebi $hostUrl." }
+  if ($Destino -cne $pastaProducao) { throw "Na produção a pasta do site deve ser exatamente $pastaProducao (recebi $Destino). Nenhuma outra pasta da conta é tocada." }
+} else {
+  if ($hostPrincipal) { throw "A homologação não pode apontar para $dominioProducao (endereço $Url, pasta $Destino). Para enviar à produção use -Ambiente producao." }
+  if ($hostUrl -ceq $hostHml) { $esperada = $pastaHml }
+  elseif ($hostUrl -cmatch '^([a-z0-9-]+\.)+hostingersite\.com$' -and $hostUrl -cnotlike "*$dominioProducao*") { $esperada = "domains/$hostUrl/public_html" }
+  else { throw "A homologação só aceita o endereço $hostHml (pasta $pastaHml) ou um endereço *.hostingersite.com (pasta domains/<endereço>/public_html). Recebi $hostUrl." }
+  if ($Destino -cne $esperada) { throw "A pasta do site da homologação deve ser exatamente $esperada (recebi $Destino). Nenhuma outra pasta da conta é tocada." }
 }
 
-foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
-  if (-not (Get-Command $c -ErrorAction SilentlyContinue)) { throw "Não achei o comando '$c'. Ele vem com o Docker Desktop e o Windows 10/11 (Recursos opcionais > Cliente OpenSSH)." }
-}
 $modo = if ($Ambiente -eq 'homologacao') { if ($Fechado) { 'homologacao-fechada' } else { 'homologacao' } } elseif ($Lancar) { 'lancar' } else { 'ensaio' }
 # Atenção: a função não pode se chamar "Docker" (o PowerShell não diferencia maiúsculas e ela chamaria a si mesma).
 function Compose {
@@ -73,9 +97,14 @@ function Compose {
 
 Write-Host "Ambiente: $Ambiente   Modo: $modo   Destino: ${Usuario}@${Servidor}:$Destino   Endereço final: $Url"
 if ($Conferir) {
+  Write-Host 'TRAVAS OK'
+  if ($SemRede) { Write-Host 'Nada foi enviado nem conectado (-SemRede).'; exit 0 }
   $responde = (Test-NetConnection -ComputerName $Servidor -Port $Porta -WarningAction SilentlyContinue).TcpTestSucceeded
   Write-Host ('Porta SSH {0}:{1} {2}. Nada foi enviado.' -f $Servidor, $Porta, $(if ($responde) { 'responde' } else { 'NÃO responde' }))
   exit 0
+}
+foreach ($c in 'docker', 'ssh', 'scp', 'tar') {
+  if (-not (Get-Command $c -ErrorAction SilentlyContinue)) { throw "Não achei o comando '$c'. Ele vem com o Docker Desktop e o Windows 10/11 (Recursos opcionais > Cliente OpenSSH)." }
 }
 if ($Ambiente -eq 'producao') {
   $r = Read-Host "Isto envia o site para a PRODUÇÃO ($Url). Digite PRODUCAO para continuar"

@@ -8,14 +8,18 @@
 #                        ieadc_deploy (resultado "ok"). Se a fumaça falhar, a opção fica marcada com resultado "falhou".
 #   fumaca               só os testes de fumaça por HTTP (e a conferência das opções do site, por SSH).
 #   ler-deploy           imprime a opção ieadc_deploy (JSON) do servidor; é a única coisa que sai na saída padrão.
+#   conferir             só confere as travas (ambiente, modo, confirmação, endereço e pasta) e imprime o destino; não conecta
+#                        em nada e não precisa de pacote nem de chave. Serve para validar os segredos antes de cadastrá-los.
 #
 # Variáveis de ambiente (nenhum valor é gravado em arquivo versionado):
 #   ALVO_SERVIDOR, ALVO_PORTA, ALVO_USUARIO   dados do SSH (hPanel > Avançado > SSH)
 #   ALVO_CHAVE        arquivo da chave privada SSH (sem senha, só para este fim)
 #   ALVO_IMPRESSAO    impressão digital SHA256 da chave do servidor (SHA256:...). Se não bater, recusa e não conecta.
 #   ALVO_URL          endereço final do site (http(s)://domínio, sem pasta)
-#   ALVO_DESTINO      pasta do site no servidor. Opcional, e só é aceita se for EXATAMENTE a padrão:
-#                     domains/<domínio do site>/public_html (a da produção é sempre domains/ieadcvilaipiranga.com.br/public_html).
+#   ALVO_DESTINO      pasta do site no servidor. Opcional, e só é aceita se for EXATAMENTE a do par do endereço:
+#                       produção     ieadcvilaipiranga.com.br      domains/ieadcvilaipiranga.com.br/public_html
+#                       homologação  hml.ieadcvilaipiranga.com.br  domains/ieadcvilaipiranga.com.br/public_html/hml (subpasta da produção)
+#                       homologação  *.hostingersite.com (transição)  domains/<endereço>/public_html
 #   ALVO_EMAIL_ADMIN  e-mail do administrador do site (padrão: não mexe)
 #   AMBIENTE          homologacao | producao (padrão na carga completa: deduzido do MODO; obrigatório na carga "codigo").
 #                     A homologação nunca aceita o domínio da produção; a produção só aceita o domínio da produção.
@@ -36,8 +40,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export MSYS_NO_PATHCONV=1   # Git Bash no Windows não pode reescrever caminhos como /content/backup/...
-# No GitHub Actions o domínio principal é sempre este (a variável só existe para ensaiar contra um servidor de mentira).
-if [ "${GITHUB_ACTIONS:-}" = true ]; then DOMINIO_PRODUCAO="ieadcvilaipiranga.com.br"; else DOMINIO_PRODUCAO="${DOMINIO_PRODUCAO:-ieadcvilaipiranga.com.br}"; fi
+# No GitHub Actions o domínio principal é sempre este (a variável só existe para ensaiar contra um servidor de mentira, e
+# mesmo assim só é honrada quando o servidor alvo é o do próprio computador: veja definir_destino).
+DOMINIO_REAL="ieadcvilaipiranga.com.br"
+if [ "${GITHUB_ACTIONS:-}" = true ]; then DOMINIO_PRODUCAO="$DOMINIO_REAL"; else DOMINIO_PRODUCAO="${DOMINIO_PRODUCAO:-$DOMINIO_REAL}"; fi
+[[ "$DOMINIO_PRODUCAO" =~ ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$ ]] || { echo "ERRO: DOMINIO_PRODUCAO tem caracteres inválidos." >&2; exit 1; }
 
 # Mensagens vão para a saída de erro; a saída padrão fica livre para dados (ler-deploy).
 info() { echo "$*" >&2; }
@@ -145,22 +152,43 @@ scp_alvo() { scp -P "$ALVO_PORTA" "${SSH_OPTS[@]}" "$@"; }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Trava de domínio e de pasta. Na mesma conta SSH moram a homologação, a produção e sites de terceiros (outras pastas em
-# domains/): o endereço precisa ser o do ambiente e a pasta só pode ser a padrão desse endereço, nunca outra.
+# domains/): o endereço precisa ser o do ambiente e a pasta só pode ser a exata desse par, nunca outra. Pares aceitos:
+#   producao     host DOMINIO_PRODUCAO (ou www.)          pasta domains/<DOMINIO_PRODUCAO>/public_html
+#   homologacao  host hml.<DOMINIO_PRODUCAO>              pasta domains/<DOMINIO_PRODUCAO>/public_html/hml  (staging da Hostinger,
+#                                                         SUBPASTA da produção: por isso a comparação é sempre por IGUALDADE)
+#   homologacao  host *.hostingersite.com (transição)     pasta domains/<host>/public_html
+# Todo o resto é recusado (outro subdomínio ou host, o domínio principal na homologação, qualquer variação da pasta).
+servidor_loopback() { [[ "${ALVO_SERVIDOR:-}" =~ ^(localhost|::1|127(\.[0-9]{1,3}){3})$ ]]; }
 definir_destino() {
   exigir ALVO_URL AMBIENTE
   case "$AMBIENTE" in homologacao|producao) ;; *) erro "AMBIENTE deve ser homologacao ou producao." ;; esac
-  URL="${ALVO_URL%/}"
-  [[ "$URL" =~ ^https?://([A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*)(:[0-9]+)?$ ]] || erro "ALVO_URL deve ter o formato http(s)://domínio, sem pasta, espaços nem caracteres especiais."
-  HOST="$(printf '%s' "${BASH_REMATCH[1]}" | tr '[:upper:]' '[:lower:]')"
-  local principal=nao pasta_host="$HOST" esperada
-  if [ "$HOST" = "$DOMINIO_PRODUCAO" ] || [ "$HOST" = "www.$DOMINIO_PRODUCAO" ]; then principal=sim; fi
-  if [ "$AMBIENTE" = producao ]; then
-    [ "$principal" = sim ] || erro "na produção o endereço deve ser o do domínio principal ($DOMINIO_PRODUCAO ou www.$DOMINIO_PRODUCAO)."
-    pasta_host="$DOMINIO_PRODUCAO"
-  elif [ "$principal" = sim ]; then
-    erro "a homologação não pode apontar para o domínio da produção ($DOMINIO_PRODUCAO). Confira o endereço da homologação."
+  # Outro domínio principal (ensaio) só vale contra o servidor de mentira do próprio computador; contra qualquer outro servidor
+  # ele faria o "conferir" e o envio aceitarem pares de um domínio de terceiros.
+  if [ "$DOMINIO_PRODUCAO" != "$DOMINIO_REAL" ] && ! servidor_loopback; then
+    erro "DOMINIO_PRODUCAO só vale ensaiando contra o servidor do próprio computador (ALVO_SERVIDOR=127.0.0.1 ou localhost). Apague a variável."
   fi
-  esperada="domains/$pasta_host/public_html"
+  URL="${ALVO_URL%/}"
+  [[ "$URL" =~ ^(https?)://([A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*)(:[0-9]+)?$ ]] || erro "ALVO_URL deve ter o formato http(s)://domínio, sem pasta, espaços nem caracteres especiais."
+  local esquema="${BASH_REMATCH[1]}" porta="${BASH_REMATCH[4]}"   # (servidor_loopback também usa [[ =~ ]] e apaga o BASH_REMATCH)
+  HOST="$(printf '%s' "${BASH_REMATCH[2]}" | tr '[:upper:]' '[:lower:]')"
+  # O endereço gravado em home/siteurl é sempre minúsculo, sem barra final e sem porta (a porta só existe no ensaio local).
+  URL="$esquema://$HOST"
+  if servidor_loopback; then URL="$URL$porta"; fi
+  local pasta_producao="domains/$DOMINIO_PRODUCAO/public_html" host_hml="hml.$DOMINIO_PRODUCAO" esperada
+  local pasta_hml="domains/$DOMINIO_PRODUCAO/public_html/hml"
+  if [ "$AMBIENTE" = producao ]; then
+    { [ "$HOST" = "$DOMINIO_PRODUCAO" ] || [ "$HOST" = "www.$DOMINIO_PRODUCAO" ]; } \
+      || erro "na produção o endereço deve ser o do domínio principal ($DOMINIO_PRODUCAO ou www.$DOMINIO_PRODUCAO)."
+    esperada="$pasta_producao"
+  elif [ "$HOST" = "$DOMINIO_PRODUCAO" ] || [ "$HOST" = "www.$DOMINIO_PRODUCAO" ]; then
+    erro "a homologação não pode apontar para o domínio da produção ($DOMINIO_PRODUCAO). Confira o endereço da homologação."
+  elif [ "$HOST" = "$host_hml" ]; then
+    esperada="$pasta_hml"
+  elif [[ "$HOST" =~ ^([a-z0-9-]+\.)+hostingersite\.com$ ]] && [[ "$HOST" != *"$DOMINIO_PRODUCAO"* ]]; then
+    esperada="domains/$HOST/public_html"
+  else
+    erro "a homologação só aceita o endereço $host_hml (pasta $pasta_hml) ou um endereço *.hostingersite.com (pasta domains/<endereço>/public_html). Recebi: $HOST."
+  fi
   DESTINO="${ALVO_DESTINO:-$esperada}"
   case "$DESTINO" in
     /*|*..*|*//*|*\\*|*[[:space:]]*|*~*) erro "a pasta do site é inválida: não pode começar com /, ter .., // ou espaços." ;;
@@ -212,6 +240,14 @@ registrar_deploy() {
   ssh_alvo "wp --path=\"\$HOME/$DESTINO\" option update ieadc_deploy '$(json_deploy "$1")' --autoload=no" >&2
 }
 
+# Só as travas, sem conectar em nada: o que enviar e ler-deploy conferem antes de abrir qualquer conexão.
+cmd_conferir() {
+  validar_carga_modo
+  definir_destino
+  validar_confirmacao
+  echo "TRAVAS OK ambiente=$AMBIENTE carga=$CARGA host=$HOST pasta=$DESTINO url=$URL"
+}
+
 cmd_ler_deploy() {
   definir_destino; preparar_ssh
   ssh_alvo "wp --path=\"\$HOME/$DESTINO\" option get ieadc_deploy" | tr -d '\r'
@@ -252,14 +288,33 @@ cmd_fumaca() {
   case "$esperado" in aberto) estado=200 ;; fechado) estado=503 ;; *) erro "ESPERADO deve ser aberto ou fechado." ;; esac
 
   info "Fumaça em $base (site $esperado: páginas $estado)"
-  http() { curl -sS -o /dev/null -L --max-redirs 3 --max-time 30 -A 'ieadc-deploy-fumaca/1.0' -w '%{http_code}' "$1" 2>/dev/null || true; }
-  # Tenta algumas vezes: logo depois de limpar o cache o servidor pode demorar a responder.
+  # O curl segue redirecionamentos (-L): o host da resposta FINAL precisa ser o do ambiente. Sem isso, um endereço que caísse na
+  # pasta da produção (a hml é uma subpasta dela) seria redirecionado pelo WordPress dela ao domínio principal e a fumaça
+  # "passaria" validando o site errado. http() deixa o código em HTTP_COD e o host final em HTTP_ULTIMO_HOST (sem subshell).
+  HTTP_COD=""; HTTP_ULTIMO_HOST=""
+  http() {
+    local saida h
+    saida="$(curl -sS -o /dev/null -L --max-redirs 3 --max-time 30 -A 'ieadc-deploy-fumaca/1.0' -w '%{http_code} %{url_effective}' "$1" 2>/dev/null || true)"
+    HTTP_COD="${saida%% *}"
+    h="${saida#* }"; h="${h#*://}"; h="${h%%/*}"; h="${h%%:*}"
+    HTTP_ULTIMO_HOST="$(printf '%s' "$h" | tr '[:upper:]' '[:lower:]')"
+  }
+  # Host final aceito: o do ambiente (na produção, o domínio principal com ou sem www.).
+  host_final_ok() {
+    [ "$1" = "$HOST" ] && return 0
+    [ "$AMBIENTE" = producao ] && { [ "$1" = "$DOMINIO_PRODUCAO" ] || [ "$1" = "www.$DOMINIO_PRODUCAO" ]; }
+  }
+  # Tenta algumas vezes: logo depois de limpar o cache o servidor pode demorar a responder. Redirecionamento para outro host
+  # é definitivo (não adianta tentar de novo): falha na hora.
   checar() {
-    local caminho="$1" esperado_http="$2" cod=""
+    local caminho="$1" esperado_http="$2" cod="" ok_host=sim
     for _ in 1 2 3 4 5; do
-      cod="$(http "$base$caminho")"; [ "$cod" = "$esperado_http" ] && break; sleep 4
+      http "$base$caminho"; cod="$HTTP_COD"
+      if [ -n "$HTTP_ULTIMO_HOST" ] && ! host_final_ok "$HTTP_ULTIMO_HOST"; then ok_host=nao; break; fi
+      [ "$cod" = "$esperado_http" ] && break; sleep 4
     done
-    if [ "$cod" = "$esperado_http" ]; then info "  ok      $cod $caminho"; else info "  FALHOU  $caminho: veio ${cod:-sem resposta}, esperado $esperado_http"; falhas=$((falhas + 1)); fi
+    if [ "$ok_host" = nao ]; then info "  FALHOU  $caminho: foi redirecionado para OUTRO endereço ($HTTP_ULTIMO_HOST) em vez de ficar em $HOST; a fumaça não valida o site errado"; falhas=$((falhas + 1))
+    elif [ "$cod" = "$esperado_http" ]; then info "  ok      $cod $caminho"; else info "  FALHOU  $caminho: veio ${cod:-sem resposta}, esperado $esperado_http"; falhas=$((falhas + 1)); fi
   }
   checar / "$estado"
   checar /sobre-nos/ "$estado"
@@ -267,9 +322,11 @@ cmd_fumaca() {
   checar /wp-login.php 200   # o painel abre mesmo com o site fechado
   if [ "$esperado" = "aberto" ]; then
     # O Yoast serve o /sitemap_index.xml mesmo com blog_public=0 (homologação); sem o Yoast vale o /wp-sitemap.xml do WordPress.
-    cod="$(http "$base/sitemap_index.xml")"
-    [ "$cod" = 200 ] || cod="$(http "$base/wp-sitemap.xml")"
-    if [ "$cod" = 200 ]; then info "  ok      200 sitemap"; else info "  FALHOU  sitemap: nem /sitemap_index.xml nem /wp-sitemap.xml deram 200"; falhas=$((falhas + 1)); fi
+    http "$base/sitemap_index.xml"; cod="$HTTP_COD"
+    [ "$cod" = 200 ] || { http "$base/wp-sitemap.xml"; cod="$HTTP_COD"; }
+    if [ -n "$HTTP_ULTIMO_HOST" ] && ! host_final_ok "$HTTP_ULTIMO_HOST"; then
+      info "  FALHOU  sitemap: foi redirecionado para OUTRO endereço ($HTTP_ULTIMO_HOST) em vez de ficar em $HOST"; falhas=$((falhas + 1))
+    elif [ "$cod" = 200 ]; then info "  ok      200 sitemap"; else info "  FALHOU  sitemap: nem /sitemap_index.xml nem /wp-sitemap.xml deram 200"; falhas=$((falhas + 1)); fi
   fi
   if [ "$falhas" -ne 0 ]; then info "ERRO: $falhas verificação(ões) da fumaça falharam em $base."; return 1; fi
   info "Fumaça aprovada."
@@ -318,12 +375,15 @@ cmd_enviar() {
 
   info "» 2/4 Instalação no servidor"
   remoto="rm -rf ~/ieadc-migracao-$AMBIENTE && mkdir ~/ieadc-migracao-$AMBIENTE && tar -xzf ~/ieadc-pacote-$AMBIENTE.tgz -C ~/ieadc-migracao-$AMBIENTE"
+  # Os scripts remotos repetem a trava de pasta no servidor; o domínio principal vai junto (validado no início deste script).
   if [ "$CARGA" = completo ]; then
-    remoto="$remoto && bash ~/ieadc-migracao-$AMBIENTE/migrar-remoto.sh '$DESTINO' '$URL' '$prefixo' '$email' '$MODO' '$origens'"
+    remoto="$remoto && DOMINIO_PRODUCAO='$DOMINIO_PRODUCAO' bash ~/ieadc-migracao-$AMBIENTE/migrar-remoto.sh '$DESTINO' '$URL' '$prefixo' '$email' '$MODO' '$origens'"
   else
-    remoto="$remoto && bash ~/ieadc-migracao-$AMBIENTE/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
+    remoto="$remoto && DOMINIO_PRODUCAO='$DOMINIO_PRODUCAO' bash ~/ieadc-migracao-$AMBIENTE/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
   fi
-  remoto="$remoto; rm -rf ~/ieadc-migracao-$AMBIENTE ~/ieadc-pacote-$AMBIENTE.tgz"
+  # A limpeza vem depois do ";" e NÃO pode esconder o resultado: guarda o código de saída da instalação e devolve-o no fim (antes, um
+  # script remoto que recusasse a carga, como as barreiras da hml, terminava com o código do rm e o envio seguia como se tivesse dado certo).
+  remoto="$remoto; rc_remoto=\$?; rm -rf ~/ieadc-migracao-$AMBIENTE ~/ieadc-pacote-$AMBIENTE.tgz; exit \$rc_remoto"
   if ! ssh_alvo "$remoto" >&2; then
     registrar_deploy falhou > /dev/null 2>&1 || true
     erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
@@ -360,5 +420,6 @@ case "${1:-}" in
   enviar) shift; cmd_enviar "$@" ;;
   fumaca) cmd_fumaca || exit 1 ;;
   ler-deploy) cmd_ler_deploy ;;
+  conferir) cmd_conferir ;;
   *) sed -n '2,/^set -euo/p' "$0" | sed '$d' >&2; exit 2 ;;
 esac

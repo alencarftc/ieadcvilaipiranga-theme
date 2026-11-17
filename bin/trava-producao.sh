@@ -3,7 +3,9 @@
 # Regra de ouro: a produção fica sempre atrás da homologação. Se qualquer item falhar, o workflow para com uma
 # mensagem em português e nada é criado nem enviado.
 # Entradas (variáveis): VERSAO, MODO (codigo|completo), CONFIRMACAO, GITHUB_REF, GITHUB_SHA, GITHUB_REPOSITORY, GH_TOKEN,
-# mais as ALVO_* da homologação (as mesmas do bin/implantar.sh) com AMBIENTE=homologacao e ALVO_CHAVE.
+# mais as ALVO_* da homologação (as mesmas do bin/implantar.sh) com AMBIENTE=homologacao e ALVO_CHAVE. O destino da
+# homologação passa pelas travas do bin/implantar.sh: só o par exato (hml.ieadcvilaipiranga.com.br + domains/ieadcvilaipiranga.com.br/
+# public_html/hml, ou, de transição, *.hostingersite.com + domains/<endereço>/public_html); este script não tem destino próprio.
 # Saída: sha, run_hml e pacote no arquivo GITHUB_OUTPUT (se existir).
 set -euo pipefail
 cd "$(dirname "$0")/.."
