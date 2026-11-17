@@ -13,7 +13,7 @@ A homologação vem primeiro: o script só envia para a produção com `-Ambient
 
 ## Antes (uma vez por ambiente)
 
-1. No hPanel da hospedagem, instale o WordPress no endereço do ambiente (Sites > WordPress), em português, com o prefixo de tabelas `wp_`. Para a homologação, crie o **staging** do domínio (`hml.ieadcvilaipiranga.com.br`) pelo recurso da Hostinger; ele nasce com WordPress e banco próprios. Anote o e-mail e a senha do administrador. O script falha com uma mensagem clara se não achar o WordPress na pasta. **Não use os botões "Sync" nem "Push to live" do staging**: eles copiam entre a homologação e a produção sem passar pelas travas (veja `docs/operacao/ci-cd.md`).
+1. No hPanel da hospedagem, instale o WordPress no endereço do ambiente (Sites > WordPress), em português, com o prefixo de tabelas `wp_`. Para a homologação, crie o **staging** do domínio (`hml.ieadcvilaipiranga.com.br`) pelo recurso da Hostinger; ele nasce com WordPress e banco próprios. Anote o e-mail e a senha do administrador. O script falha com uma mensagem clara se não achar o WordPress na pasta. **Não use os botões "Sync" nem "Push to live" do staging**: eles copiam entre a homologação e a produção sem passar pelas travas (veja `docs/operacao/ci-cd.md`). **Antes da primeira carga na hml, faça o pré-voo (só leitura) descrito em `docs/operacao/ci-cd.md`**: `wp-config.php` da hml existe, `DB_NAME` diferente do da produção e escrito por extenso, prefixo `wp_`, HTTPS válido em `hml.ieadcvilaipiranga.com.br`, sem multisite, `WP_HOME`/`WP_SITEURL`/`COOKIE_DOMAIN` do staging coerentes e cache de objeto com prefixo próprio. A primeira carga **substitui** o clone antigo do staging (a cópia do banco anterior fica em `~/backup-antes-da-migracao-hml-*.sql`), e a Homologação automática continua indo para a hospedagem antiga até você trocar os segredos.
 2. Em Avançado > SSH, deixe o acesso SSH habilitado (servidor, porta e usuário aparecem ali). A pasta do site é `domains/ieadcvilaipiranga.com.br/public_html` (produção) e `domains/ieadcvilaipiranga.com.br/public_html/hml` (homologação, o staging).
 3. No `.env` do computador (**não vai para o git**: o repositório é público, então servidor, porta, usuário e endereços de teste ficam só ali; nunca coloque a senha):
 
@@ -84,11 +84,12 @@ Passo a passo para validar a medição na produção com o site fechado: aplique
 ## Ensaio sem hospedagem (qualquer dia, quantas vezes quiser)
 
 ```
-powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1             # homologação
-powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1 -Producao   # ensaio da produção
+powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1 -Producao   # ensaio da produção (fechada)
 powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1 -Lancar     # lançamento da produção
 powershell -ExecutionPolicy Bypass -File bin\ensaio-local.ps1 -Parar      # apaga o servidor de mentira
 ```
+
+O ensaio local só serve para a **produção** (`-Producao` e `-Lancar`): sem flags ele tentaria a homologação com a pasta da produção, e a trava do `bin\migrar.ps1` recusa isso (a homologação só aceita o par da hml ou o de transição). Para ensaiar a homologação aninhada de verdade use `bash tests/migracao/aninhado/provar.sh` (mais abaixo). Nos ensaios da produção o endereço é `http://localhost:8081` e o `-Servidor 127.0.0.1`: é a única situação em que o `migrar.ps1` aceita `localhost`/`127.0.0.1` na produção (qualquer outro endereço que não seja `ieadcvilaipiranga.com.br` ou `www.` é recusado).
 
 Sobe uma "Hostinger de mentira" no Docker (`tests\migracao`: SSH, Apache, WordPress e MariaDB, com o mesmo caminho `domains/.../public_html`) e roda o `bin\migrar.ps1` de verdade contra ela, com uma chave de ensaio (sem senha, em `content\backup\ensaio-hospedagem`, fora do git). Só fala com esse servidor de mentira. O site migrado abre em `http://localhost:8081` (painel: `admhost` / `Ensaio-Hospedagem-1`) e o script imprime uma conferência: endereço, `blog_public`, site fechado, regras do `.htaccess` e o status HTTP de um visitante. Para testar a fidelidade do site migrado: com o site aberto (homologação ou lançamento), defina a data fixa dos testes no servidor de mentira (`wp config set IEADC_HOJE 2026-10-06`) e rode `WP_URL=http://localhost:8081 ./bin/testar.sh markup` e `visual`. A agenda do protótipo mostra a "Confraternização dos jovens" (17 e 18/10/2026), que o site de verdade não tem: o `testar.sh` a cria só no banco local; no servidor de mentira crie-a antes com `wp eval-file tests/fixtures/evento-prototipo.php criar` (e `remover` depois).
 

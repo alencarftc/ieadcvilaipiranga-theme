@@ -241,6 +241,42 @@ provar() {
   confere "código na produção: terceiro idêntico" test "$(h_terceiro)" = "$H_TER0"
   confere "código na produção: a cópia de código dela (sem rótulo) existe e a da hml continua" existe_na_casa "/home/u123/backup-codigo-antes-[0-9]*.tgz /home/u123/backup-codigo-antes-hml-*.tgz"
 
+  passo "5. Barreiras novas ao vivo: fumaça com redirecionamento, link simbólico na hml e DB_NAME ilegível"
+  # 5a) S1: se a hml redirecionasse ao domínio principal (como faria caindo na pasta da produção), a fumaça tem de FALHAR.
+  wpr $SITE_HML option update home "$URL_PROD" > /dev/null 2>&1; wpr $SITE_HML option update siteurl "$URL_PROD" > /dev/null 2>&1
+  imp AMBIENTE=homologacao ESPERADO=aberto ALVO_URL="$URL_HML" ALVO_DESTINO="$P_HML" -- fumaca
+  confere "fumaça: hml que redireciona ao domínio principal FALHA (host final conferido)" rc_erro_e_saida_tem "OUTRO endereço"
+  wpr $SITE_HML option update home "$URL_HML" > /dev/null 2>&1; wpr $SITE_HML option update siteurl "$URL_HML" > /dev/null 2>&1
+  imp AMBIENTE=homologacao ESPERADO=aberto ALVO_URL="$URL_HML" ALVO_DESTINO="$P_HML" -- fumaca
+  confere "fumaça: depois de restaurar o endereço, a hml volta a passar" rc0_e_saida_tem "Fumaça aprovada"
+  H_PROD5="$(h_sem_hml)"; H_HML5="$(h_hml)"
+  # 5b) S5: link simbólico dentro da hml (aqui, uploads apontando para a produção) é recusado pelo cliente completo e nada é escrito.
+  R sh -c "mv $SITE_HML/wp-content/uploads $SITE_HML/wp-content/uploads.real && ln -s ../../wp-content/uploads $SITE_HML/wp-content/uploads"
+  H_HML5L="$(h_hml)"
+  imp AMBIENTE=homologacao CARGA=codigo ALVO_URL="$URL_HML" ALVO_DESTINO="$P_HML" DEPLOY_SHA="$git_sha" -- enviar "$PACOTE"
+  confere "link simbólico na hml: a implantação de código é RECUSADA no servidor" rc_erro_e_saida_tem "link simbólico"
+  imp AMBIENTE=homologacao MODO=homologacao CARGA=completo ALVO_URL="$URL_HML" ALVO_DESTINO="$P_HML" DEPLOY_SHA="$git_sha" -- enviar "$PACOTE"
+  confere "link simbólico na hml: a carga completa é RECUSADA no servidor" rc_erro_e_saida_tem "link simbólico"
+  confere "link simbólico na hml: a produção (fora da hml) continua idêntica, nada foi escrito por cima dela" test "$(h_sem_hml)" = "$H_PROD5"
+  confere "link simbólico na hml: a hml não mudou" test "$(h_hml)" = "$H_HML5L"
+  R sh -c "rm $SITE_HML/wp-content/uploads && mv $SITE_HML/wp-content/uploads.real $SITE_HML/wp-content/uploads"
+  # 5c) S4: DB_NAME que o script não consegue ler (aqui, vindo de uma função) é recusado nos dois scripts remotos.
+  R sh -c 'rm -rf /home/u123/prova-recusa && mkdir -p /home/u123/prova-recusa'
+  scp -P "$PORTA_SSH" -i "$CHAVE" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR \
+    bin/atualizar-remoto.sh bin/migrar-remoto.sh u123@127.0.0.1:prova-recusa/ > /dev/null
+  wpr $SITE_HML config set DB_NAME "getenv('WORDPRESS_DB_NAME')" --raw > /dev/null 2>&1
+  H_ANTES_DB="$(h_hml)"
+  for s in atualizar migrar; do
+    saida="$(ssh_t "bash ~/prova-recusa/$s-remoto.sh '$P_HML' '$URL_HML' wp_ - homologacao http://localhost:8080" 2>&1)"; rc=$?
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"não consegui ler o DB_NAME"* ]]; then passa "DB_NAME ilegível na hml: o servidor recusou ($s)"; else falha "DB_NAME ilegível na hml deveria ser recusado ($s)" "$saida"; fi
+    saida="$(ssh_t "bash ~/prova-recusa/$s-remoto.sh '$P_PROD' '$URL_PROD' wp_ - ensaio http://localhost:8080" 2>&1)"; rc=$?
+    if [ "$rc" -ne 0 ] && [[ "$saida" == *"não consegui ler o DB_NAME"* ]]; then passa "DB_NAME ilegível na hml: a produção também recusa ($s)"; else falha "DB_NAME ilegível na hml deveria ser recusado pela produção ($s)" "$saida"; fi
+  done
+  confere "DB_NAME ilegível: nada foi alterado" test "$(h_hml)" = "$H_ANTES_DB"
+  wpr $SITE_HML config set DB_NAME hospedagem_hml > /dev/null 2>&1
+  R sh -c 'rm -rf /home/u123/prova-recusa'
+  confere "DB_NAME da hml restaurado" test "$(opcao_cfg DB_NAME)" = hospedagem_hml
+
   echo
   if [ "$ko" -eq 0 ]; then echo "PROVA ANINHADA OK: $ok verificações, 0 falhas."; else echo "PROVA ANINHADA COM FALHAS: $ko de $((ok + ko)) verificações."; fi
   [ "$ko" -eq 0 ]
