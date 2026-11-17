@@ -381,7 +381,9 @@ cmd_enviar() {
   else
     remoto="$remoto && DOMINIO_PRODUCAO='$DOMINIO_PRODUCAO' bash ~/ieadc-migracao-$AMBIENTE/atualizar-remoto.sh '$DESTINO' '$URL' '$prefixo'"
   fi
-  remoto="$remoto; rm -rf ~/ieadc-migracao-$AMBIENTE ~/ieadc-pacote-$AMBIENTE.tgz"
+  # A limpeza vem depois do ";" e NÃO pode esconder o resultado: guarda o código de saída da instalação e devolve-o no fim (antes, um
+  # script remoto que recusasse a carga, como as barreiras da hml, terminava com o código do rm e o envio seguia como se tivesse dado certo).
+  remoto="$remoto; rc_remoto=\$?; rm -rf ~/ieadc-migracao-$AMBIENTE ~/ieadc-pacote-$AMBIENTE.tgz; exit \$rc_remoto"
   if ! ssh_alvo "$remoto" >&2; then
     registrar_deploy falhou > /dev/null 2>&1 || true
     erro "a instalação no servidor falhou. Se foi carga completa, o banco anterior ficou em ~/backup-antes-da-migracao-*.sql no servidor."
