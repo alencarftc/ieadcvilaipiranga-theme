@@ -132,6 +132,15 @@ O Felipe respondeu as pendências e mandou tratar tudo como definitivo ("remova 
 | Evento de teste de 17 e 18/10 | `[horário a confirmar]` e `[Local e programação a confirmar]` | Sem horário, descrição "Dias 17 e 18 de outubro." (`tests/fixtures/evento-prototipo.php`, `prototipo/eventos.html`, `docs/specs/referencias/eventos-grade.html`, `teste-agenda.php`) | Continua só como dado de teste |
 | E-mail público | rodapé já com `ieadcvilaipiranga@gmail.com`; e-mail pessoal do pastor em Contato e na política | Só o e-mail público | Pedido do Felipe |
 
+## Desempenho do celular (fase 6)
+
+Nada muda no HTML dos blocos (markup 28) nem na imagem dentro dos limites (visual 84). As diferenças ficam no `<head>`, no CSS e no que o navegador baixa; o protótipo (`prototipo/*.html`) não muda porque o que o visitante vê, depois de a página carregar, é igual.
+
+| Onde | Protótipo | Site | Motivo |
+|---|---|---|---|
+| Fontes (Roboto, Roboto Condensed e Dancing Script) | `@font-face` no CSS, pedidas junto com a página | As `@font-face` com arquivo ficam em `uploads/ieadc-cache/fontes-<hash>.css`, ligado com `media="print"` e posto em `all` por `site.js` 150 ms depois do `load` (na hora, para quem já abriu o site neste navegador; sem JavaScript, `<noscript>`). Antes disso o texto usa as fontes de reserva (`Roboto Fallback`, com as medidas das reais), então só muda a forma das letras, sem deslocar nada (CLS 0,000 a 0,0004) | No Lighthouse do celular (4G lenta simulada), as 93 a 139 KB de fontes disputavam a banda com o CSS e a foto e seguravam o LCP em 2,2 s e o FCP em 1,4 a 1,6 s; adiadas, o LCP cai para 1,3 a 1,6 s e o FCP para 1,1 s. Ver `docs/operacao/desempenho-e-acessibilidade.md`, seção 6 |
+| Foto do topo (celular até 520 px) | Original de 1600 px (190 KB) | WebP de 640 px e qualidade 76, gerado na primeira visita em `uploads/ieadc-cache/topo-<id>-...webp` (capa dos artigos recortada em 16:10 central, o que o CSS já mostrava; topo das páginas só reduzido). De 520 a 768 px, a de 768 px do WordPress; acima, a original | Bytes do LCP (de 150 KB para 29 KB na capa do artigo "Alcançar Curitiba"; de 65 KB para 31 KB no topo das páginas) |
+| Cache de arquivos estáticos | | `.htaccess` com 1 ano para fontes, CSS, JS e arquivos com hash no nome (as imagens continuam em 30 dias), por tipo (`mod_expires`) e por extensão (`mod_headers`) | O Lighthouse (`uses-long-cache-ttl`) trata menos de ~100 dias como cache curto |
 ## Fase 5C: respostas do Felipe de 17/11/2026
 
 O Felipe respondeu 16 das 25 perguntas da lista da fase 5B; nas outras 9 ele escreveu "Perguntei ao pastor", e a lista que mandou ao pastor tem 8 perguntas (`docs/operacao/perguntas-ao-pastor-robson.md`; a 25, sobre mensagens em áudio e vídeo, não entrou nela). Como na 5B, tudo entrou nos dois lados (blocos, `prototipo/*.html`, `content/paginas/*.html`, referências dos blocos e padrões dos `block.json`); `./bin/testar.sh` segue como critério. A numeração das respostas é a da lista de 25 perguntas.
