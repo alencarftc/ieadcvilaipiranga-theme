@@ -974,3 +974,15 @@ a:hover .mais.acao{background:var(--marinho)}
 
 /* Links de texto que abrem em outra aba (fase 7): ícone discreto depois do texto. O target="_blank" e o rel="noopener noreferrer" vêm do servidor (inc/links-externos.php). */
 main p a[target="_blank"]:not(.btn)::after{content:"";display:inline-block;width:.72em;height:.72em;margin-left:.3em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center/contain no-repeat}
+
+/* Perguntas frequentes em sanfona (fase 7): <details class="faq-item" name="faq">; a pergunta é o <summary> (teclado: Enter e espaço) e a seta gira ao abrir. */
+.faq{align-items:start}
+.faq-item{padding:0}
+.faq-item>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);padding:var(--s3) var(--s4);cursor:pointer;list-style:none;border-radius:21px}
+.faq-item>summary::-webkit-details-marker{display:none}
+.faq-item>summary .ico{flex:none;width:24px;height:24px;color:var(--azul);transition:transform .25s}
+.faq-item[open]>summary .ico{transform:rotate(180deg)}
+.faq-item>summary:focus-visible{outline:3px solid var(--claro);outline-offset:2px}
+.faq-item .resp{padding:0 var(--s4) var(--s3)}
+.faq-item .resp p{margin-top:0}
+@media (prefers-reduced-motion:reduce){.faq-item>summary .ico{transition:none}}
