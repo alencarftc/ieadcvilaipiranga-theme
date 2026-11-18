@@ -66,6 +66,9 @@ function ieadc_foto_estreita(int $id, bool $capa): ?array {
 		if (!wp_mkdir_p($pasta)) {
 			return null;
 		}
+		if (!wp_image_editor_supports(['mime_type' => 'image/webp'])) { // sem WebP no editor o WordPress grava outra extensão e deixaria arquivo órfão a cada visita
+			return null;
+		}
 		$ed = wp_get_image_editor($orig);
 		if (is_wp_error($ed)) {
 			return null;
@@ -81,8 +84,12 @@ function ieadc_foto_estreita(int $id, bool $capa): ?array {
 		$ed->set_quality(IEADC_FOTO_ESTREITA_QUALIDADE);
 		$tmp = "$pasta/topo-" . uniqid('', true) . '.tmp.webp';
 		$salvo = $ed->save($tmp, 'image/webp');
-		if (is_wp_error($salvo) || !@rename($tmp, $destino)) {
+		$gravado = is_wp_error($salvo) ? $tmp : (string) ($salvo['path'] ?? $tmp);
+		if (is_wp_error($salvo) || substr($gravado, -5) !== '.webp' || !@rename($gravado, $destino)) {
 			@unlink($tmp);
+			if ($gravado !== $tmp) {
+				@unlink($gravado);
+			}
 			return null;
 		}
 	}
@@ -357,12 +364,12 @@ ExpiresByType font/woff2 "access plus 1 year"
 ExpiresByType application/font-woff2 "access plus 1 year"
 ExpiresByType application/x-font-woff2 "access plus 1 year"
 ExpiresByType font/woff "access plus 1 year"
-ExpiresByType image/webp "access plus 1 year"
-ExpiresByType image/avif "access plus 1 year"
-ExpiresByType image/png "access plus 1 year"
-ExpiresByType image/jpeg "access plus 1 year"
-ExpiresByType image/gif "access plus 1 year"
-ExpiresByType image/svg+xml "access plus 1 year"
+ExpiresByType image/webp "access plus 30 days"
+ExpiresByType image/avif "access plus 30 days"
+ExpiresByType image/png "access plus 30 days"
+ExpiresByType image/jpeg "access plus 30 days"
+ExpiresByType image/gif "access plus 30 days"
+ExpiresByType image/svg+xml "access plus 30 days"
 ExpiresByType image/x-icon "access plus 30 days"
 ExpiresByType image/vnd.microsoft.icon "access plus 30 days"
 </IfModule>
@@ -371,8 +378,10 @@ ExpiresByType image/vnd.microsoft.icon "access plus 30 days"
 <FilesMatch "(?i)\.(css|js|woff2?)$">
 Header set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
-<FilesMatch "(?i)\.(webp|avif|png|jpe?g|gif|svg)$">
-Header set Cache-Control "public, max-age=31536000"
+# Fotos de uploads e imagens do tema ficam em 30 dias: uma foto trocada mantendo o nome (carga completa) não pode ficar presa por 1 ano no navegador.
+# Só os arquivos gerados com hash no nome (topo-*, tema-*, fontes-*) mudam de nome quando mudam de conteúdo e podem durar 1 ano.
+<FilesMatch "^(topo|tema|fontes)-.*\.(webp|css)$">
+Header set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
 </IfModule>
 

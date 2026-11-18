@@ -29,8 +29,8 @@ foreach (['wp-config', 'readme', 'license', 'xmlrpc', '.env', 'log|sql|bak'] as 
 	ieadc_ok(str_contains($ht, $trecho), "o .htaccess cita $trecho");
 }
 ieadc_ok(str_contains($ht, 'mod_expires.c') && str_contains($ht, 'mod_deflate.c'), 'as regras de cache e compressão da fase 3 continuam');
-ieadc_ok(str_contains($ht, '<IfModule mod_headers.c>') && str_contains($ht, 'Header set Cache-Control "public, max-age=31536000, immutable"') && str_contains($ht, 'Header set Cache-Control "public, max-age=31536000"'), 'cache de 1 ano por extensão (mod_headers): CSS, JS e fontes imutáveis, imagens 1 ano (fase 6)');
-ieadc_ok(str_contains($ht, 'ExpiresByType image/webp "access plus 1 year"') && str_contains($ht, 'ExpiresByType font/woff2 "access plus 1 year"') && !str_contains($ht, 'image/webp "access plus 30 days"'), 'mod_expires: imagens e fontes por 1 ano (o Lighthouse marca 30 dias como cache curto)');
+ieadc_ok(str_contains($ht, '<IfModule mod_headers.c>') && substr_count($ht, 'Header set Cache-Control "public, max-age=31536000, immutable"') === 2 && !str_contains($ht, 'Header set Cache-Control "public, max-age=31536000"') && str_contains($ht, '^(topo|tema|fontes)-.*\.(webp|css)$'), 'cache de 1 ano por extensão (mod_headers): CSS, JS e fontes, e os arquivos com hash no nome; fotos de uploads NÃO (fase 6)');
+ieadc_ok(str_contains($ht, 'ExpiresByType image/webp "access plus 30 days"') && str_contains($ht, 'ExpiresByType font/woff2 "access plus 1 year"') && !str_contains($ht, 'image/webp "access plus 1 year"'), 'mod_expires: fontes 1 ano, imagens 30 dias (foto trocada com o mesmo nome não fica presa no navegador)');
 ieadc_ok(substr_count($ht, '<IfModule') === substr_count($ht, '</IfModule>') && substr_count($ht, '<FilesMatch') === substr_count($ht, '</FilesMatch>'), 'todo <IfModule> e <FilesMatch> bem fechado');
 ieadc_ok(substr_count($ht, '# Fase 6') === 1, 'o bloco da fase 6 aparece uma vez só (gravação idempotente)');
 
@@ -58,10 +58,15 @@ try {
 		ieadc_ok($st === $esperado || ($c === '/sitemap_index.xml' && in_array($st, [200, 301, 404], true)), "$c responde $esperado", $st);
 	}
 	echo "cache longo dos arquivos estáticos (fase 6)\n";
-	foreach (['/wp-content/uploads/ieadc-teste-seguranca/imagem.png', '/wp-content/themes/ieadc-vila-ipiranga/assets/fonts/Roboto-normal-latin.woff2', '/wp-content/themes/ieadc-vila-ipiranga/assets/css/ajustes.css', '/wp-content/themes/ieadc-vila-ipiranga/assets/js/site.js', '/wp-content/themes/ieadc-vila-ipiranga/assets/img/logo_cor-300.webp'] as $c) {
+	foreach (['/wp-content/themes/ieadc-vila-ipiranga/assets/fonts/Roboto-normal-latin.woff2', '/wp-content/themes/ieadc-vila-ipiranga/assets/css/ajustes.css', '/wp-content/themes/ieadc-vila-ipiranga/assets/js/site.js'] as $c) {
 		$r = wp_remote_head($base . $c, ['timeout' => 30, 'redirection' => 0]);
 		$cc = is_wp_error($r) ? '' : (string) wp_remote_retrieve_header($r, 'cache-control');
 		ieadc_ok(preg_match('/max-age=(\d+)/', $cc, $mm) === 1 && (int) $mm[1] >= 31536000, "$c: Cache-Control de 1 ano", $cc);
+	}
+	foreach (['/wp-content/uploads/ieadc-teste-seguranca/imagem.png', '/wp-content/themes/ieadc-vila-ipiranga/assets/img/logo_cor-300.webp'] as $c) {
+		$r = wp_remote_head($base . $c, ['timeout' => 30, 'redirection' => 0]);
+		$cc = is_wp_error($r) ? '' : (string) wp_remote_retrieve_header($r, 'cache-control');
+		ieadc_ok(preg_match('/max-age=(\d+)/', $cc, $mm) === 1 && (int) $mm[1] >= 86400 && (int) $mm[1] < 31536000, "$c: imagem com cache de 30 dias (não 1 ano)", $cc);
 	}
 	echo "listagem de pastas\n";
 	[$st, $corpo] = ieadc_s_status('/wp-content/uploads/ieadc-teste-seguranca/');
