@@ -74,6 +74,7 @@ function ieadc_foto_estreita(int $id, bool $capa): ?array {
 		if (($tam['width'] ?? 0) <= $larg + 64) { // a original já é pequena: nada a ganhar
 			return null;
 		}
+		$altura = $capa ? $alt : (int) round($larg * ($tam['height'] ?? 0) / max(1, (int) $tam['width']));
 		if (is_wp_error($ed->resize($larg, $capa ? $alt : null, $capa))) {
 			return null;
 		}
@@ -85,11 +86,11 @@ function ieadc_foto_estreita(int $id, bool $capa): ?array {
 			return null;
 		}
 	}
-	$dim = @getimagesize($destino);
-	if (!$dim) {
-		return null;
+	if (!isset($altura)) { // arquivo que já existia: a altura sai da proporção da original (o WordPress já guarda as medidas, sem abrir o arquivo)
+		$meta = wp_get_attachment_metadata($id);
+		$altura = $capa ? $alt : (int) round($larg * (int) ($meta['height'] ?? 0) / max(1, (int) ($meta['width'] ?? 0)));
 	}
-	return $feitas[$chave] = ['url' => $up['baseurl'] . '/ieadc-cache/' . $nome, 'largura' => (int) $dim[0], 'altura' => (int) $dim[1]];
+	return $feitas[$chave] = ['url' => $up['baseurl'] . '/ieadc-cache/' . $nome, 'largura' => $larg, 'altura' => $altura];
 }
 
 /**
