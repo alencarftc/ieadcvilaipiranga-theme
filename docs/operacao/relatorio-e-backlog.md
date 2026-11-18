@@ -38,9 +38,9 @@ Estimativa honesta de conclusão do pedido inteiro: **cerca de 65%**. Duas das q
 
 **Com o Felipe (só ele pode):**
 - [ ] **Segredos do GitHub:** rodar `bin/cadastrar-segredos-github.sh` (ou autorizar que eu o faça). Sem isso o CI não publica sozinho na homologação.
-- [x] **Dados reais:** respondidos em 16/11/2026 e aplicados na fase 5B (e-mail público, grafias e cargos, Ceia, Culto de Oração e de Ensino, ministérios, eventos de nov/dez).
-- [ ] **Com o Pastor Robson** (`docs/operacao/perguntas-ao-pastor-robson.md`): o que o Felipe não soube responder (horários, periodicidade, atividades, matérias do Ensinai, escala depois de 02/12, ano da inauguração do templo, fotos e autorizações).
-- [ ] **Com o Felipe** (`docs/operacao/pendencias-para-o-felipe.md`): encaminhar o Gmail da igreja, registros DNS, fotos dos líderes, e-mails dos formulários, UpdraftPlus no Drive e o "pode abrir".
+- [x] **Dados reais:** respondidos em 16/11/2026 e aplicados na fase 5B (e-mail público, grafias e cargos, Ceia, Culto de Oração e de Ensino, ministérios, eventos de nov/dez) e em 17/11/2026 na fase 5C (cargo Ev. Robson Stein, horário e local dos eventos, Círculo de Oração, Mocidade, Crianças, EBD e matérias do Ensinai).
+- [ ] **Com o pastor** (`docs/operacao/perguntas-ao-pastor-robson.md`): as 8 perguntas que restam (Família, Missão e Evangelismo, fotos dos líderes, ano da inauguração do templo, e-mails dos formulários, telefone público e artigos).
+- [ ] **Com o Felipe** (`docs/operacao/pendencias-para-o-felipe.md`): encaminhar o Gmail da igreja, registros DNS, fotos dos líderes, e-mails dos formulários, UpdraftPlus no Drive, autorizações de imagem no Drive e o "pode abrir".
 - [x] **Google:** link de avaliação, Perfil da Empresa verificado e IDs de medição informados pelo Felipe em 16/11/2026. [ ] Falta o registro TXT do Search Console no DNS (e o envio do `sitemap_index.xml`).
 - [ ] **Painel:** autorizar o UpdraftPlus no Google Drive da igreja e conferir os e-mails dos formulários (2FA do Felipe e do pastor já combinado).
 - [ ] **O "pode lançar"** para a produção, que hoje já tem outro WordPress em `ieadcvilaipiranga.com.br` (não foi tocado).
