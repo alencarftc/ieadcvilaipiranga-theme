@@ -159,3 +159,21 @@ main:focus{outline:none}
 /* === Fase 5C (WCAG 1.4.1 e 1.4.3): links dentro dos textos das páginas de culto e de ministério (ieadc/corpo-indice, ex.: relação dos livros da CPAD na EBD) === */
 /* O reset do tema (:where(.ieadc-ui) a) deixa o link com a cor do texto e sem sublinhado; o protótipo só estilizava .lk dentro de ul.encontros. Azul (#0567B7) sobre branco = 5,8:1 e sublinhado, como o .faq-item a. Mesma regra em prototipo/site.css. */
 :where(.min-texto) p a.lk{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
+
+/* === Fase 7 (UX): hover dos links e botões ===
+   O Blocksy pinta todo a:hover com a cor de link do tema (#0A4F98), com especificidade (0,1,1), maior que a da cor dos componentes (0,1,0): o texto do botão azul
+   virava azul sobre azul (1,4:1) e o texto branco dos cartões de horários virava azul-escuro sobre a foto. Cada componente mantém a sua cor no hover; o botão
+   principal só sobe (sombra e deslocamento do protótipo), sem trocar de cor. Os testes não passam o mouse, então o visual do protótipo não muda. */
+.btn:not(.out):not(.branco):not(.vidro):not(.sol):hover{color:var(--branco);background:var(--royal)}
+.btn.out:hover{color:var(--royal)}
+.btn.branco:hover{color:var(--marinho)}
+.btn.vidro:hover{color:var(--branco)}
+.btn.sol:hover{color:var(--marinho)}
+a.cartao:hover,a.dia:hover,.marca:hover{color:var(--marinho)}
+.min-tile:hover{color:var(--branco)}
+
+/* Migalha (fase 7): itens mais separados e divisor em ícone (antes, o caractere › com espaços). Os links ficam com 24 px de altura (WCAG 2.2, tamanho do alvo). */
+.migalha{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.migalha a{display:inline-flex;align-items:center;min-height:24px}
+.migalha .sep{display:inline-flex;align-items:center;opacity:.7}
+.migalha .sep svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}

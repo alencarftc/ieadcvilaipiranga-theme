@@ -219,3 +219,8 @@ function ieadc_perguntas_itens(array $attrs = []): array {
 		'resposta' => 'Pela página <a href="' . esc_url(ieadc_link('pedidos-de-oracao')) . '">Pedidos de oração</a>. O pedido chega apenas ao Círculo de Oração e nunca é publicado.'];
 	return $itens;
 }
+
+/** Divisor da migalha (fase 7): ícone de seta, fora da leitura de tela (o texto da migalha segue em ordem). */
+function ieadc_migalha_sep(): string {
+	return '<span class="sep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>';
+}

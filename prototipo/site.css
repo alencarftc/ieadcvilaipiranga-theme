@@ -943,3 +943,9 @@ a:hover .mais.acao{background:var(--marinho)}
 .compartilhar__ok:empty{display:none}
 /* Fase 5C: links dentro dos textos de culto e ministério (mesma regra de ajustes.css do tema) */
 :where(.min-texto) p a.lk{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
+
+/* Migalha (fase 7): itens mais separados e divisor em ícone (antes, o caractere › com espaços). Os links ficam com 24 px de altura (WCAG 2.2, tamanho do alvo). */
+.migalha{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.migalha a{display:inline-flex;align-items:center;min-height:24px}
+.migalha .sep{display:inline-flex;align-items:center;opacity:.7}
+.migalha .sep svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
