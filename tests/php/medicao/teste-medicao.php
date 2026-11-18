@@ -81,9 +81,9 @@ try {
 ";
 	update_option('ieadc_info', []);
 	ieadc_igual('ieadcvilaipiranga@gmail.com', ieadc_info('email'), 'e-mail público padrão');
-	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_info('google_avaliacao'), 'link de avaliação padrão');
-	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_google_avaliacao_url(), 'o botão "Avaliar no Google" usa o link padrão');
-	ieadc_igual(ieadc_google_avaliacao_url(), ieadc_google_avaliacao_limpar('https://share.google/U5EOVkegYKa2UcT7o'), 'o host share.google passa na validação do campo');
+	ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU', ieadc_info('google_avaliacao'), 'link de avaliação padrão');
+	ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU', ieadc_google_avaliacao_url(), 'o botão "Avaliar no Google" usa o link padrão');
+	ieadc_igual(ieadc_google_avaliacao_url(), ieadc_google_avaliacao_limpar('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU'), 'o host share.google passa na validação do campo');
 	ieadc_ok((float) ieadc_info('latitude') === -25.503215673764625 && (float) ieadc_info('longitude') === -49.28838685582037, 'latitude e longitude padrão');
 
 	/* ---------- saída sem nenhum ID ---------- */

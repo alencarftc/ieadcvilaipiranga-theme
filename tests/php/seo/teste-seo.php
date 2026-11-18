@@ -565,7 +565,7 @@ ieadc_igual(['', ''], [ieadc_coordenada_limpar('95', 90), ieadc_coordenada_limpa
 $mapa = ieadc_google_maps_url();
 ieadc_ok(str_starts_with($mapa, 'https://www.google.com/maps/search/?api=1&query=') && str_contains($mapa, rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'))), 'sem link próprio, o botão leva à igreja no Google Maps (nome e endereço codificados)', $mapa);
 $html = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
-ieadc_ok(str_contains($html, 'href="https://share.google/U5EOVkegYKa2UcT7o"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: com o link padrão do Felipe, o botão abre a avaliação em nova aba com rel="noopener"');
+ieadc_ok(str_contains($html, 'href="https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: com o link padrão do Felipe, o botão abre a avaliação em nova aba com rel="noopener"');
 $vazio = fn($d) => array_merge($d, ['google_avaliacao' => '']);
 add_filter('ieadc_info', $vazio);
 $html_vazio = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');

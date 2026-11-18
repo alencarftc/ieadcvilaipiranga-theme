@@ -971,3 +971,6 @@ a:hover .mais.acao{background:var(--marinho)}
 .btn.uber:hover{background:var(--marinho);color:var(--branco)}
 .btn.maps:hover{background:var(--royal);color:var(--branco)}
 @media (max-width:600px){.mapa-abrir{bottom:70px}}
+
+/* Links de texto que abrem em outra aba (fase 7): ícone discreto depois do texto. O target="_blank" e o rel="noopener noreferrer" vêm do servidor (inc/links-externos.php). */
+main p a[target="_blank"]:not(.btn)::after{content:"";display:inline-block;width:.72em;height:.72em;margin-left:.3em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E") center/contain no-repeat}
