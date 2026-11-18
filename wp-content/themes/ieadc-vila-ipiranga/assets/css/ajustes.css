@@ -155,3 +155,7 @@ main:focus{outline:none}
 /* 404: links para as páginas principais. */
 .nf-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s2);margin-top:var(--s4)}
 .nf-links .btn{justify-content:space-between}
+
+/* === Fase 5C (WCAG 1.4.1 e 1.4.3): links dentro dos textos das páginas de culto e de ministério (ieadc/corpo-indice, ex.: relação dos livros da CPAD na EBD) === */
+/* O reset do tema (:where(.ieadc-ui) a) deixa o link com a cor do texto e sem sublinhado; o protótipo só estilizava .lk dentro de ul.encontros. Azul (#0567B7) sobre branco = 5,8:1 e sublinhado, como o .faq-item a. Mesma regra em prototipo/site.css. */
+:where(.min-texto) p a.lk{color:var(--azul);text-decoration:underline;text-underline-offset:3px}

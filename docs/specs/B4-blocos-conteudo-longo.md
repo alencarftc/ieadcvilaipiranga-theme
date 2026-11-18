@@ -14,7 +14,7 @@
 | `contato-lista` | Fale conosco | (formulário = `[ieadc_contato]`); lateral: `eyebrow`, `titulo`, `itens` (lista: `icone`, `titulo`, `texto` (rico)) |
 | `capa` | Fale conosco | `foto`, `foco` |
 | `fatos` | 13 (cultos e ministérios) | `fatos` (lista: `icone`, `rotulo`, `valor` (rico)) |
-| `corpo-indice` | 13 (cultos e ministérios) | `aviso`; `secoes` (lista: `ancora`, `titulo`, `tipo` (`texto`, `versiculo+texto`, `objetivos`, `datas`), `texto` (texto-longo/rico), `versiculo`, `referencia`, `itens` (lista de texto)); lateral: `indiceTitulo`, `lideresTitulo`, `lideres` (texto-longo), `botoes`. Tipo `datas` usa `ieadc_agenda_proximas()` com a meta `ieadc_regra` da página |
+| `corpo-indice` | 13 (cultos e ministérios) | `aviso`; `secoes` (lista: `ancora`, `titulo`, `tipo` (`texto`, `versiculo+texto`, `objetivos`, `datas`), `texto` (texto-longo/rico), `versiculo`, `referencia`, `itens` (lista de texto)); lateral: `indiceTitulo`, `lideresTitulo`, `lideres` (texto-longo), `botoes`. Tipo `datas` usa `ieadc_agenda_proximas()` com a meta `ieadc_regra` da página. Fase 5C: nos tipos `objetivos` e `encontros` o campo `texto`, se preenchido, vira uma nota depois da lista; links `<a href>` nos textos e nos itens recebem `class="lk"` (e `rel="noopener"` quando apontam para outro site) |
 | `passos` | 13 | cabeçalho; `passos` (lista de texto); `variante` (`passos` = `<ol class="passos">` numerado / `passo-unico` = um cartão) |
 | `carrossel` | 11 | cabeçalho; `fotos` (imagens); `legenda` (texto: "<Nome> · foto {n}") |
 | `leitura` | Política de privacidade | `conteudo` (rico, aceita também `<h3>` e `<p>`) |

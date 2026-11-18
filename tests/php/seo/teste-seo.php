@@ -162,10 +162,10 @@ ieadc_t_todas($sem_evento_de_teste, 'nenhuma página com "a confirmar", "a defin
 	}
 	return $achados ? implode(', ', $achados) : true;
 });
-ieadc_t_todas($sem_evento_de_teste, 'grafias antigas e e-mail pessoal do pastor fora do site (Geziel, Catarino, Messias da Costa, Sérgio Luiz, robsondouglass)', function ($c, $p) {
+ieadc_t_todas($sem_evento_de_teste, 'grafias antigas, "Pr. Robson" (o cargo dele é Ev., confirmado pelo Felipe em 17/11/2026) e e-mail pessoal do pastor fora do site (Geziel, Catarino, Messias da Costa, Sérgio Luiz, robsondouglass)', function ($c, $p) {
 	$html = html_entity_decode((string) ($p['html'] ?? ''), ENT_QUOTES, 'UTF-8');
 	$achados = [];
-	foreach (['Geziel', 'Catarino', 'Messias da Costa', 'Sérgio Luiz', 'robsondouglass', 'Ev. Robson'] as $trecho) {
+	foreach (['Geziel', 'Catarino', 'Messias da Costa', 'Sérgio Luiz', 'robsondouglass', 'Pr. Robson'] as $trecho) {
 		if (mb_stripos($html, $trecho) !== false) {
 			$achados[] = $trecho;
 		}
@@ -484,6 +484,48 @@ ieadc_ok(!str_contains(json_encode($no_ev, JSON_UNESCAPED_UNICODE), '['), 'Event
 ieadc_ok(wp_parse_url($no_ev['url'] ?? '', PHP_URL_PATH) === $ev_path && preg_match('#^https?://#', $no_ev['image'] ?? ''), 'Event: url da página e imagem');
 ieadc_ok(str_contains($no_ev['description'] ?? '', 'das 19h30 às 21h') && !str_contains($no_ev['description'] ?? '', 'às 19h30 às'), 'Event: descrição montada com data e horário', $no_ev['description'] ?? null);
 ieadc_igual(['Início', 'Eventos', 'Culto de teste de SEO (apagar)'], $ev ? array_column(ieadc_t_nos($ev, 'BreadcrumbList')[0]['itemListElement'] ?? [], 'name') : null, 'página do evento: migalha Início > Eventos > título');
+/* Local do evento (fase 5C): local da própria igreja = Place com o nome dela e o PostalAddress; outro local mantém o texto em name e address. */
+$endereco_igreja = (string) ieadc_info('endereco');
+$local_igreja = $nome . ', ' . $endereco_igreja;
+$outro_local = 'Salão do Clube Exemplo, Rua Exemplo, 100 - Centro, Curitiba - PR';
+$com_nome_sem_rua = $nome . ' - Salão alugado, Rua Exemplo, 100 - Centro, Curitiba - PR'; // começa com o nome da igreja, mas é outra rua
+$e_da_igreja = fn($loc) => ($loc['@type'] ?? '') === 'Place' && ($loc['name'] ?? '') === $nome && is_array($loc['address'] ?? null) && ($loc['address']['@type'] ?? '') === 'PostalAddress' && ($loc['address']['addressLocality'] ?? '') === 'Curitiba';
+$l1 = ieadc_schema_local_evento($local_igreja);
+ieadc_ok($e_da_igreja($l1), 'ieadc_schema_local_evento: nome da igreja e a rua do endereço = Place só com o nome da igreja e o PostalAddress estruturado', $l1);
+$l2 = ieadc_schema_local_evento($endereco_igreja);
+ieadc_ok($e_da_igreja($l2), 'ieadc_schema_local_evento: local igual ao endereço de Configurações = Place com o nome da igreja e o PostalAddress', $l2);
+$l3 = ieadc_schema_local_evento(strtoupper($nome));
+ieadc_ok($e_da_igreja($l3), 'ieadc_schema_local_evento: local igual ao nome da igreja (sem diferenciar caixa) = Place com o nome da igreja e o PostalAddress', $l3);
+$l4 = ieadc_schema_local_evento($com_nome_sem_rua);
+ieadc_ok(($l4['name'] ?? '') === $com_nome_sem_rua && ($l4['address'] ?? null) === $com_nome_sem_rua, 'ieadc_schema_local_evento: começa com o nome da igreja mas sem a rua dela = outro local (texto em name e address)', $l4);
+$l5 = ieadc_schema_local_evento($outro_local);
+ieadc_ok(($l5['@type'] ?? '') === 'Place' && ($l5['name'] ?? '') === $outro_local && ($l5['address'] ?? null) === $outro_local, 'ieadc_schema_local_evento: outro local = Place com o texto como name e address, sem o PostalAddress da igreja', $l5);
+$l6 = ieadc_schema_local_evento('');
+ieadc_ok($e_da_igreja($l6), 'ieadc_schema_local_evento: sem local = a igreja (nome e PostalAddress), como antes', $l6);
+$ids_local = [];
+register_shutdown_function(function () use (&$ids_local) {
+	foreach ($ids_local as $id_local) {
+		wp_delete_post($id_local, true);
+	}
+});
+$ev_local = [];
+foreach (['igreja' => ['Evento de teste de SEO com o local da igreja (apagar)', $local_igreja], 'outro' => ['Evento de teste de SEO com outro local (apagar)', $outro_local]] as $chave => [$titulo_ev, $loc_ev]) {
+	$id_ev = wp_insert_post(['post_type' => 'evento', 'post_status' => 'publish', 'post_title' => $titulo_ev, 'post_excerpt' => '',
+		'meta_input' => ['evento_data' => '2026-12-12', 'evento_horario' => '19h', 'evento_local' => $loc_ev]], true);
+	if (is_wp_error($id_ev)) {
+		continue;
+	}
+	$ids_local[] = $id_ev;
+	$r_ev = ieadc_t_baixar($base . (string) wp_parse_url(get_permalink($id_ev), PHP_URL_PATH));
+	$p_ev = $r_ev['status'] === 200 ? ieadc_t_analisar($r_ev['corpo']) : ['nos' => []];
+	$ev_local[$chave] = ieadc_t_nos($p_ev, 'Event')[0]['location'] ?? null;
+}
+ieadc_ok(isset($ev_local['igreja']) && $e_da_igreja($ev_local['igreja']), 'página do evento com o local da igreja: Event.location é um Place com o nome da igreja e o PostalAddress estruturado', $ev_local['igreja'] ?? null);
+ieadc_ok(isset($ev_local['outro']) && ($ev_local['outro']['name'] ?? '') === $outro_local && ($ev_local['outro']['address'] ?? null) === $outro_local, 'página do evento com outro local: Event.location com o texto como name e address, sem o PostalAddress da igreja', $ev_local['outro'] ?? null);
+foreach ($ids_local as $id_local) {
+	wp_delete_post($id_local, true);
+}
+$ids_local = [];
 $lista = $paginas['/eventos/'] ?? null;
 $nomes_lista = $lista ? array_column(ieadc_t_nos($lista, 'Event'), 'name') : [];
 ieadc_ok(in_array('Culto de teste de SEO (apagar)', $nomes_lista, true), 'página Eventos: lista os próximos eventos como Event', $nomes_lista);

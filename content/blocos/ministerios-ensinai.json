@@ -75,10 +75,40 @@
      "ancora": "funciona-ensinai",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. O Ev. Francisco Belo lidera o curso e ensina toda sexta-feira, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\nO curso básico dura 2 anos, e o primeiro livro começou a ser estudado em agosto de 2026. Quem quiser pode entrar a qualquer momento: os livros que já foram estudados são repostos na próxima turma, que começa quando a atual terminar.",
+     "texto": "O Ensinai é o Curso de Teologia Ministerial da igreja. O Ev. Francisco Belo lidera o curso e ensina toda sexta-feira, às 19h30.\n\nO curso é para quem deseja estudar a Bíblia com mais profundidade e se preparar para servir na igreja, seja no ensino, na liderança ou no cuidado com as pessoas.\n\nO curso básico dura 2 anos, e o primeiro livro começou a ser estudado em agosto de 2026. Quem quiser pode entrar a qualquer momento: os livros que já foram estudados são repostos na próxima turma, que começa quando a atual terminar.\n\nO curso dá certificado.",
      "versiculo": "",
      "referencia": "",
      "itens": []
+    },
+    {
+     "ancora": "materias-ensinai",
+     "titulo": "Matérias do curso",
+     "tipo": "encontros",
+     "texto": "As matérias estão na ordem em que são estudadas.",
+     "versiculo": "",
+     "referencia": "",
+     "itens": [
+      "Matéria 1 | Bibliologia",
+      "Matéria 2 | Ética Cristã",
+      "Matéria 3 | Panorama do Antigo Testamento",
+      "Matéria 4 | Panorama do Novo Testamento",
+      "Matéria 5 | Teologia Sistemática I",
+      "Matéria 6 | Teologia Sistemática II",
+      "Matéria 7 | Geografia Bíblica",
+      "Matéria 8 | História da Igreja",
+      "Matéria 9 | Hermenêutica",
+      "Matéria 10 | Homilética",
+      "Matéria 11 | Educação Cristã",
+      "Matéria 12 | Seitas e Heresias",
+      "Matéria 13 | Ministério Cristão",
+      "Matéria 14 | Aconselhamento Bíblico",
+      "Matéria 15 | Família Cristã",
+      "Matéria 16 | Português",
+      "Matéria 17 | Administração Eclesiástica",
+      "Matéria 18 | Cultos e Cerimônias",
+      "Matéria 19 | Evangelismo e Missões",
+      "Matéria 20 | Plantação e Crescimento de Igrejas"
+     ]
     },
     {
      "ancora": "porque-ensinai",
@@ -155,7 +185,7 @@
    "titulo": "Dê o primeiro passo",
    "variante": "passo-unico",
    "passos": [
-    "Procure o Ev. Francisco Belo, que lidera o Ensinai. Você pode entrar a qualquer momento; ele vai receber você e explicar como participar."
+    "A inscrição é feita em contato com o Ev. Francisco Belo, que lidera o Ensinai, e/ou com o 1º dirigente, Ev. Robson Stein. Você pode entrar a qualquer momento: eles vão receber você e explicar como participar."
    ],
    "icone": "pessoas",
    "unicoBotaoTexto": "Fale conosco",

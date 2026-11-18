@@ -155,7 +155,8 @@
 						"type": "string",
 						"ieadc": {
 							"rotulo": "Texto",
-							"campo": "texto-longo"
+							"campo": "texto-longo",
+							"ajuda": "Nas listas (Lista com ✓ e Quando | o quê), o texto aparece como nota depois da lista."
 						}
 					},
 					"itens": {

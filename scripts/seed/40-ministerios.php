@@ -1,6 +1,8 @@
 <?php
 // M3: campos do cartão de cada ministério (páginas filhas de "ministerios") e foto do cartão (imagem destacada).
 // Fonte: prototipo/fonte/minis.py (ícone, 1ª frase do "curto", "Quando" dos fatos) e gen.py (CORES, foto do cartão).
+// Fase 5C (17/11/2026): o "quando" da Mocidade é "A cada 2 semanas" (resposta do Felipe). Os de Família, Missão e Evangelismo e Crianças
+// (1º, 2º e 5º domingo, às 19h) vêm do culto dominical temático da agenda (docs/specs/M2-agenda.md) e não mudam.
 // Não sobrescreve o que foi editado no painel (exceto com IEADC_ATUALIZAR=1).
 
 /** Grava o campo só se ele ainda não existe (ou com IEADC_ATUALIZAR=1). Devolve true se gravou. */
@@ -43,7 +45,7 @@ $ministerios = [
 	'ensinai' => ['icone' => 'beca', 'resumo' => 'Curso de Teologia Ministerial para quem deseja se aprofundar no estudo da Bíblia e se preparar para servir.', 'quando' => 'Sexta-feira, às 19h30', 'cor' => 'c3', 'foto' => 'f_min_ensinai.webp'],
 	'familia' => ['icone' => 'casa', 'resumo' => 'Cuida dos casais e das famílias da igreja, para que cada lar viva a fé no dia a dia.', 'quando' => '1º domingo do mês, às 19h', 'cor' => 'c4', 'foto' => 'p_familia.webp'],
 	'missao-e-evangelismo' => ['icone' => 'globo', 'resumo' => 'Leva o evangelho para além das portas da igreja, em sintonia com o tema do ano: alcançar Curitiba para Cristo.', 'quando' => '2º domingo do mês, às 19h', 'cor' => 'c5', 'foto' => 'p_missoes.webp'],
-	'mocidade' => ['icone' => 'pessoas', 'resumo' => 'Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço.', 'quando' => '3º domingo do mês, às 19h', 'cor' => 'c6', 'foto' => 'p_jovens.webp'],
+	'mocidade' => ['icone' => 'pessoas', 'resumo' => 'Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço.', 'quando' => 'A cada 2 semanas', 'cor' => 'c6', 'foto' => 'p_jovens.webp'],
 	'criancas' => ['icone' => 'crianca', 'resumo' => 'Ensina a Palavra de Deus às crianças, de um jeito adequado a cada idade.', 'quando' => '5º domingo do mês (quando houver), às 19h', 'cor' => 'c7', 'foto' => 'f_min_criancas.webp'],
 ];
 
