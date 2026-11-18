@@ -42,6 +42,9 @@ add_action('wp_enqueue_scripts', function () {
    celular com rede lenta; como as fontes de reserva têm as medidas das reais (fontes.css, "... Fallback"), a troca de fonte não desloca nada e elas podem chegar depois.
    Medido (Lighthouse, 4G lenta): sem preload o desempenho local cai de 98 para 96 (as fontes passam a ser pedidas só depois do CSS); com prioridade baixa fica em 98. */
 add_action('wp_head', function () {
+	if (function_exists('ieadc_css_arquivos') && ieadc_css_arquivos()['fontes'] !== '') {
+		return; // fase 6: as fontes reais carregam depois da página (inc/desempenho.php), sem preload
+	}
 	$f = get_stylesheet_directory_uri() . '/assets/fonts/';
 	foreach (['Roboto-normal-latin.woff2', 'RobotoCondensed-normal-latin.woff2'] as $arq) {
 		echo '<link rel="preload" href="' . esc_url($f . $arq) . '" as="font" type="font/woff2" crossorigin fetchpriority="low">' . "\n";
