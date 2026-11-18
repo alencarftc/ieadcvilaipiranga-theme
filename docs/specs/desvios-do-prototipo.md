@@ -176,3 +176,11 @@ As fotos que vinham do protótipo foram trocadas por fotos reais da igreja nas p
 | Links para fora do site | abriam na mesma aba | `target="_blank"` e `rel="noopener noreferrer"` em todo link externo, na saída do HTML (`inc/links-externos.php`); ícone discreto nos links de texto; o protótipo recebeu os mesmos atributos | pedido do Felipe |
 | Perguntas frequentes | cartões sempre abertos | sanfona `<details class="faq-item" name="faq">` (uma aberta por vez, teclado e sem JavaScript) | pedido do Felipe |
 | Aceitar Jesus | item no meio do menu | botão final do cabeçalho (`.cta.jesus`), com o degradê do sol e brilho suave (sem animação com `prefers-reduced-motion`); o item do menu do painel continua e alimenta o rodapé | destaque |
+
+### Fase 7B: galeria e agenda
+
+| Onde | Antes | Agora | Motivo |
+|---|---|---|---|
+| Galeria (`ieadc/fotos`) | 10 fotos paradas | 39 fotos (29 fotos reais dos ministérios e da Ceia, sem crianças, e as 10 de antes) e **foto ampliada em janela** (`<dialog>`, `assets/js/galeria.js`): clique ou Enter/espaço abre; setas na tela, ← e →, deslize no celular passam as fotos; Esc, o X e o clique fora fecham e o foco volta à foto. O HTML das fotos não muda: o papel de botão, o foco e o rótulo entram por JavaScript, como no carrossel | pedido do Felipe |
+| Eventos: lista "Em destaque" | só os 6 próximos destaques (eventos cadastrados além do sexto não apareciam) | `incluirAvulsos`: além dos destaques, **todos os eventos cadastrados dos próximos 45 dias** (`ieadc_agenda_destaques_com_avulsos()`) | os eventos do Felipe (Almoço, Céunem, Cantata) ficavam de fora |
+| Eventos: Cultos e encontros da semana | os cultos de oração, ensino e do Círculo só apareciam no calendário | bloco novo `ieadc/proximos-cultos`: um cartão por culto ou encontro que se repete (oração, ensino, círculo, Ensinai e EBD) com a **próxima data**, calculada pela agenda; seção nova entre "Em destaque" e o calendário (também no protótipo) | pedido do Felipe |
