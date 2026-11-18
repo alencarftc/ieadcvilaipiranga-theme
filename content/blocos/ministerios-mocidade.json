@@ -17,7 +17,7 @@
    ],
    "eyebrow": "Ministérios · Mocidade",
    "titulo": "Mocidade",
-   "lead": "Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço. No 3º domingo do mês, o culto dominical é dedicado a eles.",
+   "lead": "Reúne os jovens e adolescentes para crescerem juntos na fé, em comunhão e no serviço. Os encontros acontecem a cada 2 semanas, e no 3º domingo do mês o culto dominical é dedicado a eles.",
    "botoes": [
     {
      "texto": "Como participar",
@@ -47,7 +47,7 @@
     {
      "icone": "relogio",
      "rotulo": "Quando",
-     "valor": "3º domingo do mês, às 19h"
+     "valor": "A cada 2 semanas"
     },
     {
      "icone": "pessoas",
@@ -75,7 +75,7 @@
      "ancora": "funciona-mocidade",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\nPara conhecer os encontros e as atividades da Mocidade, é só procurar os líderes.",
+     "texto": "A Mocidade reúne os jovens e adolescentes da igreja para crescerem juntos na fé, em comunhão e no serviço.\n\nNo 3º domingo de cada mês, o culto dominical, às 19h, é dedicado aos jovens e adolescentes.\n\nOs jovens e adolescentes se encontram a cada 2 semanas. Ao longo do ano, só a confraternização é pré-estabelecida: acontece 1 vez por ano, sem data predefinida.\n\nPara saber quando é o próximo encontro, é só procurar os líderes.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -111,6 +111,8 @@
      "versiculo": "",
      "referencia": "",
      "itens": [
+      "A cada 2 semanas | Encontro dos jovens e adolescentes",
+      "1 vez por ano | Confraternização dos jovens, sem data predefinida",
       "3º domingo · 19h | Culto dominical dedicado aos jovens e adolescentes"
      ]
     }
