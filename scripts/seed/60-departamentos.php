@@ -12,7 +12,7 @@ $departamentos = [
 	['Crianças', ['Míriam Lima', 'Myrela Lima'], 'e equipe'],
 	['Escola Bíblica', ['Pb. Manoel Lima', 'Dc. Jorge Fernandez'], ''],
 	['Eventos', ['Evelin Sena', 'Míriam Lima'], ''],
-	['Família', ['Coop. Bruno Bernadoque', 'Tácila Bernadoque', 'Pr. Robson Stein', 'Luciana Stein'], ''],
+	['Família', ['Coop. Bruno Bernadoque', 'Tácila Bernadoque', 'Ev. Robson Stein', 'Luciana Stein'], ''],
 	['Manutenção da Igreja', ['Jessé Maciel', 'José Luiz Oliveira'], ''],
 	['Missão/Evangelismo', ['Coop. José Luiz Nascimento', 'Pr. Evandro Oliveira'], ''],
 	['Mocidade', ['Anderson Sena', 'Evelin Sena', 'Leonardo Morais da Silva'], ''],

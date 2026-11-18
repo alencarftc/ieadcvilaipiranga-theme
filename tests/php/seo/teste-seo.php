@@ -162,10 +162,10 @@ ieadc_t_todas($sem_evento_de_teste, 'nenhuma página com "a confirmar", "a defin
 	}
 	return $achados ? implode(', ', $achados) : true;
 });
-ieadc_t_todas($sem_evento_de_teste, 'grafias antigas e e-mail pessoal do pastor fora do site (Geziel, Catarino, Messias da Costa, Sérgio Luiz, robsondouglass)', function ($c, $p) {
+ieadc_t_todas($sem_evento_de_teste, 'grafias antigas, "Pr. Robson" (o cargo dele é Ev., confirmado pelo Felipe em 17/11/2026) e e-mail pessoal do pastor fora do site (Geziel, Catarino, Messias da Costa, Sérgio Luiz, robsondouglass)', function ($c, $p) {
 	$html = html_entity_decode((string) ($p['html'] ?? ''), ENT_QUOTES, 'UTF-8');
 	$achados = [];
-	foreach (['Geziel', 'Catarino', 'Messias da Costa', 'Sérgio Luiz', 'robsondouglass', 'Ev. Robson'] as $trecho) {
+	foreach (['Geziel', 'Catarino', 'Messias da Costa', 'Sérgio Luiz', 'robsondouglass', 'Pr. Robson'] as $trecho) {
 		if (mb_stripos($html, $trecho) !== false) {
 			$achados[] = $trecho;
 		}
