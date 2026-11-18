@@ -120,6 +120,14 @@ ieadc_ok(str_contains($css_tema, 'Roboto Fallback') && !str_contains($css_tema, 
 ieadc_ok(substr_count($css_fontes, '.woff2') === 9 && !str_contains($css_fontes, 'Fallback') && str_contains($css_fontes, '/assets/fonts/Roboto-normal-latin.woff2') && !str_contains($css_fontes, '../fonts/'), 'CSS das fontes: as 9 @font-face com o endereço completo do tema', substr_count($css_fontes, '.woff2'));
 ieadc_ok(strlen($css_fontes) < 6000 && !str_contains($css_fontes, "\n  "), 'CSS das fontes minificado (pequeno)', strlen($css_fontes));
 ieadc_ok(str_contains(ieadc_fontes_tag(), 'media="print"') && str_contains(ieadc_fontes_tag(), 'data-ieadc-fontes') && str_contains(ieadc_fontes_tag(), '<noscript>'), 'o <link> das fontes sai com media=print, data-ieadc-fontes e <noscript>');
+$juntas = ieadc_css_arquivos(false);
+$css_juntas = $juntas['tema'] !== '' && is_file($caminho($juntas['tema'])) ? (string) file_get_contents($caminho($juntas['tema'])) : '';
+ieadc_ok($juntas['fontes'] === '' && $juntas['tema'] !== $arqs['tema'] && substr_count($css_juntas, '.woff2') === 9 && str_contains($css_juntas, 'Roboto Fallback'), 'com ieadc_fontes_adiar em false: as fontes reais voltam para o CSS do tema e não há arquivo de fontes', [$juntas, substr_count($css_juntas, '.woff2')]);
+ieadc_ok((bool) apply_filters('ieadc_fontes_adiar', true) === true, 'por padrão as fontes são adiadas (o filtro começa em true)');
+add_filter('ieadc_fontes_adiar', '__return_false');
+ieadc_ok(ieadc_css_arquivos()['fontes'] === '' && ieadc_fontes_tag() === '', 'o filtro em false: sem <link> de fontes (e o preload volta, ver functions.php)');
+remove_filter('ieadc_fontes_adiar', '__return_false');
+ieadc_ok(ieadc_css_arquivos()['fontes'] === $arqs['fontes'], 'sem o filtro, de volta às fontes adiadas');
 $site_js = (string) file_get_contents(get_theme_root() . '/ieadc-vila-ipiranga/assets/js/site.js');
 ieadc_ok(str_contains($site_js, "link[data-ieadc-fontes]") && str_contains($site_js, "fl.media = 'all'") && str_contains($site_js, "addEventListener('load'"), 'site.js liga as fontes (media=all) depois do carregamento da página');
 

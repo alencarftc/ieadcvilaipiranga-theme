@@ -55,13 +55,13 @@ Roda `npx --yes lighthouse@12.8.2` (a 13 exige Node 22.19 ou mais) com `IEADC_CH
 
 Todo o código está em `wp-content/themes/ieadc-vila-ipiranga/inc/desempenho.php`, `assets/css/ajustes.css` ("Fase 3") e `assets/js/site.js`. O HTML dos blocos não mudou (markup 28 e visual 84 passam).
 
-- **Foto do topo (o LCP)**: no celular (até 768 px) o `preload` e o fundo usam a versão de 768 px do WordPress (65 KB em vez de 185 KB); acima disso, a original.
+- **Foto do topo (o LCP)**: até 520 px de tela, o fundo usa uma versão sob medida de 640 px (WebP, qualidade 76, ~30 KB; a capa dos artigos já recortada em 16:10), gerada na primeira visita em `uploads/ieadc-cache` (fase 6, seção 6); de 521 a 768 px, a versão de 768 px do WordPress (65 KB em vez de 185 KB); acima disso, a original (com `preload` no computador).
 - **Fotos de fundo abaixo da primeira seção** só carregam 900 px antes de aparecer (a página inicial passa de 2,4 MB e 32 pedidos para cerca de 250 KB e 10 pedidos). Só vale com JavaScript e `@media (scripting:enabled)`; sem isso tudo carrega como antes.
-- **CSS do tema** (fontes, protótipo, ajustes) minificado em um arquivo só, `uploads/ieadc-cache/tema-<hash>.css`, criado na primeira visita (o hash muda quando um dos três muda; se não der para gravar, o tema usa os três arquivos). O `prototipo.css` congelado não é alterado.
+- **CSS do tema** (fontes de reserva, protótipo, ajustes) minificado em um arquivo só, `uploads/ieadc-cache/tema-<hash>.css`, criado na primeira visita (o hash muda quando um dos três arquivos de origem muda; se não der para gravar, o tema usa os três arquivos). As fontes reais ficam em `fontes-<hash>.css`, carregado depois da página (fase 6, seção 6). O `prototipo.css` congelado não é alterado.
 - **Sem o que não é usado**: nas páginas e artigos do site saem o CSS dinâmico do Blocksy, os estilos globais e do editor de blocos do WordPress e o JavaScript do Blocksy (o HTML cai de 91 KB para 48 KB). Fica só o `main.min.css` do Blocksy (reset e `.screen-reader-text`; 12% dele é usado, ver `docs/operacao/plugins.md`).
 - **Imagens**: logo reduzido (8 KB em vez de 59 KB) com `width`/`height`; as outras fotos são fundos CSS (sem `<img>`, então sem `loading`/`fetchpriority`; só a do topo tem `preload` com prioridade alta).
-- **Cache**: `.htaccess` com 1 ano para CSS, JS, fontes e imagens; `Cache-Control` próprio no `/favicon.ico` e no `site.webmanifest`.
-- **Fontes**: as duas mais usadas já têm `preload` e `font-display: swap`; nenhuma origem externa (nada de `preconnect`).
+- **Cache**: `.htaccess` com 1 ano para CSS, JS, fontes e imagens (imagens eram 30 dias até a fase 6), por tipo (`mod_expires`) e por extensão (`mod_headers`); `Cache-Control` próprio no `/favicon.ico` e no `site.webmanifest`.
+- **Fontes**: as reais (Roboto, Roboto Condensed e Dancing Script) carregam **depois** da página (fase 6: `media="print"` até o `load`, sem `preload`) e o primeiro desenho usa as fontes de reserva com as medidas das reais (CLS 0); `font-display: swap`; nenhuma origem externa (nada de `preconnect`).
 - **Ícones** (`inc/identidade.php`): favicon, ícone do iPhone e `site.webmanifest`; `/favicon.ico` responde 200 (antes dava 404 e entrava no console).
 
 ## 4. Notas locais (16/11/2026, `./bin/lighthouse.sh`, `lighthouse@12.8.2`, site Docker sem cache de página)

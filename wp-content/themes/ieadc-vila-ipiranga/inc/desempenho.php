@@ -247,40 +247,43 @@ function ieadc_fontes_dividir(string $css): array {
  * muda, então o navegador baixa o novo e o cache longo é seguro):
  *  - 'tema': fontes de reserva + protótipo + ajustes em um arquivo só (1 pedido em vez de 3), bloqueia a renderização como sempre;
  *  - 'fontes': só as fontes reais (Roboto, Roboto Condensed, Dancing Script), carregado depois da página (fase 6).
- * Se não der para gravar, os dois vêm vazios e o tema usa os três arquivos originais. Os originais (inclusive o prototipo.css congelado) não são alterados.
+ * Com o filtro `ieadc_fontes_adiar` em false (ou sem permissão para gravar), 'fontes' vem vazio e as fontes reais voltam para o CSS do tema (com preload, como na
+ * fase 4); sem permissão para gravar, os dois vêm vazios e o tema usa os três arquivos originais. Os originais (inclusive o prototipo.css congelado) não são alterados.
  * As fontes (url(../fonts/...)) ganham o endereço completo do tema.
+ * @param bool|null $adiar Adiar as fontes reais (padrão: o filtro `ieadc_fontes_adiar`, que começa em true).
  * @return array{tema:string,fontes:string}
  */
-function ieadc_css_arquivos(): array {
-	static $r = null;
-	if ($r !== null) {
-		return $r;
+function ieadc_css_arquivos(?bool $adiar = null): array {
+	static $feitos = [];
+	$adiar ??= (bool) apply_filters('ieadc_fontes_adiar', true);
+	$chave = (int) $adiar;
+	if (isset($feitos[$chave])) {
+		return $feitos[$chave];
 	}
-	$r = ['tema' => '', 'fontes' => ''];
+	$feitos[$chave] = ['tema' => '', 'fontes' => ''];
 	$dir = get_stylesheet_directory() . '/assets/css/';
 	$arquivos = ['fontes.css', 'prototipo.css', 'ajustes.css'];
 	$marca = '';
 	foreach ($arquivos as $a) {
 		if (!is_file($dir . $a)) {
-			return $r;
+			return $feitos[$chave];
 		}
 		$marca .= $a . filesize($dir . $a) . '.' . filemtime($dir . $a) . '|';
 	}
-	$hash = substr(md5($marca . get_stylesheet_directory_uri() . '|fontes-separadas'), 0, 12);
+	$hash = substr(md5($marca . get_stylesheet_directory_uri() . '|fontes-' . ($adiar ? 'separadas' : 'juntas')), 0, 12);
 	$up = wp_upload_dir(null, false);
 	if (!empty($up['error'])) {
-		return $r;
+		return $feitos[$chave];
 	}
 	$pasta = $up['basedir'] . '/ieadc-cache';
 	$arq_tema = "$pasta/tema-$hash.css";
 	$arq_fontes = "$pasta/fontes-$hash.css";
-	if (!is_file($arq_tema) || !is_file($arq_fontes)) {
+	if (!is_file($arq_tema) || ($adiar && !is_file($arq_fontes))) {
 		if (!wp_mkdir_p($pasta)) {
-			return $r;
+			return $feitos[$chave];
 		}
 		$fontes_url = get_stylesheet_directory_uri() . '/assets/fonts/';
 		$ler = fn(string $a): string => str_replace('url(../fonts/', 'url(' . $fontes_url, (string) file_get_contents($dir . $a));
-		[$reais, $reserva] = ieadc_fontes_dividir($ler('fontes.css'));
 		$gravar = function (string $destino, string $css): bool {
 			$tmp = $destino . '.' . uniqid('', true) . '.tmp';
 			if (@file_put_contents($tmp, ieadc_css_minificar($css)) === false || !@rename($tmp, $destino)) {
@@ -289,17 +292,22 @@ function ieadc_css_arquivos(): array {
 			}
 			return true;
 		};
-		if ($reais === '' || !$gravar($arq_fontes, $reais) || !$gravar($arq_tema, $reserva . "\n" . $ler('prototipo.css') . "\n" . $ler('ajustes.css'))) {
-			return $r;
+		if ($adiar) {
+			[$reais, $reserva] = ieadc_fontes_dividir($ler('fontes.css'));
+			if ($reais === '' || !$gravar($arq_fontes, $reais) || !$gravar($arq_tema, $reserva . "\n" . $ler('prototipo.css') . "\n" . $ler('ajustes.css'))) {
+				return $feitos[$chave];
+			}
+		} elseif (!$gravar($arq_tema, $ler('fontes.css') . "\n" . $ler('prototipo.css') . "\n" . $ler('ajustes.css'))) {
+			return $feitos[$chave];
 		}
-		foreach ((array) glob($pasta . '/{tema,fontes}-*.css', GLOB_BRACE) as $velho) { // versões antigas
+		foreach (array_merge((array) glob($pasta . '/tema-*.css'), (array) glob($pasta . '/fontes-*.css')) as $velho) { // versões antigas (sem GLOB_BRACE: a imagem Alpine do wp-cli não o tem)
 			if ($velho !== $arq_tema && $velho !== $arq_fontes && @filemtime($velho) < time() - 7 * DAY_IN_SECONDS) { // o HTML em cache pode apontar para a versão anterior
 				@unlink($velho);
 			}
 		}
 	}
-	$r = ['tema' => $up['baseurl'] . '/ieadc-cache/tema-' . $hash . '.css', 'fontes' => $up['baseurl'] . '/ieadc-cache/fontes-' . $hash . '.css'];
-	return $r;
+	$feitos[$chave] = ['tema' => $up['baseurl'] . '/ieadc-cache/tema-' . $hash . '.css', 'fontes' => $adiar ? $up['baseurl'] . '/ieadc-cache/fontes-' . $hash . '.css' : ''];
+	return $feitos[$chave];
 }
 
 /** Endereço do CSS do tema em um arquivo só (ver ieadc_css_arquivos()), ou '' se não der para gravar. */
