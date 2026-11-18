@@ -3,6 +3,7 @@
  * Bloco ieadc/corpo-indice (B4). HTML esperado: docs/specs/referencias/corpo-indice.html.
  * Texto das páginas de culto e de ministério: partes com título (texto, versículo + texto,
  * lista com ✓, "quando | o quê" ou próximas datas da agenda), índice "Nesta página" e quadro azul.
+ * Nas listas (✓ e "quando | o quê") o campo Texto, se preenchido, vira uma nota logo depois da lista.
  */
 defined('ABSPATH') || exit;
 $a = $attributes;
@@ -69,6 +70,7 @@ foreach ($secoes as $s) {
 				}
 				echo '</ul>';
 			}
+			echo ieadc_paragrafos((string) ($s['texto'] ?? '')); // nota depois da lista (vazio na maioria das seções)
 			break;
 		case 'encontros':
 			if ($itens) {
@@ -79,6 +81,7 @@ foreach ($secoes as $s) {
 				}
 				echo '</ul>';
 			}
+			echo ieadc_paragrafos((string) ($s['texto'] ?? '')); // nota depois da lista (ex.: "A escala é definida mês a mês.")
 			break;
 		case 'datas':
 			echo $datas();
