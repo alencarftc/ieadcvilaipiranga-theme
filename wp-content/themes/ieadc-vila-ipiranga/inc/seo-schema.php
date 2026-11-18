@@ -104,6 +104,24 @@ function ieadc_schema_endereco(): array {
 	return ['@type' => 'PostalAddress', 'streetAddress' => $e['rua'], 'addressLocality' => $e['cidade'], 'addressRegion' => $e['uf'], 'addressCountry' => 'BR'];
 }
 
+/**
+ * Place de um evento. O texto do local é sempre o `name`. Se o local é o da própria igreja (começa com o nome dela ou com
+ * "IEADC Vila Ipiranga", ou é igual ao endereço de Configurações), o `address` é o PostalAddress estruturado da igreja; outro
+ * local mantém o texto como endereço; sem local, o Place é a igreja (nome e PostalAddress).
+ */
+function ieadc_schema_local_evento(string $local): array {
+	$local = trim($local);
+	if ($local === '') {
+		return ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()];
+	}
+	$minusculo = static fn(string $t): string => mb_strtolower(trim($t));
+	$l = $minusculo($local);
+	$nome = $minusculo(ieadc_seo_nome());
+	$endereco = $minusculo((string) ieadc_dado('endereco'));
+	$da_igreja = ($nome !== '' && str_starts_with($l, $nome)) || str_starts_with($l, 'ieadc vila ipiranga') || ($endereco !== '' && $l === $endereco);
+	return ['@type' => 'Place', 'name' => $local, 'address' => $da_igreja ? ieadc_schema_endereco() : $local];
+}
+
 /** Foto usada como imagem da igreja: a do topo da página inicial. */
 function ieadc_schema_foto_padrao(): array {
 	$inicio = (int) get_option('page_on_front');
@@ -279,8 +297,7 @@ function ieadc_schema_eventos(?WP_Post $post): array {
 			'endDate' => $fim,
 			'eventStatus' => 'https://schema.org/EventScheduled',
 			'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
-			'location' => $local !== '' ? ['@type' => 'Place', 'name' => $local, 'address' => $local]
-				: ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()],
+			'location' => ieadc_schema_local_evento($local),
 			'image' => $foto,
 			'url' => $url,
 			'organizer' => $igreja,
