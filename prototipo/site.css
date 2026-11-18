@@ -949,3 +949,10 @@ a:hover .mais.acao{background:var(--marinho)}
 .migalha a{display:inline-flex;align-items:center;min-height:24px}
 .migalha .sep{display:inline-flex;align-items:center;opacity:.7}
 .migalha .sep svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Temas do culto dominical (fase 7): a lista dos domingos fica à esquerda, sem invadir a foto, e libera o espaço da direita para a foto e o cartão da Ceia do Senhor.
+   Só a faixa que tem a lista (.temas) e só acima de 1180 px (abaixo disso o protótipo já usa duas colunas). */
+@media (min-width:1181px){
+.faixa .dentro:has(.temas){grid-template-columns:minmax(0,290px) minmax(0,380px) minmax(0,1fr);gap:var(--s4)}
+.faixa:has(.temas) .foto{inset:0 0 0 64%}
+}
