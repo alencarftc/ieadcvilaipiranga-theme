@@ -100,4 +100,52 @@ ieadc_ok(str_contains($fechada, 'alt="Assembleia de Deus em Curitiba"'), 'o logo
 ieadc_ok(str_contains($fechada, 'noindex'), 'página fechada não é indexada');
 ieadc_ok(is_file(get_theme_root() . '/ieadc-vila-ipiranga/assets/img/logo_negativo.webp'), 'o arquivo do logo existe no tema');
 
+echo "desempenho (fase 6): fontes separadas em reais e de reserva\n";
+$amostra = "@font-face {\n  font-family: 'Roboto';\n  src: url(../fonts/Roboto-normal-latin.woff2) format('woff2');\n}\n/* comentário */\n@font-face {\n  font-family: 'Roboto Fallback';\n  src: local('Arial'), local('Helvetica');\n  size-adjust: 98.7%;\n}\n";
+[$reais, $reserva] = ieadc_fontes_dividir($amostra);
+ieadc_ok(str_contains($reais, 'Roboto-normal-latin.woff2') && !str_contains($reais, 'Fallback'), 'a @font-face com url() vai para as fontes reais');
+ieadc_ok(str_contains($reserva, "'Roboto Fallback'") && str_contains($reserva, 'size-adjust') && !str_contains($reserva, 'woff2'), 'a @font-face com local() fica no CSS do tema');
+[$reais_reais, $reserva_real] = ieadc_fontes_dividir((string) file_get_contents(get_theme_root() . '/ieadc-vila-ipiranga/assets/css/fontes.css'));
+ieadc_ok(substr_count($reais_reais, '@font-face') === 9 && substr_count($reserva_real, '@font-face') === 5, 'fontes.css: 9 fontes reais (Roboto, Roboto Condensed e Dancing Script) e 5 de reserva', [substr_count($reais_reais, '@font-face'), substr_count($reserva_real, '@font-face')]);
+
+echo "desempenho (fase 6): CSS do tema e das fontes em uploads/ieadc-cache\n";
+$arqs = ieadc_css_arquivos();
+$up = wp_upload_dir(null, false);
+$caminho = fn(string $url): string => $up['basedir'] . substr($url, strlen($up['baseurl']));
+ieadc_ok($arqs['tema'] !== '' && $arqs['fontes'] !== '' && is_file($caminho($arqs['tema'])) && is_file($caminho($arqs['fontes'])), 'os dois arquivos existem', $arqs);
+ieadc_igual($arqs['tema'], ieadc_css_pacote(), 'ieadc_css_pacote() devolve o CSS do tema');
+$css_tema = (string) file_get_contents($caminho($arqs['tema']));
+$css_fontes = (string) file_get_contents($caminho($arqs['fontes']));
+ieadc_ok(str_contains($css_tema, 'Roboto Fallback') && !str_contains($css_tema, '.woff2') && str_contains($css_tema, '.ieadc-ui'), 'CSS do tema: fontes de reserva e protótipo, sem arquivo de fonte');
+ieadc_ok(substr_count($css_fontes, '.woff2') === 9 && !str_contains($css_fontes, 'Fallback') && str_contains($css_fontes, '/assets/fonts/Roboto-normal-latin.woff2') && !str_contains($css_fontes, '../fonts/'), 'CSS das fontes: as 9 @font-face com o endereço completo do tema', substr_count($css_fontes, '.woff2'));
+ieadc_ok(strlen($css_fontes) < 6000 && !str_contains($css_fontes, "\n  "), 'CSS das fontes minificado (pequeno)', strlen($css_fontes));
+ieadc_ok(str_contains(ieadc_fontes_tag(), 'media="print"') && str_contains(ieadc_fontes_tag(), 'data-ieadc-fontes') && str_contains(ieadc_fontes_tag(), '<noscript>'), 'o <link> das fontes sai com media=print, data-ieadc-fontes e <noscript>');
+$site_js = (string) file_get_contents(get_theme_root() . '/ieadc-vila-ipiranga/assets/js/site.js');
+ieadc_ok(str_contains($site_js, "link[data-ieadc-fontes]") && str_contains($site_js, "fl.media = 'all'") && str_contains($site_js, "addEventListener('load'"), 'site.js liga as fontes (media=all) depois do carregamento da página');
+
+echo "desempenho (fase 6): foto do topo sob medida para telas estreitas\n";
+$anexo = function (string $origem): int {
+	$ids = get_posts(['post_type' => 'attachment', 'post_status' => 'any', 'meta_key' => '_ieadc_origem', 'meta_value' => $origem, 'fields' => 'ids', 'posts_per_page' => 1]);
+	return (int) ($ids[0] ?? 0);
+};
+$id_capa = $anexo('f_art_tema.webp'); // 1066x1600, retrato
+$id_topo = $anexo('f_hero.webp');     // 1600x1067
+ieadc_ok($id_capa > 0 && $id_topo > 0, 'as fotos do seed existem na biblioteca de mídia', [$id_capa, $id_topo]);
+if ($id_capa > 0 && $id_topo > 0) {
+	$capa = ieadc_foto_estreita($id_capa, true);
+	ieadc_ok($capa !== null && $capa['largura'] === 640 && $capa['altura'] === 400, 'capa de artigo: 640x400 (16:10 central, o que o .capa mostra)', $capa);
+	ieadc_ok($capa !== null && preg_match('#/ieadc-cache/topo-' . $id_capa . '-capa-640-[0-9a-f]{10}\.webp$#', $capa['url']) === 1, 'o nome leva o id, o tipo, a largura e a marca da original', $capa);
+	$arq_capa = $capa ? $caminho($capa['url']) : '';
+	$info = $arq_capa !== '' ? getimagesize($arq_capa) : false;
+	ieadc_ok($info && $info['mime'] === 'image/webp' && filesize($arq_capa) < 60000, 'é WebP e pesa menos de 60 KB (a de 768 px do WordPress tem ~150 KB)', $arq_capa !== '' && is_file($arq_capa) ? filesize($arq_capa) : 'sem arquivo');
+	$topo = ieadc_foto_estreita($id_topo, false);
+	ieadc_ok($topo !== null && $topo['largura'] === 640 && abs($topo['altura'] - 427) <= 1, 'topo de página: 640 px de largura, proporção mantida (sem recorte)', $topo);
+	ieadc_ok($topo !== null && filesize($caminho($topo['url'])) < 50000, 'topo de página: menos de 50 KB (a de 768 px do WordPress tem ~65 KB)', $topo ? filesize($caminho($topo['url'])) : 'sem arquivo');
+	$mtime = $arq_capa !== '' ? filemtime($arq_capa) : 0;
+	clearstatcache();
+	ieadc_ok($capa !== null && ieadc_foto_estreita($id_capa, true) === $capa && filemtime($arq_capa) === $mtime, 'segunda chamada devolve o mesmo arquivo, sem gerar de novo');
+}
+ieadc_ok(ieadc_foto_estreita(999999999, true) === null, 'anexo que não existe: null (o tema segue com a foto de 768 px)');
+ieadc_ok(ieadc_foto_estreita(0, false) === null, 'id 0: null');
+
 ieadc_teste_fim();

@@ -290,6 +290,14 @@ foreach ($pre as $l) {
 ieadc_ok($altas && $pre->length === 1 && ($medias[0] === '' || str_contains($medias[0], 'min-width')), 'foto do topo da página inicial pré-carregada com fetchpriority=high (a original; no computador)', $medias);
 $estilo_topo = $ini['xp']->query('//style[@id="ieadc-topo-celular"]');
 ieadc_ok($medias === [''] || ($estilo_topo->length === 1 && str_contains($estilo_topo->item(0)->textContent, '-768x')), 'foto do topo: no celular o fundo troca para a versão de 768 px');
+$css_topo = $estilo_topo->length ? $estilo_topo->item(0)->textContent : '';
+ieadc_ok(preg_match('#max-width:520px\)\{[^{]*\{background-image:url\([^)]*/ieadc-cache/topo-\d+-foto-640-[0-9a-f]+\.webp\)!important#', $css_topo) === 1, 'foto do topo: até 520 px de tela o fundo troca para a versão sob medida de 640 px (fase 6)', $css_topo);
+ieadc_ok(strpos($css_topo, 'max-width:768px') < strpos($css_topo, 'max-width:520px'), 'a regra de 520 px vem depois da de 768 px (vence na mesma especificidade)');
+$fontes_link = $ini['xp']->query('//link[@rel="stylesheet"][@data-ieadc-fontes]');
+$fontes_href = $fontes_link->length ? $fontes_link->item(0)->getAttribute('href') : '';
+ieadc_ok($fontes_link->length === 1 && $fontes_link->item(0)->getAttribute('media') === 'print' && preg_match('#/ieadc-cache/fontes-[0-9a-f]+\.css$#', $fontes_href) === 1, 'fontes reais: <link> com media=print (carregam depois da página, fase 6)', $fontes_href);
+ieadc_ok($ini['xp']->query('//noscript/link[@rel="stylesheet"][@href="' . $fontes_href . '"]')->length === 1, 'fontes reais: sem JavaScript o <noscript> as carrega normal');
+ieadc_ok($ini['xp']->query('//link[@rel="preload"][@as="font"]')->length === 0, 'sem preload de fonte (as fontes reais vêm depois da página)');
 
 /* ---------- Dados estruturados ---------- */
 echo "dados estruturados (JSON-LD)\n";
