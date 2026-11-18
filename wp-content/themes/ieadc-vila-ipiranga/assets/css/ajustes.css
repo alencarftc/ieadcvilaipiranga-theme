@@ -184,3 +184,18 @@ a.cartao:hover,a.dia:hover,.marca:hover{color:var(--marinho)}
 .faixa .dentro:has(.temas){grid-template-columns:minmax(0,290px) minmax(0,380px) minmax(0,1fr);gap:var(--s4)}
 .faixa:has(.temas) .foto{inset:0 0 0 64%}
 }
+
+/* Mapa do Google e botões de rota (fase 7). O mapa ilustrado vira o "cartaz" do iframe: o iframe só entra com um clique ou depois do "Aceitar" dos cookies (site.js).
+   Cada botão de rota tem ícone e estilo próprios para não se confundirem: Maps (azul cheio), Waze (vazado) e Uber (escuro). */
+.mapa-abrir{position:absolute;left:50%;bottom:62px;transform:translateX(-50%);box-shadow:var(--sombra-2)}
+.mapa-abrir:hover{transform:translate(-50%,-2px)}
+.mapa-nota{position:absolute;left:12px;right:12px;bottom:14px;margin:0;text-align:center;font:500 13px/18px var(--f-txt);color:var(--texto)}
+.mapa-nota a{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
+.mapa iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mapa.com-iframe svg,.mapa.com-iframe .pin,.mapa.com-iframe .mapa-abrir,.mapa.com-iframe .mapa-nota{display:none}
+.btn.waze{background:var(--branco);color:var(--royal);border-color:var(--royal)}
+.btn.waze:hover{background:var(--gelo);color:var(--royal)}
+.btn.uber{background:var(--marinho);border-color:var(--marinho);color:var(--branco)}
+.btn.uber:hover{background:var(--marinho);color:var(--branco)}
+.btn.maps:hover{background:var(--royal);color:var(--branco)}
+@media (max-width:600px){.mapa-abrir{bottom:70px}}

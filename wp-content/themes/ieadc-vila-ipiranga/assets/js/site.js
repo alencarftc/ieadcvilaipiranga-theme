@@ -88,3 +88,24 @@
 		else window.prompt('Copie o link:', url);
 	});
 })();
+
+/* Mapa do Google (fase 7): o iframe só entra com um clique em "Ver o mapa do Google" ou, sem clique, se a pessoa já aceitou os cookies (aviso de cookies, medicao.js). */
+(function () {
+	var botoes = document.querySelectorAll('.mapa [data-mapa-url]');
+	if (!botoes.length) return;
+	function carregar(b) {
+		var caixa = b.closest('.mapa'), f = document.createElement('iframe');
+		f.src = b.getAttribute('data-mapa-url');
+		f.title = 'Mapa do Google: IEADC Vila Ipiranga';
+		f.loading = 'lazy';
+		f.referrerPolicy = 'no-referrer-when-downgrade';
+		f.setAttribute('allowfullscreen', '');
+		caixa.appendChild(f);
+		caixa.classList.add('com-iframe');
+	}
+	var aceito = false;
+	try { aceito = window.localStorage.getItem('ieadc_consentimento') === 'aceito'; } catch (e) { /* sem localStorage */ }
+	botoes.forEach(function (b) {
+		if (aceito) carregar(b); else b.addEventListener('click', function () { carregar(b); });
+	});
+})();

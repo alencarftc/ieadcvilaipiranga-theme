@@ -86,8 +86,12 @@ function ieadc_btn(string $texto, string $link, string $classe = '', string $ico
 	if (trim($texto) === '') {
 		return '';
 	}
+	$href = ieadc_url($link);
+	if ($href === '' && str_starts_with(trim($link), '{')) { // atalho sem destino (ex.: {uber} sem coordenadas): o botão não aparece
+		return '';
+	}
 	$ico = ($icone !== '' && function_exists('ieadc_icone')) ? ieadc_icone($icone) : '';
-	return '<a class="btn ' . esc_attr($classe) . '" href="' . esc_url(ieadc_url($link)) . '">' . ieadc_kses_rico($texto) . $ico . '</a>';
+	return '<a class="btn ' . esc_attr($classe) . '" href="' . esc_url($href) . '">' . ieadc_kses_rico($texto) . $ico . '</a>';
 }
 
 /**
@@ -102,6 +106,9 @@ function ieadc_url(string $link): string {
 	}
 	if ($link === '{waze}' && function_exists('ieadc_waze_url')) {
 		return ieadc_waze_url();
+	}
+	if ($link === '{uber}' && function_exists('ieadc_uber_url')) {
+		return ieadc_uber_url();
 	}
 	if ($link === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//|\#|\?)#i', $link)) {
 		return $link;

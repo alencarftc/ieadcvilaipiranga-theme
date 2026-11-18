@@ -29,6 +29,9 @@ function ieadc_icones(): array {
 		'crianca' => '<circle cx="12" cy="5" r="2.6"/><path d="M12 8.5v6.5M7.5 11h9M9 21l3-6 3 6"/>',
 		'cal' => '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
 		'relogio' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+		// Fase 7: um ícone por aplicativo de rota (Maps, Waze, Uber), para os botões não se confundirem.
+		'rota' => '<path d="M3.5 11 20.5 3.5 13 20.5l-2.2-7.3z"/>',
+		'carro' => '<path d="M5 17v2.2M19 17v2.2"/><path d="M3.5 17h17v-4.2l-1.7-4.6A2 2 0 0 0 17 7H7a2 2 0 0 0-1.8 1.2L3.5 12.8z"/><path d="M3.5 12.8h17"/><circle cx="7.5" cy="15" r=".6"/><circle cx="16.5" cy="15" r=".6"/>',
 		'pin' => '<path d="M12 22s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="10" r="2.6"/>',
 		'fone' => '<path d="M5 3h3.6l1.9 4.8-2.4 1.5a11.5 11.5 0 0 0 5.6 5.6l1.5-2.4L20 14.4V18a2.4 2.4 0 0 1-2.6 2.4A16.6 16.6 0 0 1 2.6 5.6 2.4 2.4 0 0 1 5 3z"/>',
 		'email' => '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>',

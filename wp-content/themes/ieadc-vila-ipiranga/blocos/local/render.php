@@ -51,7 +51,7 @@ if ($onibus) {
 
 $botoes = '';
 foreach ((array) ($a['botoes'] ?? []) as $b) {
-	$botoes .= ieadc_btn((string) ($b['texto'] ?? ''), (string) ($b['link'] ?? ''), '', (string) (($b['icone'] ?? '') !== '' ? $b['icone'] : 'pin'));
+	$botoes .= ieadc_btn((string) ($b['texto'] ?? ''), (string) ($b['link'] ?? ''), trim((string) ($b['estilo'] ?? '')), (string) (($b['icone'] ?? '') !== '' ? $b['icone'] : 'pin'));
 }
 if ($botoes !== '') {
 	echo '<div class="btns">' . $botoes . '</div>';
