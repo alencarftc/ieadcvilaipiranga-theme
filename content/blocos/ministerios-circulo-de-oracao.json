@@ -17,7 +17,7 @@
    ],
    "eyebrow": "Ministérios · Círculo de Oração",
    "titulo": "Círculo de Oração",
-   "lead": "Reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos. Dirige o culto de quinta-feira, às 20h.",
+   "lead": "Reúne as irmãs da igreja para orar pela congregação, pelas famílias e pelos pedidos recebidos. Toda quinta-feira, às 20h, dirige o culto ou faz o ensaio das irmãs, e às vezes os dois.",
    "botoes": [
     {
      "texto": "Como participar",
@@ -75,7 +75,7 @@
      "ancora": "funciona-circulo-de-oracao",
      "titulo": "Como funciona",
      "tipo": "texto",
-     "texto": "O Círculo de Oração reúne as irmãs da igreja em torno de um propósito simples: orar. Elas oram pela congregação, pelas famílias e por cada pedido que chega à igreja, inclusive os enviados pelo site, que vão apenas para o Círculo e nunca são publicados.\n\nToda quinta-feira, às 20h, o Círculo dirige o culto na igreja. É uma noite de oração, louvor e Palavra, aberta a todos os membros e visitantes.\n\nNo 4º domingo de cada mês, o culto dominical, às 19h, é dirigido pelas mulheres da igreja.\n\nO ministério também tem um coral, o Filhas do Rei, formado pelas irmãs do Círculo e regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), que louva a Deus nos cultos.\n\nOs encontros do Círculo acontecem toda quinta-feira, no mesmo horário dos cultos, e as irmãs são avisadas com antecedência no grupo de WhatsApp.",
+     "texto": "O Círculo de Oração reúne as irmãs da igreja em torno de um propósito simples: orar. Elas oram pela congregação, pelas famílias e por cada pedido que chega à igreja, inclusive os enviados pelo site, que vão apenas para o Círculo e nunca são publicados.\n\nToda quinta-feira, às 20h, o Círculo se reúne: às vezes é culto na igreja, às vezes é o ensaio das irmãs, e às vezes são os dois. O culto é uma noite de oração, louvor e Palavra, aberta a todos os membros e visitantes.\n\nNo 4º domingo de cada mês, o culto dominical, às 19h, é dirigido pelas mulheres da igreja.\n\nO ministério também tem um coral, o Filhas do Rei, formado pelas irmãs do Círculo e regido por Érica Tostes (1ª regente) e Raquel Oliveira (2ª regente), que louva a Deus nos cultos e ensaia nas quintas-feiras.\n\nOs encontros do Círculo acontecem toda quinta-feira, no mesmo horário dos cultos, e as irmãs são avisadas com antecedência no grupo de WhatsApp.",
      "versiculo": "",
      "referencia": "",
      "itens": []
@@ -111,7 +111,7 @@
      "versiculo": "",
      "referencia": "",
      "itens": [
-      "Quinta-feira · 20h | Culto dirigido pelo Círculo de Oração",
+      "Quinta-feira · 20h | Culto dirigido pelo Círculo de Oração, ensaio das irmãs ou os dois",
       "4º domingo · 19h | Culto dominical dirigido pelas mulheres"
      ]
     }

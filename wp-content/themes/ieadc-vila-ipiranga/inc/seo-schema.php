@@ -104,6 +104,27 @@ function ieadc_schema_endereco(): array {
 	return ['@type' => 'PostalAddress', 'streetAddress' => $e['rua'], 'addressLocality' => $e['cidade'], 'addressRegion' => $e['uf'], 'addressCountry' => 'BR'];
 }
 
+/**
+ * Place de um evento. Local da própria igreja = Place com o nome dela e o PostalAddress estruturado. Conta como da igreja o local
+ * igual (sem caixa) ao nome da igreja, o que começa com o nome E contém a rua do endereço de Configurações, ou o igual ao
+ * endereço de Configurações. Outro local mantém o texto em `name` e em `address`; sem local, o Place é a igreja.
+ */
+function ieadc_schema_local_evento(string $local): array {
+	$igreja = ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()];
+	$local = trim($local);
+	if ($local === '') {
+		return $igreja;
+	}
+	$minusculo = static fn(string $t): string => mb_strtolower(trim($t));
+	$l = $minusculo($local);
+	$nome = $minusculo(ieadc_seo_nome());
+	$endereco = $minusculo(ieadc_dado('endereco'));
+	$rua = $minusculo(ieadc_seo_endereco()['rua']);
+	$da_igreja = ($nome !== '' && ($l === $nome || (str_starts_with($l, $nome) && $rua !== '' && str_contains($l, $rua))))
+		|| ($endereco !== '' && $l === $endereco);
+	return $da_igreja ? $igreja : ['@type' => 'Place', 'name' => $local, 'address' => $local];
+}
+
 /** Foto usada como imagem da igreja: a do topo da página inicial. */
 function ieadc_schema_foto_padrao(): array {
 	$inicio = (int) get_option('page_on_front');
@@ -279,8 +300,7 @@ function ieadc_schema_eventos(?WP_Post $post): array {
 			'endDate' => $fim,
 			'eventStatus' => 'https://schema.org/EventScheduled',
 			'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
-			'location' => $local !== '' ? ['@type' => 'Place', 'name' => $local, 'address' => $local]
-				: ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()],
+			'location' => ieadc_schema_local_evento($local),
 			'image' => $foto,
 			'url' => $url,
 			'organizer' => $igreja,

@@ -6,7 +6,7 @@
 $cultos = [
 	'culto-de-oracao' => ['icone' => 'oracao', 'resumo' => 'Toda segunda-feira, às 20h, a igreja começa a semana em oração.', 'quando' => 'Segunda-feira, às 20h', 'cor' => 'c1', 'regra' => 'Culto de Oração'],
 	'culto-de-ensino' => ['icone' => 'livro', 'resumo' => 'Toda quarta-feira, às 20h, a igreja se reúne para aprender a Palavra de Deus.', 'quando' => 'Quarta-feira, às 20h', 'cor' => 'c2', 'regra' => 'Culto de Ensino'],
-	'culto-do-circulo-de-oracao' => ['icone' => 'pessoas', 'resumo' => 'Toda quinta-feira, às 20h, o culto é dirigido pelas irmãs do Círculo de Oração.', 'quando' => 'Quinta-feira, às 20h', 'cor' => 'c3', 'regra' => 'Culto dirigido pelo Círculo de Oração'],
+	'culto-do-circulo-de-oracao' => ['icone' => 'pessoas', 'resumo' => 'Toda quinta-feira, às 20h, as irmãs do Círculo de Oração se reúnem: às vezes é culto, às vezes é ensaio das irmãs, e às vezes os dois.', 'quando' => 'Quinta-feira, às 20h', 'cor' => 'c3', 'regra' => 'Culto dirigido pelo Círculo de Oração'],
 	'culto-dominical' => ['icone' => 'igreja', 'resumo' => 'Todo domingo, às 19h. Cada domingo do mês tem um tema.', 'quando' => 'Domingo, às 19h', 'cor' => 'c4', 'regra' => 'Culto dominical'],
 	'ceia-do-senhor' => ['icone' => 'calice', 'resumo' => 'Todo 2º sábado do mês, às 19h30, a igreja celebra a Ceia do Senhor.', 'quando' => '2º sábado do mês, às 19h30', 'cor' => 'c5', 'regra' => 'Ceia do Senhor'],
 	'vigilia-e-consagracao' => ['icone' => 'chama', 'resumo' => 'Uma vez por mês, a igreja se prepara para a Ceia do Senhor em oração: vigília em um mês, consagração no outro.', 'quando' => 'Uma vez por mês', 'cor' => 'c6', 'regra' => "Vigília\nConsagração"],

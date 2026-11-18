@@ -5,7 +5,7 @@ Guia do dia a dia do site da IEADC Vila Ipiranga: publicar artigo e evento, troc
 ## Antes de tudo: quatro regras
 
 1. **Não invente dado da igreja.** Endereço, horário, nome de pastor, telefone: só o que a liderança confirmou. Onde falta informação, escreva um texto geral que não afirme nada (por exemplo, "procure os líderes") e não use marcação nem aviso de "a confirmar": o site não tem mais texto em amarelo. A pergunta vai para `docs/operacao/perguntas-ao-pastor-robson.md`, e o que depende do Felipe está em `docs/operacao/pendencias-para-o-felipe.md`.
-2. **Fotos:** coloridas, sem repetir a mesma foto na mesma página e sem fotos em que apareça o pastor João (regra do projeto; prefira as do Pr. Robson Stein). Em fotos de crianças, confirme antes a autorização dos responsáveis.
+2. **Fotos:** coloridas, sem repetir a mesma foto na mesma página e sem fotos em que apareça o pastor João (regra do projeto; prefira as do Ev. Robson Stein). Em fotos de crianças, confirme antes a autorização dos responsáveis.
 3. **Pedidos de oração são privados.** Só quem tem acesso ao painel lê, nunca compartilhe em grupos nem imprima sem necessidade (veja a seção 5).
 4. **Termos:** "Ceia do Senhor" e "Culto de Ensino".
 
