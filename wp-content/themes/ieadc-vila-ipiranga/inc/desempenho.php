@@ -223,57 +223,109 @@ REGEX;
 }
 
 /**
- * Endereço do CSS do tema (fontes + protótipo + ajustes) já minificado e em um arquivo só (1 pedido em vez de 3), ou '' se não der para gravar.
- * O arquivo nasce na primeira visita em uploads/ieadc-cache/tema-<hash>.css; o hash muda quando qualquer um dos três muda (tamanho e data),
- * então o navegador baixa o novo e o cache longo é seguro. Os arquivos originais (inclusive o prototipo.css congelado) não são alterados.
- * As fontes (url(../fonts/...)) ganham o endereço completo do tema.
+ * Divide o fontes.css em @font-face "reais" (têm url(...): baixam um arquivo de fonte) e "de reserva" (src: local(...): usam a fonte do aparelho, sem rede).
+ * As de reserva ficam no CSS do tema (valem já no primeiro desenho); as reais vão para outro arquivo, carregado só depois da página (ver ieadc_fontes_tag()).
+ * @return array{0:string,1:string} [reais, reserva]
  */
-function ieadc_css_pacote(): string {
-	static $url = null;
-	if ($url !== null) {
-		return $url;
+function ieadc_fontes_dividir(string $css): array {
+	preg_match_all('#@font-face\s*\{[^}]*\}#s', $css, $m);
+	$reais = '';
+	$reserva = '';
+	foreach ($m[0] as $bloco) {
+		if (str_contains($bloco, 'url(')) {
+			$reais .= $bloco . "\n";
+		} else {
+			$reserva .= $bloco . "\n";
+		}
 	}
-	$url = '';
+	return [$reais, $reserva];
+}
+
+/**
+ * Endereços dos CSS do tema já minificados, em uploads/ieadc-cache (criados na primeira visita; o hash muda quando qualquer um dos três arquivos de origem
+ * muda, então o navegador baixa o novo e o cache longo é seguro):
+ *  - 'tema': fontes de reserva + protótipo + ajustes em um arquivo só (1 pedido em vez de 3), bloqueia a renderização como sempre;
+ *  - 'fontes': só as fontes reais (Roboto, Roboto Condensed, Dancing Script), carregado depois da página (fase 6).
+ * Se não der para gravar, os dois vêm vazios e o tema usa os três arquivos originais. Os originais (inclusive o prototipo.css congelado) não são alterados.
+ * As fontes (url(../fonts/...)) ganham o endereço completo do tema.
+ * @return array{tema:string,fontes:string}
+ */
+function ieadc_css_arquivos(): array {
+	static $r = null;
+	if ($r !== null) {
+		return $r;
+	}
+	$r = ['tema' => '', 'fontes' => ''];
 	$dir = get_stylesheet_directory() . '/assets/css/';
 	$arquivos = ['fontes.css', 'prototipo.css', 'ajustes.css'];
 	$marca = '';
 	foreach ($arquivos as $a) {
 		if (!is_file($dir . $a)) {
-			return $url;
+			return $r;
 		}
 		$marca .= $a . filesize($dir . $a) . '.' . filemtime($dir . $a) . '|';
 	}
-	$hash = substr(md5($marca . get_stylesheet_directory_uri()), 0, 12);
+	$hash = substr(md5($marca . get_stylesheet_directory_uri() . '|fontes-separadas'), 0, 12);
 	$up = wp_upload_dir(null, false);
 	if (!empty($up['error'])) {
-		return $url;
+		return $r;
 	}
 	$pasta = $up['basedir'] . '/ieadc-cache';
-	$arq = "$pasta/tema-$hash.css";
-	if (!is_file($arq)) {
+	$arq_tema = "$pasta/tema-$hash.css";
+	$arq_fontes = "$pasta/fontes-$hash.css";
+	if (!is_file($arq_tema) || !is_file($arq_fontes)) {
 		if (!wp_mkdir_p($pasta)) {
-			return $url;
+			return $r;
 		}
-		$fontes = get_stylesheet_directory_uri() . '/assets/fonts/';
-		$css = '';
-		foreach ($arquivos as $a) {
-			$css .= str_replace('url(../fonts/', 'url(' . $fontes, (string) file_get_contents($dir . $a)) . "\n";
+		$fontes_url = get_stylesheet_directory_uri() . '/assets/fonts/';
+		$ler = fn(string $a): string => str_replace('url(../fonts/', 'url(' . $fontes_url, (string) file_get_contents($dir . $a));
+		[$reais, $reserva] = ieadc_fontes_dividir($ler('fontes.css'));
+		$gravar = function (string $destino, string $css): bool {
+			$tmp = $destino . '.' . uniqid('', true) . '.tmp';
+			if (@file_put_contents($tmp, ieadc_css_minificar($css)) === false || !@rename($tmp, $destino)) {
+				@unlink($tmp);
+				return false;
+			}
+			return true;
+		};
+		if ($reais === '' || !$gravar($arq_fontes, $reais) || !$gravar($arq_tema, $reserva . "\n" . $ler('prototipo.css') . "\n" . $ler('ajustes.css'))) {
+			return $r;
 		}
-		$css = ieadc_css_minificar($css);
-		$tmp = $arq . '.' . uniqid('', true) . '.tmp';
-		if (@file_put_contents($tmp, $css) === false || !@rename($tmp, $arq)) {
-			@unlink($tmp);
-			return $url;
-		}
-		foreach ((array) glob($pasta . '/tema-*.css') as $velho) { // versões antigas
-			if ($velho !== $arq && @filemtime($velho) < time() - 7 * DAY_IN_SECONDS) { // o HTML em cache pode apontar para a versão anterior
+		foreach ((array) glob($pasta . '/{tema,fontes}-*.css', GLOB_BRACE) as $velho) { // versões antigas
+			if ($velho !== $arq_tema && $velho !== $arq_fontes && @filemtime($velho) < time() - 7 * DAY_IN_SECONDS) { // o HTML em cache pode apontar para a versão anterior
 				@unlink($velho);
 			}
 		}
 	}
-	$url = $up['baseurl'] . '/ieadc-cache/tema-' . $hash . '.css';
-	return $url;
+	$r = ['tema' => $up['baseurl'] . '/ieadc-cache/tema-' . $hash . '.css', 'fontes' => $up['baseurl'] . '/ieadc-cache/fontes-' . $hash . '.css'];
+	return $r;
 }
+
+/** Endereço do CSS do tema em um arquivo só (ver ieadc_css_arquivos()), ou '' se não der para gravar. */
+function ieadc_css_pacote(): string {
+	return ieadc_css_arquivos()['tema'];
+}
+
+/**
+ * Fontes reais carregadas DEPOIS da página (fase 6). Antes, o Roboto, o Roboto Condensed e o Dancing Script (93 a 139 KB) eram pedidos junto com o CSS e a foto do
+ * topo e, na rede lenta simulada pelo Lighthouse, disputavam a banda com eles: o LCP do celular ficava em 2,2 s (sem as fontes, o mesmo teste dá 1,6 s) e o FCP
+ * ganhava mais 0,3 a 0,5 s nas páginas com a frase em script ou itálico (essas fontes eram pedidas só quando o CSS chegava, com prioridade alta).
+ * Agora o <link> das fontes sai com media="print" (o navegador o baixa com prioridade mínima e não aplica as @font-face) e assets/js/site.js troca para "all"
+ * quando a página termina de carregar. O primeiro desenho usa as fontes de reserva, que têm as medidas das reais (CLS 0,000), e a troca é só de forma das letras.
+ * Quem já abriu o site neste navegador (marca no localStorage) as recebe logo: estão no cache. Sem JavaScript, o <noscript> carrega as fontes normalmente.
+ */
+function ieadc_fontes_tag(): string {
+	$url = ieadc_css_arquivos()['fontes'];
+	if ($url === '') {
+		return '';
+	}
+	return '<link rel="stylesheet" id="ieadc-fontes-css" href="' . esc_url($url) . '" media="print" data-ieadc-fontes>' . "\n"
+		. '<noscript><link rel="stylesheet" href="' . esc_url($url) . '"></noscript>' . "\n";
+}
+
+add_action('wp_head', function () {
+	echo ieadc_fontes_tag();
+}, 9);
 
 /* ---------- Compressão e cache longo dos arquivos estáticos (.htaccess) ---------- */
 /**

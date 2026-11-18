@@ -1,5 +1,18 @@
 /* IEADC Vila Ipiranga · comportamento do protótipo: menu do celular e carrosséis. */
 (function () {
+	/* Fontes reais (fase 6): o <link data-ieadc-fontes> sai com media="print" e vira "all" quando a página termina de carregar (inc/desempenho.php).
+	   Quem já abriu o site neste navegador (marca no localStorage) as liga logo: estão no cache e a troca de fonte nem aparece. */
+	var fl = document.querySelector('link[data-ieadc-fontes]');
+	if (fl) {
+		var ligaFontes = function () {
+			fl.media = 'all';
+			try { localStorage.setItem('ieadc-fontes', fl.getAttribute('href')); } catch (e) { /* sem armazenamento: só perde o atalho */ }
+		}, jaViu = false;
+		try { jaViu = localStorage.getItem('ieadc-fontes') === fl.getAttribute('href'); } catch (e) { jaViu = false; }
+		if (jaViu) ligaFontes();
+		else if (document.readyState === 'complete') setTimeout(ligaFontes, 150);
+		else window.addEventListener('load', function () { setTimeout(ligaFontes, 150); });
+	}
 	/* Quem pede menos movimento (prefers-reduced-motion) recebe a rolagem do carrossel sem animação. */
 	function movimentoReduzido() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
 	var h = document.querySelector('.header'), b = h && h.querySelector('.menu-btn');
