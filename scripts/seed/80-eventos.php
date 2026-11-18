@@ -37,7 +37,7 @@ $eventos = [
 			'Quando: quinta-feira, 3 de dezembro de 2026. O horário ainda não foi definido.',
 			'Onde: ' . $local . '.',
 			'A lista de participantes deve ser passada antes. A oferta é voluntária.',
-			'O culto de quinta-feira, dirigido pelo Círculo de Oração, acontece normalmente nesse dia.',
+			'O culto de quinta-feira acontece normalmente nesse dia.',
 		],
 		'data' => '2026-12-03', 'data_fim' => '', 'horario' => '', 'local' => $local, 'categoria' => 'c-culto', 'link' => '',
 	],

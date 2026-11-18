@@ -476,19 +476,24 @@ ieadc_ok(!str_contains(json_encode($no_ev, JSON_UNESCAPED_UNICODE), '['), 'Event
 ieadc_ok(wp_parse_url($no_ev['url'] ?? '', PHP_URL_PATH) === $ev_path && preg_match('#^https?://#', $no_ev['image'] ?? ''), 'Event: url da página e imagem');
 ieadc_ok(str_contains($no_ev['description'] ?? '', 'das 19h30 às 21h') && !str_contains($no_ev['description'] ?? '', 'às 19h30 às'), 'Event: descrição montada com data e horário', $no_ev['description'] ?? null);
 ieadc_igual(['Início', 'Eventos', 'Culto de teste de SEO (apagar)'], $ev ? array_column(ieadc_t_nos($ev, 'BreadcrumbList')[0]['itemListElement'] ?? [], 'name') : null, 'página do evento: migalha Início > Eventos > título');
-/* Local do evento (fase 5C): o Place leva sempre o texto do local como name; só o local da própria igreja ganha o PostalAddress dela. */
+/* Local do evento (fase 5C): local da própria igreja = Place com o nome dela e o PostalAddress; outro local mantém o texto em name e address. */
 $endereco_igreja = (string) ieadc_info('endereco');
 $local_igreja = $nome . ', ' . $endereco_igreja;
 $outro_local = 'Salão do Clube Exemplo, Rua Exemplo, 100 - Centro, Curitiba - PR';
-$e_da_igreja = fn($loc) => ($loc['@type'] ?? '') === 'Place' && is_array($loc['address'] ?? null) && ($loc['address']['@type'] ?? '') === 'PostalAddress' && ($loc['address']['addressLocality'] ?? '') === 'Curitiba';
+$com_nome_sem_rua = $nome . ' - Salão alugado, Rua Exemplo, 100 - Centro, Curitiba - PR'; // começa com o nome da igreja, mas é outra rua
+$e_da_igreja = fn($loc) => ($loc['@type'] ?? '') === 'Place' && ($loc['name'] ?? '') === $nome && is_array($loc['address'] ?? null) && ($loc['address']['@type'] ?? '') === 'PostalAddress' && ($loc['address']['addressLocality'] ?? '') === 'Curitiba';
 $l1 = ieadc_schema_local_evento($local_igreja);
-ieadc_ok($e_da_igreja($l1) && $l1['name'] === $local_igreja, 'ieadc_schema_local_evento: local que começa com o nome da igreja = Place com name igual ao texto e o PostalAddress da igreja', $l1);
+ieadc_ok($e_da_igreja($l1), 'ieadc_schema_local_evento: nome da igreja e a rua do endereço = Place só com o nome da igreja e o PostalAddress estruturado', $l1);
 $l2 = ieadc_schema_local_evento($endereco_igreja);
-ieadc_ok($e_da_igreja($l2) && $l2['name'] === $endereco_igreja, 'ieadc_schema_local_evento: local igual ao endereço de Configurações = Place com name igual ao texto e o PostalAddress da igreja', $l2);
-$l3 = ieadc_schema_local_evento($outro_local);
-ieadc_ok(($l3['@type'] ?? '') === 'Place' && ($l3['name'] ?? '') === $outro_local && ($l3['address'] ?? null) === $outro_local, 'ieadc_schema_local_evento: outro local = Place com o texto como name e address, sem o PostalAddress da igreja', $l3);
-$l4 = ieadc_schema_local_evento('');
-ieadc_ok($e_da_igreja($l4) && $l4['name'] === $nome, 'ieadc_schema_local_evento: sem local = a igreja (nome e PostalAddress), como antes', $l4);
+ieadc_ok($e_da_igreja($l2), 'ieadc_schema_local_evento: local igual ao endereço de Configurações = Place com o nome da igreja e o PostalAddress', $l2);
+$l3 = ieadc_schema_local_evento(strtoupper($nome));
+ieadc_ok($e_da_igreja($l3), 'ieadc_schema_local_evento: local igual ao nome da igreja (sem diferenciar caixa) = Place com o nome da igreja e o PostalAddress', $l3);
+$l4 = ieadc_schema_local_evento($com_nome_sem_rua);
+ieadc_ok(($l4['name'] ?? '') === $com_nome_sem_rua && ($l4['address'] ?? null) === $com_nome_sem_rua, 'ieadc_schema_local_evento: começa com o nome da igreja mas sem a rua dela = outro local (texto em name e address)', $l4);
+$l5 = ieadc_schema_local_evento($outro_local);
+ieadc_ok(($l5['@type'] ?? '') === 'Place' && ($l5['name'] ?? '') === $outro_local && ($l5['address'] ?? null) === $outro_local, 'ieadc_schema_local_evento: outro local = Place com o texto como name e address, sem o PostalAddress da igreja', $l5);
+$l6 = ieadc_schema_local_evento('');
+ieadc_ok($e_da_igreja($l6), 'ieadc_schema_local_evento: sem local = a igreja (nome e PostalAddress), como antes', $l6);
 $ids_local = [];
 register_shutdown_function(function () use (&$ids_local) {
 	foreach ($ids_local as $id_local) {
@@ -507,8 +512,8 @@ foreach (['igreja' => ['Evento de teste de SEO com o local da igreja (apagar)', 
 	$p_ev = $r_ev['status'] === 200 ? ieadc_t_analisar($r_ev['corpo']) : ['nos' => []];
 	$ev_local[$chave] = ieadc_t_nos($p_ev, 'Event')[0]['location'] ?? null;
 }
-ieadc_ok(isset($ev_local['igreja']) && $e_da_igreja($ev_local['igreja']) && $ev_local['igreja']['name'] === $local_igreja, 'página do evento com o local da igreja: Event.location é um Place com name e o PostalAddress da igreja', $ev_local['igreja'] ?? null);
-ieadc_ok(isset($ev_local['outro']) && ($ev_local['outro']['name'] ?? '') === $outro_local && ($ev_local['outro']['address'] ?? null) === $outro_local, 'página do evento com outro local: Event.location sem o PostalAddress da igreja', $ev_local['outro'] ?? null);
+ieadc_ok(isset($ev_local['igreja']) && $e_da_igreja($ev_local['igreja']), 'página do evento com o local da igreja: Event.location é um Place com o nome da igreja e o PostalAddress estruturado', $ev_local['igreja'] ?? null);
+ieadc_ok(isset($ev_local['outro']) && ($ev_local['outro']['name'] ?? '') === $outro_local && ($ev_local['outro']['address'] ?? null) === $outro_local, 'página do evento com outro local: Event.location com o texto como name e address, sem o PostalAddress da igreja', $ev_local['outro'] ?? null);
 foreach ($ids_local as $id_local) {
 	wp_delete_post($id_local, true);
 }

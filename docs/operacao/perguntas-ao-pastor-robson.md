@@ -1,4 +1,4 @@
-# Perguntas ao pastor da igreja local (Ev. Robson Stein)
+# Perguntas ao 1º dirigente da igreja local (Ev. Robson Stein)
 
 Atualizado em 17/11/2026, na fase 5C do site. O Felipe já respondeu o que sabia (cargos e nomes, cultos, eventos de novembro e dezembro, ministérios, Ensinai, Escola Bíblica Dominical e fotos) e tudo isso já está no site. Restam estas 8 perguntas, que ele encaminhou ao pastor.
 

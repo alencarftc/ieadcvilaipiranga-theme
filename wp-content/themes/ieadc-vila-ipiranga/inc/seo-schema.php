@@ -105,21 +105,24 @@ function ieadc_schema_endereco(): array {
 }
 
 /**
- * Place de um evento. O texto do local é sempre o `name`. Se o local é o da própria igreja (começa com o nome dela ou com
- * "IEADC Vila Ipiranga", ou é igual ao endereço de Configurações), o `address` é o PostalAddress estruturado da igreja; outro
- * local mantém o texto como endereço; sem local, o Place é a igreja (nome e PostalAddress).
+ * Place de um evento. Local da própria igreja = Place com o nome dela e o PostalAddress estruturado. Conta como da igreja o local
+ * igual (sem caixa) ao nome da igreja, o que começa com o nome E contém a rua do endereço de Configurações, ou o igual ao
+ * endereço de Configurações. Outro local mantém o texto em `name` e em `address`; sem local, o Place é a igreja.
  */
 function ieadc_schema_local_evento(string $local): array {
+	$igreja = ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()];
 	$local = trim($local);
 	if ($local === '') {
-		return ['@type' => 'Place', 'name' => ieadc_seo_nome(), 'address' => ieadc_schema_endereco()];
+		return $igreja;
 	}
 	$minusculo = static fn(string $t): string => mb_strtolower(trim($t));
 	$l = $minusculo($local);
 	$nome = $minusculo(ieadc_seo_nome());
-	$endereco = $minusculo((string) ieadc_dado('endereco'));
-	$da_igreja = ($nome !== '' && str_starts_with($l, $nome)) || str_starts_with($l, 'ieadc vila ipiranga') || ($endereco !== '' && $l === $endereco);
-	return ['@type' => 'Place', 'name' => $local, 'address' => $da_igreja ? ieadc_schema_endereco() : $local];
+	$endereco = $minusculo(ieadc_dado('endereco'));
+	$rua = $minusculo(ieadc_seo_endereco()['rua']);
+	$da_igreja = ($nome !== '' && ($l === $nome || (str_starts_with($l, $nome) && $rua !== '' && str_contains($l, $rua))))
+		|| ($endereco !== '' && $l === $endereco);
+	return $da_igreja ? $igreja : ['@type' => 'Place', 'name' => $local, 'address' => $local];
 }
 
 /** Foto usada como imagem da igreja: a do topo da página inicial. */
