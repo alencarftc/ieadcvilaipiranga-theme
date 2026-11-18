@@ -91,6 +91,25 @@ try {
 	ieadc_ok(str_contains($nf['corpo'], 'Não achamos esta página') && str_contains($nf['corpo'], 'horarios-e-localizacao') && str_contains($nf['corpo'], 'pedidos-de-oracao') && str_contains($nf['corpo'], 'contato') && substr_count($nf['corpo'], 'class="btn out"') >= 6,
 		'a 404 acolhe e tem links para as páginas principais');
 	ieadc_ok(preg_match('/<meta name=.robots. content=.noindex/', $nf['corpo']) === 1 && str_contains((string) ($nf['cab']['x-robots-tag'] ?? ''), 'noindex'), 'a 404 tem noindex (meta e cabeçalho)', $nf['cab']['x-robots-tag'] ?? null);
+
+	echo "destaques da agenda com todos os eventos cadastrados (fase 7)
+";
+	$hoje_real = ieadc_hoje();
+	$criados = [];
+	for ($k = 1; $k <= 8; $k++) {
+		$criados[] = $criar(['evento_data' => $hoje_real->modify('+' . (4 + $k) . ' days')->format('Y-m-d'), 'evento_horario' => '19h30'], "Evento de teste $k (apagar)");
+	}
+	$so_n = ieadc_agenda_destaques(1);
+	$todos = ieadc_agenda_destaques_com_avulsos(1);
+	$titulos = array_column($todos, 'titulo');
+	$faltam = array_filter(array_map(fn($k) => "Evento de teste $k (apagar)", range(1, 8)), fn($tt) => !in_array($tt, $titulos, true));
+	ieadc_ok(count($so_n) === 1, 'ieadc_agenda_destaques respeita o limite (1)');
+	ieadc_ok(!$faltam, 'ieadc_agenda_destaques_com_avulsos: os 8 eventos cadastrados dos próximos 45 dias aparecem, mesmo com limite 1', implode(' | ', $faltam));
+	ieadc_ok($todos === array_values($todos) && array_column($todos, 'data') === (function ($d) { sort($d); return $d; })(array_column($todos, 'data')), 'em ordem de data');
+	$proximas = ieadc_agenda_proximas(['Culto de Oração'], 1);
+	ieadc_ok(count($proximas) === 1 && str_contains((string) $proximas[0]['titulo'], 'Culto de Oração'), 'a próxima data do Culto de Oração sai da agenda (cartão de Cultos da semana)');
+	$html = do_blocks('<!-- wp:ieadc/proximos-cultos /-->');
+	ieadc_ok(substr_count($html, 'class="cartao evento"') === 5 && str_contains($html, 'Culto de Ensino') && str_contains($html, 'Culto dirigido pelo Círculo de Oração') && str_contains($html, 'Culto de Oração'), 'bloco proximos-cultos: cinco cartões (oração, ensino, círculo, Ensinai e EBD) com a próxima data');
 } finally {
 	foreach ($ids as $id) {
 		wp_delete_post((int) $id, true);

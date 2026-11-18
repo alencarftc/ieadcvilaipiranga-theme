@@ -1,0 +1,113 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ieadc/proximos-cultos",
+	"title": "Cultos e encontros da semana",
+	"category": "ieadc",
+	"icon": "calendar-alt",
+	"description": "Cartões com a próxima data de cada culto e encontro que se repete (oração, ensino, círculo, Ensinai, EBD), calculada pela agenda.",
+	"supports": {
+		"html": false,
+		"align": false
+	},
+	"attributes": {
+		"secao": {
+			"type": "string",
+			"default": "sec gelo",
+			"ieadc": {
+				"rotulo": "Classes da seção"
+			}
+		},
+		"secaoEstilo": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Estilo da seção"
+			}
+		},
+		"ancora": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Âncora (id)"
+			}
+		},
+		"eyebrow": {
+			"type": "string",
+			"default": "Toda semana",
+			"ieadc": {
+				"rotulo": "Sobretítulo"
+			}
+		},
+		"titulo": {
+			"type": "string",
+			"default": "Cultos e encontros da semana",
+			"ieadc": {
+				"rotulo": "Título",
+				"campo": "rico"
+			}
+		},
+		"texto": {
+			"type": "string",
+			"default": "A próxima data de cada culto e encontro que acontece todas as semanas.",
+			"ieadc": {
+				"rotulo": "Texto"
+			}
+		},
+		"botaoTexto": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Texto do botão"
+			}
+		},
+		"botaoLink": {
+			"type": "string",
+			"default": "",
+			"ieadc": {
+				"rotulo": "Link do botão",
+				"campo": "link"
+			}
+		},
+		"titulos": {
+			"type": "array",
+			"default": [
+				{
+					"texto": "Culto de Oração"
+				},
+				{
+					"texto": "Culto de Ensino"
+				},
+				{
+					"texto": "Culto dirigido pelo Círculo de Oração"
+				},
+				{
+					"texto": "Ensinai (Curso de Teologia Ministerial)"
+				},
+				{
+					"texto": "EBD (Escola Bíblica Dominical)"
+				}
+			],
+			"ieadc": {
+				"campo": "lista",
+				"rotulo": "Cultos e encontros (o nome igual ao da agenda)",
+				"itens": {
+					"texto": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Nome na agenda"
+						}
+					}
+				}
+			}
+		},
+		"maisTexto": {
+			"type": "string",
+			"default": "Saiba mais",
+			"ieadc": {
+				"rotulo": "Texto do link de cada cartão"
+			}
+		}
+	},
+	"render": "file:./render.php"
+}

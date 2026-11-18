@@ -76,6 +76,13 @@
 				"rotulo": "Quantidade de eventos"
 			}
 		},
+		"incluirAvulsos": {
+			"type": "boolean",
+			"default": false,
+			"ieadc": {
+				"rotulo": "Mostrar todos os eventos cadastrados (não só os próximos da lista)"
+			}
+		},
 		"maisTexto": {
 			"type": "string",
 			"default": "Saiba mais",

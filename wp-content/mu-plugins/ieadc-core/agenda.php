@@ -300,6 +300,33 @@ function ieadc_agenda_destaques(int $n, ?DateTimeImmutable $desde = null): array
 }
 
 /**
+ * Destaques da agenda (como ieadc_agenda_destaques) MAIS todos os eventos avulsos cadastrados dos próximos $dias dias: nenhum evento cadastrado fica de fora
+ * por causa do limite $n (fase 7). Em ordem de data; um evento de vários dias entra uma vez.
+ */
+function ieadc_agenda_destaques_com_avulsos(int $n, int $dias = 45): array {
+	$lista  = ieadc_agenda_destaques($n);
+	$vistos = [];
+	foreach ($lista as $o) {
+		$vistos[($o['origem'] ?? 'regra') . '|' . $o['titulo']] = true;
+	}
+	$d = ieadc_agenda_norm(ieadc_hoje());
+	for ($i = 0; $i < $dias; $i++, $d = $d->modify('+1 day')) {
+		foreach (ieadc_agenda_dia($d) as $o) {
+			if (($o['origem'] ?? 'regra') === 'regra' || empty($o['especial'])) {
+				continue;
+			}
+			$k = $o['origem'] . '|' . $o['titulo'];
+			if (!isset($vistos[$k])) {
+				$vistos[$k] = true;
+				$lista[] = $o;
+			}
+		}
+	}
+	usort($lista, fn($x, $y) => strcmp((string) $x['data'], (string) $y['data']));
+	return $lista;
+}
+
+/**
  * Próximas datas (a partir de hoje) das ocorrências cujo título é igual a um dos
  * $titulos ou começa com "título:" (= proximas() do gerador). Procura até 400 dias.
  */
