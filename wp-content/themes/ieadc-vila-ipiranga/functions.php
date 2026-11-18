@@ -36,6 +36,11 @@ add_action('wp_enqueue_scripts', function () {
 		wp_enqueue_style('ieadc-ajustes', $base . '/css/ajustes.css', ['ieadc-prototipo'], $ver('css/ajustes.css'));
 	}
 	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], $ver('js/site.js'), ['in_footer' => true, 'strategy' => 'defer']);
+	// Fase 7: foto ampliada na galeria (só nas páginas que têm o bloco de fotos).
+	$post = get_post();
+	if ($post && (has_block('ieadc/fotos', $post) || has_block('ieadc/galeria-faixa', $post))) {
+		wp_enqueue_script('ieadc-galeria', $base . '/js/galeria.js', [], $ver('js/galeria.js'), ['in_footer' => true, 'strategy' => 'defer']);
+	}
 }, 20);
 
 /* Pré-carrega as duas fontes mais usadas, com prioridade BAIXA (fase 4). Com prioridade alta, os 93 KB disputavam a banda com o CSS (que bloqueia a renderização) no

@@ -222,3 +222,24 @@ main p a[target="_blank"]:not(.btn)::after{content:"";display:inline-block;width
 @keyframes ieadc-brilho{0%,100%{box-shadow:0 8px 21px -9px rgba(254,125,0,.55)}50%{box-shadow:0 8px 26px -4px rgba(254,125,0,.95)}}
 @media (prefers-reduced-motion:reduce){.nav .cta.jesus{animation:none}}
 @media (max-width:900px){.nav .cta.jesus{margin-left:0}}
+
+/* Galeria (fase 7): clicar numa foto abre a foto ampliada numa janela com setas (assets/js/galeria.js). */
+.fotos>div[role="button"],.galeria-faixa .mosaico>div[role="button"]{cursor:zoom-in;transition:transform .2s,box-shadow .2s}
+.fotos>div[role="button"]:hover,.galeria-faixa .mosaico>div[role="button"]:hover{transform:scale(1.015);box-shadow:var(--sombra-2)}
+.fotos>div[role="button"]:focus-visible,.galeria-faixa .mosaico>div[role="button"]:focus-visible{outline:3px solid var(--claro);outline-offset:3px}
+.lightbox{padding:0;border:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100vh;color:var(--branco);overflow:hidden}
+.lightbox::backdrop{background:rgba(7,25,70,.94)}
+.lightbox[open]{display:flex;align-items:center;justify-content:center}
+.lb-fig{margin:0;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:min(92vw,1400px)}
+.lb-fig img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px;background:var(--marinho-2)}
+.lb-cont{font:600 15px/1 var(--f-txt);color:var(--branco)}
+.lb-btn{position:absolute;display:grid;place-items:center;width:52px;height:52px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.65);background:rgba(255,255,255,.12);color:var(--branco);cursor:pointer}
+.lb-btn:hover{background:rgba(255,255,255,.3)}
+.lb-btn:focus-visible{outline:3px solid var(--branco);outline-offset:3px}
+.lb-btn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.lb-fechar{top:16px;right:16px}
+.lb-ant{left:16px;top:50%;transform:translateY(-50%)}
+.lb-prox{right:16px;top:50%;transform:translateY(-50%)}
+@media (max-width:700px){.lb-ant,.lb-prox{top:auto;bottom:18px;transform:none}.lb-ant{left:calc(50% - 66px)}.lb-prox{right:calc(50% - 66px)}.lb-fig img{max-height:72vh}}
+html.lb-aberto{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.fotos>div[role="button"],.galeria-faixa .mosaico>div[role="button"]{transition:none}}
