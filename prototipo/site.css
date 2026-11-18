@@ -941,3 +941,5 @@ a:hover .mais.acao{background:var(--marinho)}
 .compartilhar .btn{min-height:44px}
 .compartilhar__ok{font:700 15px/22px var(--f-txt);color:var(--profundo)}
 .compartilhar__ok:empty{display:none}
+/* Fase 5C: links dentro dos textos de culto e ministério (mesma regra de ajustes.css do tema) */
+:where(.min-texto) p a.lk{color:var(--azul);text-decoration:underline;text-underline-offset:3px}
