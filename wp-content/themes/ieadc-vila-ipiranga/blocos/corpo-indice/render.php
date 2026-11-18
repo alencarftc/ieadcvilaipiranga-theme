@@ -16,9 +16,14 @@ $versiculo = static function (string $v, string $ref): string {
 	return '<blockquote class="versiculo">' . ieadc_kses_rico($v) . (trim($ref) !== '' ? '<cite>' . ieadc_pend($ref) . '</cite>' : '') . '</blockquote>';
 };
 
-// Links dos itens "quando | o quê": caminho do site vira endereço da página; a classe lk é a do protótipo.
+// Links dos textos e dos itens "quando | o quê": caminho do site vira endereço da página; a classe lk é a do protótipo
+// (azul e sublinhado). Link para outro site ganha rel="noopener".
 $links = static function (string $html): string {
-	return (string) preg_replace_callback('/<a href="([^"]*)">/', fn($m) => '<a class="lk" href="' . esc_url(ieadc_url(html_entity_decode($m[1]))) . '">', $html);
+	return (string) preg_replace_callback('/<a href="([^"]*)">/', static function (array $m): string {
+		$url = esc_url(ieadc_url(html_entity_decode($m[1])));
+		$externo = preg_match('#^https?://#i', $url) && wp_parse_url($url, PHP_URL_HOST) !== wp_parse_url(home_url(), PHP_URL_HOST);
+		return '<a class="lk" href="' . $url . '"' . ($externo ? ' rel="noopener"' : '') . '>';
+	}, $html);
 };
 
 // Próximas datas: títulos do atributo ou, se vazio, do campo "Títulos na agenda" (meta ieadc_regra) da página.
@@ -60,7 +65,7 @@ foreach ($secoes as $s) {
 	switch ($s['tipo'] ?? 'texto') {
 		case 'versiculo+texto':
 			echo $versiculo((string) ($s['versiculo'] ?? ''), (string) ($s['referencia'] ?? ''));
-			echo ieadc_paragrafos((string) ($s['texto'] ?? ''));
+			echo $links(ieadc_paragrafos((string) ($s['texto'] ?? '')));
 			break;
 		case 'objetivos':
 			if ($itens) {
@@ -70,7 +75,7 @@ foreach ($secoes as $s) {
 				}
 				echo '</ul>';
 			}
-			echo ieadc_paragrafos((string) ($s['texto'] ?? '')); // nota depois da lista (vazio na maioria das seções)
+			echo $links(ieadc_paragrafos((string) ($s['texto'] ?? ''))); // nota depois da lista (vazio na maioria das seções)
 			break;
 		case 'encontros':
 			if ($itens) {
@@ -81,13 +86,13 @@ foreach ($secoes as $s) {
 				}
 				echo '</ul>';
 			}
-			echo ieadc_paragrafos((string) ($s['texto'] ?? '')); // nota depois da lista (ex.: "A escala é definida mês a mês.")
+			echo $links(ieadc_paragrafos((string) ($s['texto'] ?? ''))); // nota depois da lista (ex.: "A escala é definida mês a mês.")
 			break;
 		case 'datas':
 			echo $datas();
 			break;
 		default:
-			echo ieadc_paragrafos((string) ($s['texto'] ?? ''));
+			echo $links(ieadc_paragrafos((string) ($s['texto'] ?? '')));
 	}
 	if ($ancora !== '' && empty($s['foraDoIndice'])) {
 		$indice .= '<a href="#' . esc_attr($ancora) . '">' . ieadc_pend($titulo) . '</a>';
