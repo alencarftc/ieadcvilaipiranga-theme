@@ -162,3 +162,17 @@ Sem mudança no site: respostas 9, 10, 15, 19 e 21 a 25 (ficaram com o pastor), 
 ## Fotos reais dos ministérios (18/11/2026)
 
 As fotos que vinham do protótipo foram trocadas por fotos reais da igreja nas páginas Ceia do Senhor, Círculo de Oração, Ensinai, Escola Bíblica Dominical, Família, Missão e Evangelismo e Mocidade (e nos cartões de Ministérios). **Nenhuma foto de criança foi publicada** (pedido do Felipe): a página Crianças e algumas posições de outras páginas continuam com a foto antiga. Os arquivos mantêm o nome e a proporção dos antigos em `content/media/`, então o protótipo (que lê as imagens de lá) e o site continuam iguais no layout; só a foto muda. Detalhes, a lista de arquivos e os cuidados com imagem de pessoas: `docs/operacao/fotos-dos-ministerios.md`.
+
+## Melhorias de UX da fase 7 (pedidos do Felipe, 18/11/2026)
+
+| Onde | Antes | Agora | Motivo |
+|---|---|---|---|
+| Botões e cartões no hover | uma regra global de link do Blocksy (`a:hover`, #0A4F98) vencia a cor dos componentes: texto azul sobre botão azul (1,4:1) e texto branco dos cartões de Horários virando azul | cada componente mantém a cor no hover; o botão azul só sobe (`ajustes.css`, seção "Fase 7") | contraste (WCAG 1.4.3) |
+| Migalha (hero e artigo) | caractere `›` com espaços | ícone de seta (`<span class="sep">` com SVG, `ieadc_migalha_sep()`), mais espaço e links com 24 px de altura | legibilidade e alvo de toque (WCAG 2.2) |
+| Temas do culto dominical (faixa) | lista no meio, sobre a foto | acima de 1180 px a lista fica à esquerda (colunas 290/380/1fr) e a foto começa em 64%, com mais espaço para a foto e o cartão da Ceia | pedido do Felipe |
+| Mapa (bloco `local`) | mapa ilustrado (SVG) | o SVG vira o cartaz do **iframe do Google Maps** (embed por `cid`, mostra o cartão da igreja); o iframe só carrega com um clique em "Ver o mapa do Google" ou se a pessoa já aceitou os cookies; CSP `frame-src` libera `maps.google.com` e `www.google.com`; política de privacidade atualizada | LGPD (o Google pode gravar cookies), mesma regra da medição |
+| Botões de rota | "Abrir no Google Maps" (link `share.google`, abria a busca) e "Abrir no Waze" | três botões com ícone e estilo próprios: Google Maps (azul, `{maps}` = link curto do Maps), Waze (vazado, por coordenadas) e Uber (escuro, `{uber}`) | não confundir os botões; abrir o aplicativo certo |
+| Avaliar no Google | link `share.google` (abria a busca) | link direto `search.google.com/local/writereview?placeid=…` (campo editável `google_avaliacao`) | abrir a janela de avaliação |
+| Links para fora do site | abriam na mesma aba | `target="_blank"` e `rel="noopener noreferrer"` em todo link externo, na saída do HTML (`inc/links-externos.php`); ícone discreto nos links de texto; o protótipo recebeu os mesmos atributos | pedido do Felipe |
+| Perguntas frequentes | cartões sempre abertos | sanfona `<details class="faq-item" name="faq">` (uma aberta por vez, teclado e sem JavaScript) | pedido do Felipe |
+| Aceitar Jesus | item no meio do menu | botão final do cabeçalho (`.cta.jesus`), com o degradê do sol e brilho suave (sem animação com `prefers-reduced-motion`); o item do menu do painel continua e alimenta o rodapé | destaque |
