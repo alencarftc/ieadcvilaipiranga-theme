@@ -6,6 +6,21 @@
 
 	function endereco(el) { var m = /url\(["']?([^"')]+)["']?\)/.exec(el.style.backgroundImage || ''); return m ? m[1] : ''; }
 	var fotos = tiles.map(endereco), n = tiles.length, atual = 0, origem = null;
+	/* As miniaturas são a versão de 768 px do WordPress (nome-768x512.webp); a janela ampliada usa a foto original (sem o -LxA do nome). */
+	function grande(u) { return u.replace(/-\d+x\d+(\.[a-z0-9]+)$/i, '$1'); }
+
+	/* Carregamento por foto: a galeria tem dezenas de fotos; só as primeiras carregam de saída e as outras quando chegam perto da tela
+	   (o endereço de cada foto já está guardado em `fotos`, que também alimenta a janela ampliada). */
+	if ('IntersectionObserver' in window) {
+		var io = new IntersectionObserver(function (itens) {
+			itens.forEach(function (i) {
+				if (!i.isIntersecting) return;
+				i.target.style.backgroundImage = 'url("' + fotos[tiles.indexOf(i.target)] + '")';
+				io.unobserve(i.target);
+			});
+		}, { rootMargin: '250px 0px' });
+		tiles.forEach(function (t) { t.style.backgroundImage = 'none'; io.observe(t); });
+	}
 	function icone(d) { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg>'; }
 
 	var d = document.createElement('dialog');
@@ -20,10 +35,10 @@
 
 	function mostrar(i) {
 		atual = (i + n) % n;
-		img.src = fotos[atual];
+		img.src = grande(fotos[atual]);
 		img.alt = 'Foto ' + (atual + 1) + ' de ' + n;
 		cont.textContent = (atual + 1) + ' de ' + n;
-		[1, -1].forEach(function (k) { var p = new Image(); p.src = fotos[(atual + k + n) % n]; }); // as vizinhas já ficam carregadas
+		[1, -1].forEach(function (k) { var p = new Image(); p.src = grande(fotos[(atual + k + n) % n]); }); // as vizinhas já ficam carregadas
 	}
 	function abrir(i) {
 		origem = tiles[i];

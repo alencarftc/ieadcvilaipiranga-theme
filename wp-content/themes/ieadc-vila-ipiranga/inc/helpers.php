@@ -66,9 +66,9 @@ function ieadc_img($id, string $tamanho = 'full'): string {
  * Atributo style completo de uma foto de fundo, igual ao protótipo:
  * style="background-image:url(…);background-position:<foco>;<extra>". Vazio se não houver nada.
  */
-function ieadc_fundo($id, string $foco = '', string $extra = ''): string {
+function ieadc_fundo($id, string $foco = '', string $extra = '', string $tamanho = 'full'): string {
 	$partes = [];
-	$url = ieadc_img($id);
+	$url = ieadc_img($id, $tamanho);
 	if ($url !== '') {
 		$partes[] = 'background-image:url(' . esc_url($url) . ')';
 		if (trim($foco) !== '') {

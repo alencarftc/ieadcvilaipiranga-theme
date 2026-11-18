@@ -12,7 +12,7 @@ echo '<div class="wrap">' . ieadc_cab($a);
 if ($fotos) {
 	echo '<div class="fotos">';
 	foreach ($fotos as $id) {
-		echo '<div ' . ieadc_fundo($id) . '></div>';
+		echo '<div ' . ieadc_fundo($id, '', '', 'medium_large') . '></div>'; // miniatura de 768 px (a foto grande abre na janela, galeria.js)
 	}
 	echo '</div>';
 }
