@@ -214,3 +214,11 @@ main p a[target="_blank"]:not(.btn)::after{content:"";display:inline-block;width
 .faq-item .resp{padding:0 var(--s4) var(--s3)}
 .faq-item .resp p{margin-top:0}
 @media (prefers-reduced-motion:reduce){.faq-item>summary .ico{transition:none}}
+
+/* "Aceitar Jesus" (fase 7): último item do cabeçalho, botão de destaque com o degradê do sol (texto marinho, contraste ≥ 4,5:1) e um brilho suave que pulsa devagar.
+   O movimento para quando a pessoa pede menos animação. Fica depois do botão "Pedido de oração". */
+.nav .cta.jesus{margin-left:var(--s1);background:var(--grad);color:var(--marinho);box-shadow:0 8px 21px -9px rgba(254,125,0,.75);animation:ieadc-brilho 3.2s ease-in-out infinite}
+.nav .cta.jesus:hover,.nav .cta.jesus.on{background:var(--grad);color:var(--marinho)}
+@keyframes ieadc-brilho{0%,100%{box-shadow:0 8px 21px -9px rgba(254,125,0,.55)}50%{box-shadow:0 8px 26px -4px rgba(254,125,0,.95)}}
+@media (prefers-reduced-motion:reduce){.nav .cta.jesus{animation:none}}
+@media (max-width:900px){.nav .cta.jesus{margin-left:0}}
