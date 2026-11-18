@@ -19,7 +19,7 @@ $capa = (string) get_the_post_thumbnail_url($post->ID, 'full');
 echo ieadc_secao_abre($a, 'sec glow');
 echo '<div class="wrap"><div class="artigo">';
 if (trim((string) ($a['migalha'] ?? '')) !== '') {
-	echo '<div class="migalha"><a href="' . esc_url(ieadc_url((string) ($a['migalhaLink'] ?? 'artigos'))) . '">' . esc_html($a['migalha']) . '</a>' . ($cat !== '' ? ' › ' . esc_html($cat) : '') . '</div>';
+	echo '<div class="migalha"><a href="' . esc_url(ieadc_url((string) ($a['migalhaLink'] ?? 'artigos'))) . '">' . esc_html($a['migalha']) . '</a>' . ($cat !== '' ? ieadc_migalha_sep() . esc_html($cat) : '') . '</div>';
 }
 if ($cat !== '' || $exemplo) {
 	echo '<div style="display:flex;gap:8px;flex-wrap:wrap">';

@@ -99,3 +99,7 @@ Economia: revisor em Sonnet lendo só o diff; Opus só se a primeira rodada falh
 ## 6. Histórico (PRs no GitHub)
 
 #2 a #5 fundação e specs; #6, #8, #12, #14, #15, #19 correções de fidelidade (ordem das seções, formulário, CSS do Blocksy); #7, #9, #11 agenda; #10 conteúdos; #16, #18 B3; #17 M1; #21 B1; #22 B2; #24 B4; #25 a #28 páginas e M6; #29 setup sem wordpress.org; #30 migração.
+
+## 8. Fase 7 (UX, 18/11/2026)
+
+M11: melhorias de interface pedidas pelo Felipe: hover sem trocar a cor do texto, migalha com ícone, faixa dos temas do culto dominical, mapa do Google em iframe (clique ou depois do Aceitar dos cookies), botões de Google Maps, Waze e Uber distintos, avaliar no Google com link direto, links externos em nova aba (`inc/links-externos.php`), perguntas em sanfona, Aceitar Jesus como botão final do cabeçalho, galeria com 39 fotos e foto ampliada, agenda com todos os eventos e os cultos da semana na página Eventos. Detalhes e motivos: `docs/specs/desvios-do-prototipo.md` (seções "Melhorias de UX da fase 7" e "Fase 7B"); mapa mental e rotas: `docs/operacao/mapa-do-site.md`. Testes: php 453, interação 13. O teste visual local da Galeria e da Início só passa com o ambiente zerado (as fotos novas só entram num WordPress semeado do zero: `docker compose down -v` e `bin/setup.sh`); o CI já roda assim.

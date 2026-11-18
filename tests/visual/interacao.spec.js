@@ -119,3 +119,79 @@ test.describe('selo "Próximo" (06/10/2026, terça, 10h em Curitiba)', () => {
     await expect(cartao).toContainText('Culto de Ensino');
   });
 });
+
+// Fase 7 (UX): galeria com foto ampliada, perguntas em sanfona, mapa do Google sob demanda, links em nova aba e botão final do cabeçalho.
+test.describe('galeria: foto ampliada', () => {
+  test('abre ao clicar, passa com as setas (tela e teclado) e fecha com Esc devolvendo o foco', async ({ page }) => {
+    await page.goto(WP + '/galeria/');
+    const fotos = page.locator('.fotos > div[role="button"]');
+    const total = await fotos.count();
+    expect(total).toBeGreaterThan(30);
+    const janela = page.locator('dialog.lightbox');
+    await expect(janela).not.toHaveAttribute('open', '');
+    await fotos.nth(2).click();
+    await expect(janela).toHaveAttribute('open', '');
+    await expect(page.locator('.lb-cont')).toHaveText(`3 de ${total}`);
+    await page.locator('.lb-prox').click();
+    await expect(page.locator('.lb-cont')).toHaveText(`4 de ${total}`);
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('.lb-cont')).toHaveText(`5 de ${total}`);
+    await page.keyboard.press('ArrowLeft');
+    await page.locator('.lb-ant').click();
+    await expect(page.locator('.lb-cont')).toHaveText(`3 de ${total}`);
+    await page.keyboard.press('Escape');
+    await expect(janela).not.toHaveAttribute('open', '');
+    await expect(fotos.nth(2)).toBeFocused();
+  });
+});
+
+test.describe('perguntas frequentes em sanfona', () => {
+  test('abre uma pergunta por vez e responde ao teclado', async ({ page }) => {
+    await page.goto(WP + '/horarios-e-localizacao/');
+    const itens = page.locator('details.faq-item');
+    expect(await itens.count()).toBeGreaterThan(3);
+    await expect(itens.nth(0)).not.toHaveAttribute('open', '');
+    await itens.nth(0).locator('summary').click();
+    await expect(itens.nth(0)).toHaveAttribute('open', '');
+    await itens.nth(1).locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(itens.nth(1)).toHaveAttribute('open', '');
+    await expect(itens.nth(0)).not.toHaveAttribute('open', ''); // uma por vez (details name="faq")
+  });
+});
+
+test.describe('mapa do Google', () => {
+  test('o iframe só entra depois do clique em "Ver o mapa do Google"', async ({ page }) => {
+    await page.goto(WP + '/horarios-e-localizacao/');
+    await expect(page.locator('.mapa iframe')).toHaveCount(0);
+    await page.locator('.mapa-abrir').click();
+    const quadro = page.locator('.mapa iframe');
+    await expect(quadro).toHaveCount(1);
+    await expect(quadro).toHaveAttribute('src', /^https:\/\/maps\.google\.com\/maps\?cid=\d+&hl=pt-BR&output=embed$/);
+    await expect(quadro).toHaveAttribute('title', /Mapa do Google/);
+    await expect(page.locator('.mapa-abrir')).toBeHidden();
+  });
+});
+
+test.describe('links e cabeçalho', () => {
+  test('link que leva a outro site abre em nova aba (rel noopener noreferrer); link do site, não', async ({ page }) => {
+    await page.goto(WP + '/horarios-e-localizacao/');
+    const externos = page.locator('main a[href^="http"]:not([href*="localhost"]):not([href*="127.0.0.1"])');
+    expect(await externos.count()).toBeGreaterThan(2);
+    for (const a of await externos.all()) {
+      await expect(a).toHaveAttribute('target', '_blank');
+      await expect(a).toHaveAttribute('rel', /noopener/);
+      await expect(a).toHaveAttribute('rel', /noreferrer/);
+    }
+    const interno = page.locator('.nav a[href*="contato"]').first();
+    await expect(interno).not.toHaveAttribute('target', '_blank');
+  });
+
+  test('"Aceitar Jesus" é o último botão do cabeçalho', async ({ page }) => {
+    await page.goto(WP + '/');
+    const ultimo = page.locator('.nav > a').last();
+    await expect(ultimo).toHaveClass(/jesus/);
+    await expect(ultimo).toHaveText(/Aceitar Jesus/);
+    await expect(page.locator('.nav > ul a', { hasText: 'Aceitar Jesus' })).toHaveCount(0);
+  });
+});

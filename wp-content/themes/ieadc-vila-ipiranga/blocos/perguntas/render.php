@@ -13,6 +13,7 @@ if (!$itens) {
 echo ieadc_secao_abre($a, 'sec gelo');
 echo '<div class="wrap">' . ieadc_cab($a) . '<div class="faq">';
 foreach ($itens as $i) {
-	echo '<div class="faq-item"><h3 class="h4">' . esc_html($i['pergunta']) . '</h3><p>' . ieadc_kses_rico($i['resposta']) . '</p></div>';
+	// Sanfona (fase 7): <details name="faq"> abre uma pergunta por vez, funciona com teclado e sem JavaScript.
+	echo '<details class="faq-item" name="faq"><summary><h3 class="h4">' . esc_html($i['pergunta']) . '</h3>' . ieadc_icone('baixo') . '</summary><div class="resp"><p>' . ieadc_kses_rico($i['resposta']) . '</p></div></details>';
 }
 echo '</div></div>' . ieadc_secao_fecha();

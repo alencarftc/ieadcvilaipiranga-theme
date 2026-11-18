@@ -12,7 +12,7 @@ define('IEADC_TEMA_VERSAO', wp_get_theme()->get('Version'));
 require __DIR__ . '/inc/icones.php';
 require __DIR__ . '/inc/menu.php';
 // M1: helpers antes de blocos (carregados só quando existirem).
-foreach (['helpers', 'blocos', 'seo', 'identidade', 'desempenho', 'medicao', 'marketing'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
+foreach (['helpers', 'blocos', 'seo', 'identidade', 'desempenho', 'medicao', 'marketing', 'links-externos'] as $ieadc_inc) { if (is_file(__DIR__ . "/inc/{$ieadc_inc}.php")) require_once __DIR__ . "/inc/{$ieadc_inc}.php"; }
 
 add_action('after_setup_theme', function () {
 	register_nav_menus([
@@ -36,6 +36,11 @@ add_action('wp_enqueue_scripts', function () {
 		wp_enqueue_style('ieadc-ajustes', $base . '/css/ajustes.css', ['ieadc-prototipo'], $ver('css/ajustes.css'));
 	}
 	wp_enqueue_script('ieadc-site', $base . '/js/site.js', [], $ver('js/site.js'), ['in_footer' => true, 'strategy' => 'defer']);
+	// Fase 7: foto ampliada na galeria (só nas páginas que têm o bloco de fotos).
+	$post = get_post();
+	if ($post && (has_block('ieadc/fotos', $post) || has_block('ieadc/galeria-faixa', $post))) {
+		wp_enqueue_script('ieadc-galeria', $base . '/js/galeria.js', [], $ver('js/galeria.js'), ['in_footer' => true, 'strategy' => 'defer']);
+	}
 }, 20);
 
 /* Pré-carrega as duas fontes mais usadas, com prioridade BAIXA (fase 4). Com prioridade alta, os 93 KB disputavam a banda com o CSS (que bloqueia a renderização) no

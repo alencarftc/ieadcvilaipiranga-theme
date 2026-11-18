@@ -28,7 +28,10 @@ function ieadc_info_padrao(): array {
 		'email_contato' => '',
 		// Link para avaliar a igreja no Google (vazio = o botão leva à igreja no Google Maps). Coordenadas: opcionais, ajudam o Google.
 		// Dados públicos informados pelo Felipe (16/11/2026). Ficam no código porque a carga completa substitui o banco; pode trocar em Configurações.
-		'google_avaliacao' => 'https://share.google/U5EOVkegYKa2UcT7o',
+		// Avaliar: link direto da janela de avaliação (o share.google abria só a busca do Google). Maps e cid: o local no Google Maps (o cid vem do link curto da igreja).
+		'google_avaliacao' => 'https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU',
+		'google_maps' => 'https://maps.app.goo.gl/vsUpnT1qJxeKFajW8',
+		'google_cid' => '13075602309661020993',
 		'latitude'   => '-25.503215673764625',
 		'longitude'  => '-49.28838685582037',
 		// Fase 4: WhatsApp e medição. Todos vazios por padrão = o recurso fica desligado e invisível (ver medicao.php).
@@ -72,7 +75,8 @@ function ieadc_info_sanitizar($v): array {
 			continue;
 		}
 		$limpo[$k] = match (true) {
-			$k === 'google_avaliacao' => ieadc_google_avaliacao_limpar((string) $v[$k]),
+			in_array($k, ['google_avaliacao', 'google_maps'], true) => ieadc_google_avaliacao_limpar((string) $v[$k]),
+			$k === 'google_cid' => substr((string) preg_replace('/\D/', '', (string) $v[$k]), 0, 22),
 			in_array($k, ['latitude', 'longitude'], true) => ieadc_coordenada_limpar((string) $v[$k], $k === 'latitude' ? 90 : 180),
 			$k === 'whatsapp' => ieadc_whatsapp_limpar((string) $v[$k]),
 			$k === 'gtm_id' => ieadc_medicao_id_limpar('gtm', (string) $v[$k]),
@@ -97,13 +101,15 @@ function ieadc_info_tela(): void {
 		'site_sede' => 'Site da IEADC', 'sede' => 'Linha da Igreja Sede (rodapé)', 'tema_ano' => 'Tema do ano (rodapé)',
 		'cultos' => 'Cultos no rodapé (um por linha)', 'email_pedidos' => 'E-mail que recebe os pedidos de oração',
 		'email_contato' => 'E-mail que recebe o Fale conosco',
-		'google_avaliacao' => 'Link para avaliar no Google', 'latitude' => 'Latitude (opcional)', 'longitude' => 'Longitude (opcional)',
+		'google_avaliacao' => 'Link para avaliar no Google', 'google_maps' => 'Link da igreja no Google Maps', 'google_cid' => 'Código do local no Google Maps (cid)', 'latitude' => 'Latitude (opcional)', 'longitude' => 'Longitude (opcional)',
 		'whatsapp' => 'WhatsApp da igreja (com DDD)', 'gtm_id' => 'ID do Google Tag Manager', 'ga4_id' => 'ID de medição do Google Analytics 4',
 		'search_console' => 'Código do Google Search Console', 'bing_verificacao' => 'Código do Bing Webmaster Tools',
 		'clarity_id' => 'ID do Microsoft Clarity (opcional)', 'meta_pixel_id' => 'ID do Meta Pixel (opcional)',
 	];
 	$ajuda = [
 		'google_avaliacao' => 'Cole o link de avaliação do Perfil da Empresa no Google (ou search.google.com/local/writereview?placeid=…; vale também só o código do lugar, que começa com ChIJ). Vazio: o botão "Avaliar no Google" abre a igreja no Google Maps.',
+		'google_maps' => 'Link curto da igreja no Google Maps (maps.app.goo.gl/…): o botão "Abrir no Google Maps" abre o aplicativo do Maps no celular. Vazio: usa uma busca pelo nome e endereço.',
+		'google_cid' => 'Só números. É o que o mapa do site (embutido do Google) usa para mostrar o cartão da igreja. Vazio: o mapa usa a latitude e a longitude.',
 		'latitude' => 'Opcional. Ajuda o Google a achar a igreja no mapa (exemplo: -00.0000). Deixe vazio se não souber.',
 		'longitude' => 'Opcional (exemplo: -00.0000). Só vale se a latitude também estiver preenchida.',
 		'whatsapp' => 'Número do WhatsApp com DDD (exemplo: 41 9XXXX-XXXX). Vazio: o botão flutuante e os links usam o telefone do site (confirmado como WhatsApp, desde que seja celular). Preencha só para usar outro número.',
@@ -164,11 +170,39 @@ function ieadc_coordenada_limpar(string $valor, int $limite): string {
 
 /** A igreja no Google Maps (nome e endereço): link do botão de avaliação quando não há link próprio, e `hasMap` dos dados estruturados. */
 function ieadc_google_maps_url(): string {
-	return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'));
+	$link = trim((string) ieadc_info('google_maps'));
+	return $link !== '' ? $link : 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'));
+}
+
+/** O mapa embutido (iframe do Google Maps): pelo cid (mostra o cartão da igreja), senão pelas coordenadas, senão pelo endereço. */
+function ieadc_mapa_embed_url(): string {
+	$cid = preg_replace('/\D/', '', (string) ieadc_info('google_cid'));
+	if ($cid !== '') {
+		return 'https://maps.google.com/maps?cid=' . $cid . '&hl=pt-BR&output=embed';
+	}
+	$lat = (string) ieadc_info('latitude');
+	$lng = (string) ieadc_info('longitude');
+	$q = ($lat !== '' && $lng !== '') ? $lat . ',' . $lng : ieadc_info('nome') . ', ' . ieadc_info('endereco');
+	return 'https://www.google.com/maps?q=' . rawurlencode($q) . '&z=17&hl=pt-BR&output=embed';
+}
+
+/** A igreja como destino no Uber (a pessoa escolhe a partir de onde está); sem coordenadas, vazio. */
+function ieadc_uber_url(): string {
+	$lat = (string) ieadc_info('latitude');
+	$lng = (string) ieadc_info('longitude');
+	if ($lat === '' || $lng === '') {
+		return '';
+	}
+	return 'https://m.uber.com/ul/?' . http_build_query(['action' => 'setPickup', 'pickup' => 'my_location', 'dropoff' => ['latitude' => $lat, 'longitude' => $lng, 'nickname' => (string) ieadc_info('nome')]], '', '&', PHP_QUERY_RFC3986);
 }
 
 /** A igreja no Waze (rota até o endereço de Configurações). */
 function ieadc_waze_url(): string {
+	$lat = (string) ieadc_info('latitude');
+	$lng = (string) ieadc_info('longitude');
+	if ($lat !== '' && $lng !== '') {
+		return 'https://waze.com/ul?ll=' . rawurlencode($lat . ',' . $lng) . '&navigate=yes';
+	}
 	return 'https://waze.com/ul?q=' . rawurlencode((string) ieadc_info('endereco')) . '&navigate=yes';
 }
 

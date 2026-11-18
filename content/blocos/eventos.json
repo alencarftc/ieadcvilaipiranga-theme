@@ -20,6 +20,12 @@
  },
  {
   "bloco": "ieadc/eventos-grade",
+  "attrs": {
+   "incluirAvulsos": true
+  }
+ },
+ {
+  "bloco": "ieadc/proximos-cultos",
   "attrs": {}
  },
  {

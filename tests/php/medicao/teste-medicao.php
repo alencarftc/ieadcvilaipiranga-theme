@@ -81,9 +81,9 @@ try {
 ";
 	update_option('ieadc_info', []);
 	ieadc_igual('ieadcvilaipiranga@gmail.com', ieadc_info('email'), 'e-mail público padrão');
-	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_info('google_avaliacao'), 'link de avaliação padrão');
-	ieadc_igual('https://share.google/U5EOVkegYKa2UcT7o', ieadc_google_avaliacao_url(), 'o botão "Avaliar no Google" usa o link padrão');
-	ieadc_igual(ieadc_google_avaliacao_url(), ieadc_google_avaliacao_limpar('https://share.google/U5EOVkegYKa2UcT7o'), 'o host share.google passa na validação do campo');
+	ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU', ieadc_info('google_avaliacao'), 'link de avaliação padrão');
+	ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU', ieadc_google_avaliacao_url(), 'o botão "Avaliar no Google" usa o link padrão');
+	ieadc_igual(ieadc_google_avaliacao_url(), ieadc_google_avaliacao_limpar('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU'), 'o host share.google passa na validação do campo');
 	ieadc_ok((float) ieadc_info('latitude') === -25.503215673764625 && (float) ieadc_info('longitude') === -49.28838685582037, 'latitude e longitude padrão');
 
 	/* ---------- saída sem nenhum ID ---------- */
@@ -95,7 +95,7 @@ try {
 	foreach (['ieadc-cookies', 'ieadc-medicao', 'medicao.js', 'google-site-verification', 'msvalidate.01', 'googletagmanager'] as $q) {
 		ieadc_ok(!str_contains($h['corpo'], $q), "sem ID: o HTML não tem \"$q\"");
 	}
-	ieadc_ok(!preg_match('#googletagmanager|google-analytics|clarity\.ms|facebook\.|doubleclick#', $sem_csp) && str_contains($sem_csp, "frame-src 'none'") && str_contains($sem_csp, "script-src 'self' 'inline-speculation-rules';"),
+	ieadc_ok(!preg_match('#googletagmanager|google-analytics|clarity\.ms|facebook\.|doubleclick#', $sem_csp) && str_contains($sem_csp, "frame-src https://maps.google.com https://www.google.com") && str_contains($sem_csp, "script-src 'self' 'inline-speculation-rules';"),
 		'sem ID: a CSP é a da fase 3 (nenhum endereço de terceiros)', $sem_csp);
 	$pol = ieadc_m_baixar('/politica-de-privacidade/');
 	ieadc_ok(!str_contains($pol['corpo'], 'Cookies de medição') && str_contains($pol['corpo'], 'O site não usa cookies de publicidade'), 'sem ID: a política de privacidade fica como estava');
@@ -128,7 +128,7 @@ try {
 	update_option('ieadc_info', ['ga4_id' => 'G-TESTE00000']);
 	$h = ieadc_m_baixar('/');
 	ieadc_ok(str_contains($h['corpo'], '{"ga4":"G-TESTE00000"}') && str_contains($h['corpo'], 'id="ieadc-cookies"'), 'GA4: aviso e JSON com o ID');
-	ieadc_ok(str_contains(ieadc_m_diretiva($h['csp'], 'script-src'), 'https://www.googletagmanager.com') && str_contains(ieadc_m_diretiva($h['csp'], 'connect-src'), 'google-analytics.com') && str_contains($h['csp'], "frame-src 'none'"),
+	ieadc_ok(str_contains(ieadc_m_diretiva($h['csp'], 'script-src'), 'https://www.googletagmanager.com') && str_contains(ieadc_m_diretiva($h['csp'], 'connect-src'), 'google-analytics.com') && str_contains($h['csp'], "frame-src https://maps.google.com https://www.google.com"),
 		'GA4: a CSP libera o gtag.js e o envio, e segue sem quadros', $h['csp']);
 	ieadc_ok(!str_contains($h['corpo'], 'gtag/js'), 'GA4: o gtag.js também só carrega depois do "Aceitar"');
 
@@ -168,7 +168,10 @@ try {
 	ieadc_ok(!preg_match('#<main[^>]*>.*ieadc-whats.*</main>#s', $h['corpo']), 'o botão flutuante fica fora do <main>');
 
 	/* ---------- Como chegar: atalhos {maps} e {waze} ---------- */
-	update_option('ieadc_info', ['endereco' => 'Rua Teste, 1 - Curitiba - PR']);
+	// Sem coordenadas nem link do Maps (a fase 7 tem padrões para os dois): o atalho cai no endereço de Configurações.
+	update_option('ieadc_info', ['endereco' => 'Rua Teste, 1 - Curitiba - PR', 'latitude' => '', 'longitude' => '', 'google_maps' => '']);
+	ieadc_igual('', ieadc_uber_url(), 'Uber sem coordenadas: sem link (o botão some)');
+	ieadc_igual('', ieadc_url('{uber}'), 'o atalho {uber} sem coordenadas fica vazio');
 	ieadc_igual('https://waze.com/ul?q=Rua%20Teste%2C%201%20-%20Curitiba%20-%20PR&navigate=yes', ieadc_url('{waze}'), 'o atalho {waze} usa o endereço de Configurações');
 	ieadc_ok(str_starts_with(ieadc_url('{maps}'), 'https://www.google.com/maps/search/?api=1&query=') && str_contains(ieadc_url('{maps}'), rawurlencode('Rua Teste, 1')), 'o atalho {maps} usa o endereço de Configurações', ieadc_url('{maps}'));
 

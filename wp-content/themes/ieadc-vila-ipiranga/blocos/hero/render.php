@@ -25,7 +25,7 @@ foreach ((array) ($a['migalha'] ?? []) as $m) {
 	$migalha[] = $link !== '' ? '<a href="' . esc_url(ieadc_url($link)) . '">' . esc_html($texto) . '</a>' : esc_html($texto);
 }
 if ($migalha) {
-	echo '<div class="migalha">' . implode(' › ', $migalha) . '</div>';
+	echo '<div class="migalha">' . implode(ieadc_migalha_sep(), $migalha) . '</div>';
 }
 
 $eyebrow = trim((string) ($a['eyebrow'] ?? ''));

@@ -6,7 +6,7 @@
 defined('ABSPATH') || exit;
 $a = $attributes;
 $n = max(0, (int) ($a['quantidade'] ?? 6));
-$eventos = ($n && function_exists('ieadc_agenda_destaques')) ? ieadc_agenda_destaques($n) : [];
+$eventos = ($n && function_exists('ieadc_agenda_destaques')) ? (!empty($a['incluirAvulsos']) && function_exists('ieadc_agenda_destaques_com_avulsos') ? ieadc_agenda_destaques_com_avulsos($n) : ieadc_agenda_destaques($n)) : [];
 $mais = (string) ($a['maisTexto'] ?? '');
 $hoje = function_exists('ieadc_hoje') ? ieadc_hoje()->format('Y-m-d') : '';
 

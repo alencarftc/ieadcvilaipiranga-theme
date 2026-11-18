@@ -13,5 +13,9 @@ function ieadc_local_mapa(string $rotulo): string {
 		. '<text x="32" y="292" font-family="Roboto,Arial" font-size="12" fill="#45536B" transform="rotate(-10 32 292)">R. Bortolo Gusso</text>'
 		. '<text x="192" y="36" font-family="Roboto,Arial" font-size="12" fill="#45536B" transform="rotate(76 192 36)">R. Prof. João Mazzarotto</text></svg>';
 	$pin = trim($rotulo) !== '' ? '<b>' . esc_html($rotulo) . '</b>' : '';
-	return $h . '<div class="pin">' . $pin . ieadc_icone('pin') . '</div></div>';
+	$url = function_exists('ieadc_mapa_embed_url') ? ieadc_mapa_embed_url() : '';
+	// Mapa do Google (iframe): só carrega com um clique ou depois do "Aceitar" dos cookies (site.js); o Google pode gravar cookies ao mostrá-lo.
+	$abrir = $url !== '' ? '<button type="button" class="btn mapa-abrir" data-mapa-url="' . esc_url($url) . '">Ver o mapa do Google' . ieadc_icone('pin') . '</button>'
+		. '<p class="mapa-nota">Ao ver o mapa, o Google pode gravar cookies. <a href="' . esc_url(ieadc_url('politica-de-privacidade')) . '">Saiba mais</a></p>' : '';
+	return $h . '<div class="pin">' . $pin . ieadc_icone('pin') . '</div>' . $abrir . '</div>';
 }

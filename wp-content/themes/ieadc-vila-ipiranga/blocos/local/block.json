@@ -112,13 +112,21 @@
 			"default": [
 				{
 					"texto": "Abrir no Google Maps",
-					"link": "https://share.google/9UqZuK0EVcGxwFH63",
-					"icone": "pin"
+					"link": "{maps}",
+					"icone": "pin",
+					"estilo": "maps"
 				},
 				{
 					"texto": "Abrir no Waze",
 					"link": "{waze}",
-					"icone": "pin"
+					"icone": "rota",
+					"estilo": "waze"
+				},
+				{
+					"texto": "Abrir no Uber",
+					"link": "{uber}",
+					"icone": "carro",
+					"estilo": "uber"
 				}
 			],
 			"ieadc": {
@@ -143,6 +151,12 @@
 						"ieadc": {
 							"rotulo": "Ícone",
 							"campo": "icone"
+						}
+					},
+					"estilo": {
+						"type": "string",
+						"ieadc": {
+							"rotulo": "Estilo do botão (maps, waze, uber ou vazio)"
 						}
 					}
 				}

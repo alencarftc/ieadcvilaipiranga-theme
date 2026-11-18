@@ -364,7 +364,7 @@ ieadc_igual(ieadc_info('telefone'), $ig['telephone'] ?? '', 'Church: telephone')
 ieadc_igual(ieadc_info('email'), $ig['email'] ?? '', 'Church: email (o público em Configurações)');
 ieadc_igual(array_values(array_filter([ieadc_info('instagram'), ieadc_info('facebook'), ieadc_info('youtube')])), $ig['sameAs'] ?? [], 'Church: sameAs = Instagram, Facebook e YouTube');
 ieadc_ok(($ig['parentOrganization']['url'] ?? '') === ieadc_info('site_sede'), 'Church: parentOrganization = igreja sede (site da IEADC)', $ig['parentOrganization'] ?? null);
-ieadc_ok(str_starts_with($ig['hasMap'] ?? '', 'https://www.google.com/maps/search/?api=1&query='), 'Church: hasMap = igreja no Google Maps');
+ieadc_ok(($ig['hasMap'] ?? '') === ieadc_google_maps_url() && str_starts_with(ieadc_google_maps_url(), 'https://maps.app.goo.gl/'), 'Church: hasMap = igreja no Google Maps (link curto do Maps)');
 ieadc_ok(!isset($ig['geo']) || (ieadc_info('latitude') !== '' && ieadc_info('longitude') !== ''), 'Church: sem coordenadas inventadas (geo só se Configurações tiver latitude e longitude)');
 ieadc_ok(isset($ig['geo']) && abs((float) $ig['geo']['latitude'] - (float) ieadc_info('latitude')) < 1e-9 && abs((float) $ig['geo']['longitude'] - (float) ieadc_info('longitude')) < 1e-9 && $ig['geo']['latitude'] < 0 && $ig['geo']['longitude'] < 0, 'Church: geo com as coordenadas de Configurações (padrão informado pelo Felipe)', $ig['geo'] ?? null);
 ieadc_igual('ieadcvilaipiranga@gmail.com', $ig['email'] ?? null, 'Church: e-mail público da igreja');
@@ -570,15 +570,24 @@ ieadc_igual('', ieadc_google_avaliacao_limpar('javascript:alert(1)'), 'campo rec
 ieadc_igual('', ieadc_google_avaliacao_limpar('http://exemplo.com/sem-https'), 'campo só aceita https');
 ieadc_igual('-25.4999', ieadc_coordenada_limpar('-25,4999', 90), 'latitude aceita vírgula');
 ieadc_igual(['', ''], [ieadc_coordenada_limpar('95', 90), ieadc_coordenada_limpar('abc', 180)], 'coordenada fora do limite ou não numérica some');
+ieadc_igual('https://maps.app.goo.gl/vsUpnT1qJxeKFajW8', ieadc_google_maps_url(), 'o botão Abrir no Google Maps usa o link curto do Maps da igreja (fase 7)');
+$sem_maps = static fn($d) => array_merge($d, ['google_maps' => '']);
+add_filter('ieadc_info', $sem_maps);
 $mapa = ieadc_google_maps_url();
-ieadc_ok(str_starts_with($mapa, 'https://www.google.com/maps/search/?api=1&query=') && str_contains($mapa, rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'))), 'sem link próprio, o botão leva à igreja no Google Maps (nome e endereço codificados)', $mapa);
+remove_filter('ieadc_info', $sem_maps);
+ieadc_ok(str_starts_with($mapa, 'https://www.google.com/maps/search/?api=1&query=') && str_contains($mapa, rawurlencode(ieadc_info('nome') . ', ' . ieadc_info('endereco'))), 'sem link do Maps, o botão leva à busca da igreja (nome e endereço codificados)', $mapa);
+ieadc_igual('https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU', ieadc_google_avaliacao_url(), 'Avaliar no Google abre direto a janela de avaliação (placeid), não a busca');
+ieadc_ok(str_starts_with(ieadc_mapa_embed_url(), 'https://maps.google.com/maps?cid=13075602309661020993&hl=pt-BR&output=embed'), 'o mapa embutido usa o cid da igreja (mostra o cartão do local)');
+ieadc_ok(str_starts_with(ieadc_waze_url(), 'https://waze.com/ul?ll=-25.50') && str_contains(ieadc_waze_url(), 'navigate=yes'), 'Waze: rota pelas coordenadas da igreja');
+ieadc_ok(str_starts_with(ieadc_uber_url(), 'https://m.uber.com/ul/?action=setPickup&pickup=my_location') && str_contains(ieadc_uber_url(), 'dropoff%5Blatitude%5D=-25.50') && str_contains(ieadc_uber_url(), 'dropoff%5Bnickname%5D=IEADC%20Vila%20Ipiranga'), 'Uber: destino com as coordenadas e o nome da igreja');
+ieadc_ok(ieadc_url('{uber}') === ieadc_uber_url() && ieadc_url('{maps}') === ieadc_google_maps_url(), 'atalhos {uber} e {maps} nos botões');
 $html = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
-ieadc_ok(str_contains($html, 'href="https://share.google/U5EOVkegYKa2UcT7o"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: com o link padrão do Felipe, o botão abre a avaliação em nova aba com rel="noopener"');
+ieadc_ok(str_contains($html, 'href="https://search.google.com/local/writereview?placeid=ChIJpwC8TAD93JQRQVOf6wXfdbU"') && str_contains($html, 'target="_blank"') && str_contains($html, 'rel="noopener"'), 'bloco: com o link padrão do Felipe, o botão abre a avaliação em nova aba com rel="noopener"');
 $vazio = fn($d) => array_merge($d, ['google_avaliacao' => '']);
 add_filter('ieadc_info', $vazio);
 $html_vazio = do_blocks('<!-- wp:ieadc/avaliacao-google /-->');
 remove_filter('ieadc_info', $vazio);
-ieadc_ok(str_contains($html_vazio, 'href="' . esc_url($mapa) . '"') && str_contains($html_vazio, 'target="_blank"') && str_contains($html_vazio, 'rel="noopener"'), 'bloco: com o campo vazio, o botão vai ao Maps e abre em nova aba com rel="noopener"');
+ieadc_ok(str_contains($html_vazio, 'href="' . esc_url(ieadc_google_maps_url()) . '"') && str_contains($html_vazio, 'target="_blank"') && str_contains($html_vazio, 'rel="noopener"'), 'bloco: com o campo vazio, o botão vai ao Maps e abre em nova aba com rel="noopener"');
 ieadc_ok(substr_count($html, 'class="estrela"') === 5 && str_contains($html, '<div class="estrelas" aria-hidden="true">') && str_contains($html, '>Avaliar no Google<'), 'bloco: 5 estrelas decorativas e botão com texto visível "Avaliar no Google"');
 ieadc_ok(!preg_match('/\d+([,.]\d+)?\s*(estrelas|avalia)|nota\s+\d/iu', wp_strip_all_tags($html)), 'bloco: sem nota nem número de avaliações no texto', wp_strip_all_tags($html));
 $troca = fn($d) => array_merge($d, ['google_avaliacao' => 'https://g.page/r/abc123/review']);
@@ -642,8 +651,8 @@ ieadc_ok(($cab['x-frame-options'] ?? '') === 'SAMEORIGIN' && ($cab['cross-origin
 	&& ($cab['x-content-type-options'] ?? '') === 'nosniff' && str_contains($cab['referrer-policy'] ?? '', 'strict-origin'), 'X-Frame-Options SAMEORIGIN, COOP same-origin-allow-popups, nosniff e Referrer-Policy', array_intersect_key($cab, array_flip(['x-frame-options', 'cross-origin-opener-policy'])));
 ieadc_ok(!isset($cab['strict-transport-security']) || str_starts_with($base, 'https'), 'HSTS só em https (o teste local é http)');
 $csp = $cab['content-security-policy-report-only'] ?? ($cab['content-security-policy'] ?? '');
-ieadc_ok($csp !== '' && str_contains($csp, "default-src 'self'") && str_contains($csp, "object-src 'none'") && !str_contains($csp, "script-src 'self' 'unsafe-inline'") && str_contains($csp, "frame-src 'none'"),
-	'CSP com default-src self, sem unsafe-inline em script, sem objetos nem quadros', $csp);
+ieadc_ok($csp !== '' && str_contains($csp, "default-src 'self'") && str_contains($csp, "object-src 'none'") && !str_contains($csp, "script-src 'self' 'unsafe-inline'") && str_contains($csp, "frame-src https://maps.google.com https://www.google.com") && !str_contains($csp, "frame-src 'none'"),
+	'CSP com default-src self, sem unsafe-inline em script, sem objetos e com quadros só do Google Maps (fase 7)', $csp);
 ieadc_ok(isset($cab['content-security-policy-report-only']) === (get_option('ieadc_csp_modo', 'relatorio') === 'relatorio'), 'CSP começa em modo só-relatório (opção ieadc_csp_modo)');
 $login = ieadc_t_baixar($base . '/wp-login.php');
 ieadc_ok($login['status'] === 200 && !isset($login['cab']['content-security-policy-report-only']), 'tela de login responde 200 e sem a CSP do site (o painel não recebe CSP)', $login['status']);

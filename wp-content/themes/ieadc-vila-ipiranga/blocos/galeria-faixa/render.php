@@ -27,7 +27,7 @@ echo '</div>';
 if ($fotos) {
 	echo '<div class="mosaico">';
 	foreach ($fotos as $id) {
-		echo '<div ' . ieadc_fundo($id) . '></div>';
+		echo '<div ' . ieadc_fundo($id, '', '', 'medium_large') . '></div>';
 	}
 	echo '</div>';
 }

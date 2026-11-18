@@ -129,3 +129,14 @@ function ieadc_mapa_site(): string {
 		. ($soltos ? '<div class="soltos">' . $soltos . '</div>' : '')
 		. $grupos . '</nav>';
 }
+
+/* Fase 7: "Aceitar Jesus" é o botão final do cabeçalho (header.php), com destaque. O item do menu do painel continua existindo (o mapa do rodapé e
+   o menu do celular usam a árvore completa); só não se repete na lista do cabeçalho. */
+add_filter('wp_nav_menu_objects', function ($itens, $args) {
+	if (($args->theme_location ?? '') !== 'primary') {
+		return $itens;
+	}
+	$pagina = get_page_by_path('aceitar-jesus');
+	$id = $pagina ? (int) $pagina->ID : 0;
+	return $id ? array_values(array_filter($itens, fn($i) => !((int) $i->menu_item_parent === 0 && (int) $i->object_id === $id))) : $itens;
+}, 10, 2);

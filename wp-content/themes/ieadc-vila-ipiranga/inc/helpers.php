@@ -66,9 +66,9 @@ function ieadc_img($id, string $tamanho = 'full'): string {
  * Atributo style completo de uma foto de fundo, igual ao protótipo:
  * style="background-image:url(…);background-position:<foco>;<extra>". Vazio se não houver nada.
  */
-function ieadc_fundo($id, string $foco = '', string $extra = ''): string {
+function ieadc_fundo($id, string $foco = '', string $extra = '', string $tamanho = 'full'): string {
 	$partes = [];
-	$url = ieadc_img($id);
+	$url = ieadc_img($id, $tamanho);
 	if ($url !== '') {
 		$partes[] = 'background-image:url(' . esc_url($url) . ')';
 		if (trim($foco) !== '') {
@@ -86,8 +86,12 @@ function ieadc_btn(string $texto, string $link, string $classe = '', string $ico
 	if (trim($texto) === '') {
 		return '';
 	}
+	$href = ieadc_url($link);
+	if ($href === '' && str_starts_with(trim($link), '{')) { // atalho sem destino (ex.: {uber} sem coordenadas): o botão não aparece
+		return '';
+	}
 	$ico = ($icone !== '' && function_exists('ieadc_icone')) ? ieadc_icone($icone) : '';
-	return '<a class="btn ' . esc_attr($classe) . '" href="' . esc_url(ieadc_url($link)) . '">' . ieadc_kses_rico($texto) . $ico . '</a>';
+	return '<a class="btn ' . esc_attr($classe) . '" href="' . esc_url($href) . '">' . ieadc_kses_rico($texto) . $ico . '</a>';
 }
 
 /**
@@ -102,6 +106,9 @@ function ieadc_url(string $link): string {
 	}
 	if ($link === '{waze}' && function_exists('ieadc_waze_url')) {
 		return ieadc_waze_url();
+	}
+	if ($link === '{uber}' && function_exists('ieadc_uber_url')) {
+		return ieadc_uber_url();
 	}
 	if ($link === '' || preg_match('#^([a-z][a-z0-9+.-]*:|//|\#|\?)#i', $link)) {
 		return $link;
@@ -218,4 +225,9 @@ function ieadc_perguntas_itens(array $attrs = []): array {
 	$itens[] = ['pergunta' => 'Como enviar um pedido de oração?',
 		'resposta' => 'Pela página <a href="' . esc_url(ieadc_link('pedidos-de-oracao')) . '">Pedidos de oração</a>. O pedido chega apenas ao Círculo de Oração e nunca é publicado.'];
 	return $itens;
+}
+
+/** Divisor da migalha (fase 7): ícone de seta, fora da leitura de tela (o texto da migalha segue em ordem). */
+function ieadc_migalha_sep(): string {
+	return '<span class="sep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>';
 }

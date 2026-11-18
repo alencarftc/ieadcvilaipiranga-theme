@@ -46,6 +46,8 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo_cor-300.webp'; // 300
 			$on = is_page('pedidos-de-oracao') ? ' on' : '';
 			?>
 			<a class="cta<?php echo esc_attr($on); ?>" href="<?php echo esc_url($pedido); ?>"><?php esc_html_e('Pedido de oração', 'ieadc'); ?></a>
+			<?php $jesus_on = is_page('aceitar-jesus') ? ' on' : ''; ?>
+			<a class="cta jesus<?php echo esc_attr($jesus_on); ?>" href="<?php echo esc_url(ieadc_link('aceitar-jesus')); ?>"><?php esc_html_e('Aceitar Jesus', 'ieadc'); ?></a>
 		</nav>
 	</div></header>
 	<?php do_action('blocksy:header:after'); ?>
